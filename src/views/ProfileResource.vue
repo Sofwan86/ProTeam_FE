@@ -1,4 +1,11 @@
 <template>
+
+    <div>
+    <v-breadcrumbs
+      :items="items"
+      divider="/"
+    ></v-breadcrumbs>
+  
   <v-container>
     <v-row no-gutters>
       <v-col
@@ -132,6 +139,7 @@
       </v-col>
     </v-row>
   </v-container>
+  </div>
 </template>
 
 <script>
@@ -146,8 +154,24 @@
       skills: [
           'React', 'Vue', 'Java', 'Phyton'
       ],
-      tipe: 'FTE'
-
+      tipe: 'FTE',
+      items: [
+        {
+          text: 'Profile',
+          disabled: false,
+          href: 'breadcrumbs_dashboard',
+        },
+        {
+          text: 'Resource',
+          disabled: false,
+          href: 'breadcrumbs_link_1',
+        },
+        {
+          text: 'Resource Profile',
+          disabled: true,
+          href: 'breadcrumbs_link_2',
+        },
+      ],
     }),
   }
 </script>
