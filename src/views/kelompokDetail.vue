@@ -101,7 +101,7 @@
 
 <script>
     export default {
-        name: 'kelompokdetail',
+        name: 'kelompokDetail',
     data: () => ({
       kelompok: {
           nama: 'OFA'},
@@ -159,5 +159,4 @@
 </script>
 
 <style lang="scss" scoped>
-
 </style>
