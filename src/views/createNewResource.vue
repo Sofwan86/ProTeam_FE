@@ -80,7 +80,7 @@
                     <h4>Email</h4>
                     <v-text-field
                         v-model="email"
-                        label="Ex. username@domain.com"
+                        label="Ex.@domain.com"
                         outlined
                         dense
                     ></v-text-field>

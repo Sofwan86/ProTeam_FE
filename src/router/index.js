@@ -89,7 +89,7 @@ const routes = [
     component: Lookup
   },
   {
-    path: '/kelompokprofile/detail',
+    path: '/kelompokprofiledetail',
     name: 'kelompokprofiledetail',
     component: KelompokDetail
   },
