@@ -130,7 +130,7 @@ export default {
         ["Update", "mdi-update"],
         ["Delete", "mdi-delete"],
       ],
-      items1: [{ title: "Dashboard", icon: "mdi-buffer", route: "/" }],
+      items1: [{ title: "Dashboard", icon: "mdi-buffer", route: "/dashboard" }],
       items2: [
         {
           title: "WLA",

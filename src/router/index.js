@@ -1,25 +1,113 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
-import Login from '../views/login/Login.vue'
+// import Home from '../views/Home.vue'
+import ProfileResource from '../views/ProfileResource.vue'
+import KelompokDetail from '../views/KelompokDetail.vue'
+import Profile from '../views/Profile.vue'
+import KelompokProfile from '../views/KelompokProfile.vue'
+import UserManagement from '../views/UserManagement.vue'
+import MandaysVendor from '../views/MandaysVendor.vue'
+import Lookup from '../views/Lookup.vue'
+import Hello from '../views/Hello.vue'
+import CreateResource from '../views/createNewResource.vue'
+import EditResource from '../views/editResource.vue'
+// import Login from '../views/login/Login.vue'
 import Register from '../views/register/Register.vue'
 import ForgotPassword from '../views/login/ForgotPassword.vue'
 import RecoverPassword from '../views/login/RecoverPassword.vue'
 import Dashboard from '../views/dashboard/Dashboard.vue'
+import Navbar from '../components/Navbar.vue'
+import Login from '../components/Login.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
+    path: '/login',
     name: 'login',
     component: Login
   },
   {
-    path: '/home',
-    name: 'home',
-    component: Home
+    path: "/navbar",
+    component: Navbar,
+    // meta: { requiresAuth: true },
+    // beforeEnter(to, from, next){
+    //     if(localStorage.getItem('email').localeCompare('john.doe@gmail.com') == 0){
+    //         next();
+    //     }else{
+    //         alert('!! Restricted Access !!'),
+    //         next(false);
+    //     }
+    // },
+    children: [
+      {
+        path: "/hello",
+        name: "Hello",
+        // meta : {title: 'Hello'},
+        component: Hello,
+      },
+      {
+        path: '/dashboard',
+        name: 'dashboard',
+        component: Dashboard
+      },
+    ]
   },
+  {
+    path: '/hello',
+    name: 'hello',
+    component: Hello
+  },
+  {
+    path: '/profileresource',
+    name: 'profileresource',
+    component: ProfileResource
+  },
+  {
+    path: '/profile',
+    name: 'profile',
+    component: Profile
+  },
+  {
+    path: '/kelompokprofile',
+    name: 'kelompokprofile',
+    component: KelompokProfile
+  },
+  {
+    path: '/usermanagement',
+    name: 'usermanagement',
+    component: UserManagement
+  },
+  {
+    path: '/mandaysvendor',
+    name: 'mandaysvendor',
+    component: MandaysVendor
+  },
+  {
+    path: '/lookup',
+    name: 'lookup',
+    component: Lookup
+  },
+  {
+    path: '/kelompokprofile/detail',
+    name: 'kelompokprofiledetail',
+    component: KelompokDetail
+  },
+  {
+    path: '/editresource',
+    name: 'editresource',
+    component: EditResource
+  },
+  {
+    path: '/createresource',
+    name: 'createresource',
+    component: CreateResource
+  },
+  // {
+  //   path: '/home',
+  //   name: 'home',
+  //   component: Home
+  // },
   {
     path: '/register',
     name: 'register',
@@ -35,11 +123,7 @@ const routes = [
     name: 'recoverpassword',
     component: RecoverPassword
   },
-  {
-    path: '/dashboard',
-    name: 'dashboard',
-    component: Dashboard
-  },
+
   {
     path: '/about',
     name: 'about',
@@ -56,4 +140,27 @@ const router = new VueRouter({
   routes
 })
 
+
 export default router
+
+// router.beforeEach((to, from, next) => {
+//   if (to.matched.some(record => record.meta.requiresAuth)) {
+//     if (!userses()) {
+//       next('/login')
+//       const answer = window.confirm('Terjadi kesalahan pada server, silahkan login ulang.')
+//       if (answer) {
+//         next('/login')
+//       }
+//     } else {
+//       if (to.path === '/') {
+//         next()
+//       } else if (!roleUser(to.meta.requireRole) && to.path !== '/') {
+//         next('/404')
+//       } else {
+//         next()
+//       }
+//     }
+//   } else {
+//     next()
+//   }
+// })

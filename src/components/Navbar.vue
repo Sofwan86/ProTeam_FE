@@ -14,10 +14,11 @@
         <v-icon dark> mdi-account-circle </v-icon>
       </v-avatar>
       <v-list-item-content>
-        <v-list-item-title> Username </v-list-item-title>
+        <v-list-item-title> {{nama}} </v-list-item-title>
         <v-list-item-subtitle> Role </v-list-item-subtitle>
       </v-list-item-content>
-      <v-icon>mdi-chevron-down</v-icon>
+      <v-icon @click="logout" >mdi-logout</v-icon>
+      
     </v-app-bar>
 
     <v-navigation-drawer app color="#004483" permanent>
@@ -113,6 +114,12 @@
           </v-list-group>
         </v-list>
     </v-navigation-drawer>
+          <div class="pa-5" >
+            <router-view>
+
+          </router-view>
+          </div>
+          
   </nav>
 </template>
 
@@ -130,56 +137,65 @@ export default {
         ["Update", "mdi-update"],
         ["Delete", "mdi-delete"],
       ],
-      items1: [{ title: "Dashboard", icon: "mdi-buffer", route: "/dashboard" }],
+      items1: [{ title: "Dashboard", icon: "mdi-buffer", route: "/" }],
       items2: [
         {
           title: "WLA",
           icon: "mdi-chart-line-variant",
-          route: "/",
+          route: "/wla",
         },
         {
           title: "Planning",
           icon: "mdi-notebook-outline",
-          route: "/",
+          route: "/planning",
         },
         {
           title: "Report",
           icon: "mdi-file-chart-outline",
-          route: "/",
+          route: "/report",
         },
       ],
       itemProfile:[
         {
           title: "Resource",
           icon: "mdi-account-tie-outline",
-          route: "/",
+          route: "/profile",
         },
         {
           title: "Kelompok",
           icon: "mdi-account-group-outline",
-          route: "/",
+          route: "/kelompokprofile",
         },
       ],
       itemMaster:[
         {
           title: "User Management",
           icon: "mdi-account-cog-outline",
-          route: "/",
+          route: "/usermanagement",
         },
         {
           title: "Mandays Vendor",
           icon: "mdi-account-supervisor-circle",
-          route: "/",
+          route: "/mandaysvendor",
         },
         {
           title: "Lookup",
           icon: "mdi-account-search-outline",
-          route: "/",
+          route: "/lookup",
         },
       ],
       right: null,
+      nama: localStorage.getItem('name'),
+
+    
     };
   },
+  methods: {
+    logout(){
+      localStorage.removeItem('TOKEN')
+      this.$router.push('/login')
+    }
+  }
 };
 </script>
 
