@@ -118,27 +118,65 @@
                         ></v-combobox>
                     </v-col>
             <v-col
-                cols="12"
-                md="3">
-            <h4>Active Date</h4>
-            <v-text-field
-                v-model="activedate"
-                label="mm/dd/yy"
-                outlined
-                dense
-            ></v-text-field>
+            ><h4>Active Date</h4>
+            <v-menu
+            v-model="menu2"
+            :close-on-content-click="false"
+            transition="scale-transition"
+            offset-y
+            max-width="290px"
+            min-width="auto"
+            >
+            <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                v-model="dateActive"
+                label=""
+                hint="MM/DD/YYYY format"
+                persistent-hint
+                prepend-icon="mdi-calendar"
+                readonly
+                v-bind="attrs"
+                v-on="on"
+                ></v-text-field>
+            </template>
+            <v-date-picker
+                v-model="date"
+                no-title
+                @input="menu2 = false"
+            ></v-date-picker>
+            </v-menu>
             </v-col>
             <v-col
                 cols="12"
                 sm="3"
             >
             <h4>Last Working Date</h4>
-            <v-text-field
-                v-model="lastdate"
-                label="mm/dd/yy"
-                outlined
-                dense
-            ></v-text-field>
+            <v-menu
+            v-model="menu3"
+            :close-on-content-click="false"
+            transition="scale-transition"
+            offset-y
+            max-width="290px"
+            min-width="auto"
+            >
+            <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                v-model="dateLast"
+                label=""
+                hint="MM/DD/YYYY format"
+                persistent-hint
+                prepend-icon="mdi-calendar"
+                readonly
+                v-bind="attrs"
+                v-on="on"
+                ></v-text-field>
+            </template>
+            <v-date-picker
+                v-model="date2"
+                no-title
+                @input="menu3 = false"
+            ></v-date-picker>
+            </v-menu>
             </v-col>
             <v-col cols="12" sm="6">
             <h4>Role</h4>
@@ -195,7 +233,7 @@
 <script>
     export default {
         name: 'createNewResource',
-        data: () => ({
+        data: vm => ({
         nama: '',
         npp: '',
         email: '',
@@ -225,9 +263,32 @@
             href: 'breadcrumbs_link_2',
             },
       ],
+      date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+      date2: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+      dateFormatted: vm.formatDate((new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)),
+      menu3: false,
+      menu2: false,
     }),
+
+    computed: {
+      dateActive () {
+        return this.formatDate(this.date)
+      },
+      dateLast () {
+        return this.formatDate(this.date2)
+      },
+    },
+
+    methods: {
+      formatDate (date) {
+        if (!date) return null
+
+        const [year, month, day] = date.split('-')
+        return `${month}/${day}/${year}`
+      },
+    },
+  }
         
-    }
 </script>
 
 <style lang="scss" scoped>
