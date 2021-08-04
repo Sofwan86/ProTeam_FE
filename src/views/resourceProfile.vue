@@ -30,14 +30,16 @@
                     <v-toolbar flat>
                       <v-toolbar-title><h1>Resource Profile</h1></v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <template class="pa-5">
+                      <div class="pa-5" max-width:100>
                         <v-text-field
-                          label="Search"
                           outlined
-                          dense
-                          append-icon="mdi-file-find"
+                          v-model="search"
+                          append-icon="mdi-magnify"
+                          label="Search"
+                          single-line
+                          hide-details
                         ></v-text-field>
-                        </template>
+                      </div>
                         <v-dialog
                           v-model="dialog"
                           max-width="1000px"
@@ -278,169 +280,199 @@
                             </v-card-actions>
                           </v-card>
                         </v-dialog>
-                        <v-dialog
-                          v-model="dialogDetail"
-                          max-width="1000px"
-                        >
-                          <template v-slot:activator="{ on, attrs }">
-                            <!-- <v-btn
-                              color="primary"
-                              dark
-                              class="mb-2"
-                              v-bind="attrs"
-                              v-on="on"
-                            >
-                              + Create New Resource
-                            </v-btn> -->
-                          </template>
-                          <v-card>
-                            <v-card-title>
-                              <span class="text-h5"><h2>{{ Information }}</h2></span>
-                            </v-card-title>
-
-                            <v-card class="pa-2" offset-sm="3" outlined tile>
-          <v-row>
-            <v-col
-              cols="12"
-               md="6">
-              <v-list-item two-line>
-              <v-list-item-content>
-              <v-list-item-title><h2>{{nama}}</h2></v-list-item-title>
-              <v-list-item-subtitle><h4>{{npp}}</h4></v-list-item-subtitle>
-              <v-list-item-subtitle>Added 24 Januari 2021</v-list-item-subtitle>
-              </v-list-item-content>
-              </v-list-item>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="4" md="3">
-              <v-list-item two-line>
-              <v-list-item-content>
-              <v-list-item-subtitle>Name</v-list-item-subtitle>
-              <v-list-item-title>{{nama}}</v-list-item-title>
-              </v-list-item-content>
-              </v-list-item>
-              <v-list-item two-line>
-              <v-list-item-content>
-              <v-list-item-subtitle>NPP</v-list-item-subtitle>
-              <v-list-item-title>{{npp}}</v-list-item-title>
-              </v-list-item-content>
-              </v-list-item>
-              <v-list-item two-line>
-              <v-list-item-content>
-              <v-list-item-subtitle>Email</v-list-item-subtitle>
-              <v-list-item-title>{{email}}</v-list-item-title>
-              </v-list-item-content>
-              </v-list-item>
-              <v-list-item two-line>
-              <v-list-item-content>
-              <v-list-item-subtitle>Phone Number</v-list-item-subtitle>
-              <v-list-item-title>{{phone}}</v-list-item-title>
-              </v-list-item-content>
-              </v-list-item>
-            </v-col>
-            <v-divider vertical></v-divider>
-            <v-col cols="4" md="3">
-              <v-list-item two-line>
-              <v-list-item-content>
-              <v-list-item-subtitle>Active Date</v-list-item-subtitle>
-              <v-list-item-title>26 Juni 2021</v-list-item-title>
-              </v-list-item-content>
-              </v-list-item>
-              <v-list-item two-line>
-              <v-list-item-content>
-              <v-list-item-subtitle>Kelompok</v-list-item-subtitle>
-              <v-list-item-title>{{kelompok}}</v-list-item-title>
-              </v-list-item-content>
-              </v-list-item>
-              <v-list-item two-line>
-              <v-list-item-content>
-              <v-list-item-subtitle>Skillset</v-list-item-subtitle>
-              <v-list-item-title v-for="skill in skills"
-                :key="skill">{{skill}}</v-list-item-title>
-              </v-list-item-content>
-              </v-list-item>
-              <v-list-item two-line>
-              <v-list-item-content>
-              <v-list-item-subtitle>Manhour/Day</v-list-item-subtitle>
-              <v-list-item-title> </v-list-item-title>
-              </v-list-item-content>
-              </v-list-item>
-            </v-col>
-            <v-col cols="4" md="3">
-              <v-list-item two-line>
-              <v-list-item-content>
-              <v-list-item-subtitle>Last Working Date</v-list-item-subtitle>
-              <v-list-item-title> </v-list-item-title>
-              </v-list-item-content>
-              </v-list-item>
-              <v-list-item two-line>
-              <v-list-item-content>
-              <v-list-item-subtitle>Resource Type</v-list-item-subtitle>
-              <v-list-item-title>{{tipe}}</v-list-item-title>
-              </v-list-item-content>
-              </v-list-item>
-              <v-list-item two-line>
-              <v-list-item-content>
-              <v-list-item-subtitle>Jenjang Jabatan</v-list-item-subtitle>
-              <v-list-item-title>{{jenjab}} </v-list-item-title>
-              </v-list-item-content>
-              </v-list-item>
-              <v-list-item two-line>
-              <v-list-item-content>
-              <v-list-item-subtitle>Total Manhour</v-list-item-subtitle>
-              <v-list-item-title>{{totalMH}} </v-list-item-title>
-              </v-list-item-content>
-              </v-list-item>
-            </v-col>
-            <v-col cols="3" md="2">
-              <v-list-item two-line>
-              <v-list-item-content>
-              <v-list-item-subtitle>Status</v-list-item-subtitle>
-              <v-list-item-title>{{status}} </v-list-item-title>
-              </v-list-item-content>
-              </v-list-item>
-              <v-list-item two-line>
-              <v-list-item-content>
-              <v-list-item-subtitle>Role</v-list-item-subtitle>
-              <v-list-item-title>{{role}} </v-list-item-title>
-              </v-list-item-content>
-              </v-list-item>
-              <v-list-item two-line>
-              <v-list-item-content>
-              <v-list-item-subtitle>Project Experience</v-list-item-subtitle>
-              <v-list-item-title> </v-list-item-title>
-              </v-list-item-content>
-              </v-list-item>
-              <v-list-item two-line>
-              <v-list-item-content>
-              <v-list-item-subtitle>Pricing</v-list-item-subtitle>
-              <v-list-item-title> </v-list-item-title>
-              </v-list-item-content>
-              </v-list-item>
-            </v-col>
-          </v-row>
-        </v-card>
-
-                            <v-card-actions>
-                              <v-spacer></v-spacer>
-                              <v-btn
-                                color="blue darken-1"
-                                text
-                                @click="close"
-                              >
-                                Cancel
-                              </v-btn>
-                              <v-btn
-                                color="blue darken-1"
-                                text
-                                @click="save"
-                              >
-                                Save
-                              </v-btn>
-                            </v-card-actions>
-                          </v-card>
-                        </v-dialog>
+                        <v-dialog v-model="dialogDelete" max-width="900">
+                        <v-card>
+                          <v-row no-gutters>
+                            <v-col cols="12" sm="13" offset-sm="0.2">
+                              <v-card class="pa-2" offset-sm="3" outlined tile>
+                                <v-row>
+                                  <v-col cols="12" md="6">
+                                    <v-list-item two-line>
+                                      <v-list-item-content>
+                                        <v-list-item-title
+                                          ><h2>
+                                            {{ resources.name }}
+                                          </h2></v-list-item-title
+                                        >
+                                        <v-list-item-subtitle
+                                          ><h4>
+                                            {{ npp }}
+                                          </h4></v-list-item-subtitle
+                                        >
+                                        <v-list-item-subtitle
+                                          >Added 24 Januari
+                                          2021</v-list-item-subtitle
+                                        >
+                                      </v-list-item-content>
+                                    </v-list-item>
+                                  </v-col>
+                                </v-row>
+                                <v-row>
+                                  <v-col cols="4" md="3">
+                                    <v-list-item two-line>
+                                      <v-list-item-content>
+                                        <v-list-item-subtitle
+                                          >Name</v-list-item-subtitle
+                                        >
+                                        <v-list-item-title>{{
+                                          nama
+                                        }}</v-list-item-title>
+                                      </v-list-item-content>
+                                    </v-list-item>
+                                    <v-list-item two-line>
+                                      <v-list-item-content>
+                                        <v-list-item-subtitle
+                                          >NPP</v-list-item-subtitle
+                                        >
+                                        <v-list-item-title>{{
+                                          npp
+                                        }}</v-list-item-title>
+                                      </v-list-item-content>
+                                    </v-list-item>
+                                    <v-list-item two-line>
+                                      <v-list-item-content>
+                                        <v-list-item-subtitle
+                                          >Email</v-list-item-subtitle
+                                        >
+                                        <v-list-item-title>{{
+                                          email
+                                        }}</v-list-item-title>
+                                      </v-list-item-content>
+                                    </v-list-item>
+                                    <v-list-item two-line>
+                                      <v-list-item-content>
+                                        <v-list-item-subtitle
+                                          >Phone Number</v-list-item-subtitle
+                                        >
+                                        <v-list-item-title>{{
+                                          phone
+                                        }}</v-list-item-title>
+                                      </v-list-item-content>
+                                    </v-list-item>
+                                  </v-col>
+                                  <v-divider vertical></v-divider>
+                                  <v-col cols="4" md="3">
+                                    <v-list-item two-line>
+                                      <v-list-item-content>
+                                        <v-list-item-subtitle
+                                          >Active Date</v-list-item-subtitle
+                                        >
+                                        <v-list-item-title
+                                          >26 Juni 2021</v-list-item-title
+                                        >
+                                      </v-list-item-content>
+                                    </v-list-item>
+                                    <v-list-item two-line>
+                                      <v-list-item-content>
+                                        <v-list-item-subtitle
+                                          >Kelompok</v-list-item-subtitle
+                                        >
+                                        <v-list-item-title>{{
+                                          kelompok
+                                        }}</v-list-item-title>
+                                      </v-list-item-content>
+                                    </v-list-item>
+                                    <v-list-item two-line>
+                                      <v-list-item-content>
+                                        <v-list-item-subtitle
+                                          >Skillset</v-list-item-subtitle
+                                        >
+                                        <v-list-item-title
+                                          v-for="skill in skills"
+                                          :key="skill"
+                                          >{{ skill }}</v-list-item-title
+                                        >
+                                      </v-list-item-content>
+                                    </v-list-item>
+                                    <v-list-item two-line>
+                                      <v-list-item-content>
+                                        <v-list-item-subtitle
+                                          >Manhour/Day</v-list-item-subtitle
+                                        >
+                                        <v-list-item-title> </v-list-item-title>
+                                      </v-list-item-content>
+                                    </v-list-item>
+                                  </v-col>
+                                  <v-col cols="4" md="3">
+                                    <v-list-item two-line>
+                                      <v-list-item-content>
+                                        <v-list-item-subtitle
+                                          >Last Working
+                                          Date</v-list-item-subtitle
+                                        >
+                                        <v-list-item-title> </v-list-item-title>
+                                      </v-list-item-content>
+                                    </v-list-item>
+                                    <v-list-item two-line>
+                                      <v-list-item-content>
+                                        <v-list-item-subtitle
+                                          >Resource Type</v-list-item-subtitle
+                                        >
+                                        <v-list-item-title>{{
+                                          tipe
+                                        }}</v-list-item-title>
+                                      </v-list-item-content>
+                                    </v-list-item>
+                                    <v-list-item two-line>
+                                      <v-list-item-content>
+                                        <v-list-item-subtitle
+                                          >Jenjang Jabatan</v-list-item-subtitle
+                                        >
+                                        <v-list-item-title> </v-list-item-title>
+                                      </v-list-item-content>
+                                    </v-list-item>
+                                    <v-list-item two-line>
+                                      <v-list-item-content>
+                                        <v-list-item-subtitle
+                                          >Total Manhour</v-list-item-subtitle
+                                        >
+                                        <v-list-item-title> </v-list-item-title>
+                                      </v-list-item-content>
+                                    </v-list-item>
+                                  </v-col>
+                                  <v-col cols="3" md="2">
+                                    <v-list-item two-line>
+                                      <v-list-item-content>
+                                        <v-list-item-subtitle
+                                          >Status</v-list-item-subtitle
+                                        >
+                                        <v-list-item-title> </v-list-item-title>
+                                      </v-list-item-content>
+                                    </v-list-item>
+                                    <v-list-item two-line>
+                                      <v-list-item-content>
+                                        <v-list-item-subtitle
+                                          >Role</v-list-item-subtitle
+                                        >
+                                        <v-list-item-title> </v-list-item-title>
+                                      </v-list-item-content>
+                                    </v-list-item>
+                                    <v-list-item two-line>
+                                      <v-list-item-content>
+                                        <v-list-item-subtitle
+                                          >Project
+                                          Experience</v-list-item-subtitle
+                                        >
+                                        <v-list-item-title> </v-list-item-title>
+                                      </v-list-item-content>
+                                    </v-list-item>
+                                    <v-list-item two-line>
+                                      <v-list-item-content>
+                                        <v-list-item-subtitle
+                                          >Pricing</v-list-item-subtitle
+                                        >
+                                        <v-list-item-title> </v-list-item-title>
+                                      </v-list-item-content>
+                                    </v-list-item>
+                                  </v-col>
+                                </v-row>
+                              </v-card>
+                            </v-col>
+                          </v-row>
+                        </v-card>
+                      </v-dialog>
+                        
+                        <!-- </v-dialog>
                         <v-dialog v-model="dialogDelete" max-width="500px">
                           <v-card>
                             <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
@@ -451,13 +483,13 @@
                               <v-spacer></v-spacer>
                             </v-card-actions>
                           </v-card>
-                        </v-dialog>
+                        </v-dialog> -->
                     </v-toolbar>
                     </template>
                     <template v-slot:item.action="{ item }">
                       <v-btn dense 
                       color="primary" 
-                      @click="detailItem(item)">Detail</v-btn>
+                      @click="deleteItem(item)">Detail</v-btn>
                       <v-btn dense 
                       color="gray" 
                       @click="editItem(item)">Edit</v-btn>
@@ -515,35 +547,7 @@
       tab: null,
       menus: [
           'Resource', 'Kelompok',
-        ],
-      // headers: [
-      //     {
-      //       text: 'Name',
-      //       align: 'start',
-      //       sortable: true,
-      //       value: 'nama',
-      //     },
-      //     { text: 'NPP', value: 'npp' },
-      //     { text: 'Kelompok', value: 'kelompok' },
-      //     { text: 'Role', value: 'role' },
-      //     { text: 'Status', value: 'status' },
-      //     { text: 'Action', value: '' },
-        // ],
-      // resources: [
-      //   {
-      //     nama: 'Marvin Janitra Akmal',
-      //     npp: '12345678',
-      //     email: 'marvinjanitra@gmail.com',
-      //     phone: '081212786101',
-      //     kelompok: 'OFA',
-      //     role: 'Front End Dev',
-      //     skills: [
-      //         'React', 'Vue', 'Java', 'Phyton'
-      //     ],
-      //     tipe: 'FTE',
-      //   }
-      // ],
-      
+        ],      
       items: [
         {
           text: 'Profile',
@@ -654,12 +658,9 @@
       dialog (val) {
         val || this.close()
       },
-      dialogDetail (val) {
-        val || this.closeDetail()
-      },
-      // dialogDelete (val) {
-      //   val || this.closeDelete()
-      // },
+      dialogDelete (val) {
+         val || this.closeDelete()
+       },
     },
 
     created () {
@@ -750,11 +751,11 @@
         this.dialogDetail = true
       },
 
-      // deleteItem (item) {
-      //   this.editedIndex = this.resources.indexOf(item)
-      //   this.editedItem = Object.assign({}, item)
-      //   this.dialogDelete = true
-      // },
+      deleteItem (item) {
+        this.editedIndex = this.resources.indexOf(item)
+        this.editedItem = Object.assign({}, item)
+        this.dialogDelete = true
+      },
 
       // deleteItemConfirm () {
       //   this.resources.splice(this.editedIndex, 1)
@@ -776,13 +777,13 @@
         })
       },
 
-      // closeDelete () {
-      //   this.dialogDelete = false
-      //   this.$nextTick(() => {
-      //     this.editedItem = Object.assign({}, this.defaultItem)
-      //     this.editedIndex = -1
-      //   })
-      // },
+      closeDelete () {
+        this.dialogDelete = false
+        this.$nextTick(() => {
+          this.editedItem = Object.assign({}, this.defaultItem)
+          this.editedIndex = -1
+        })
+      },
 
       save () {
         if (this.editedIndex > -1) {
