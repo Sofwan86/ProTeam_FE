@@ -280,7 +280,7 @@
                             </v-card-actions>
                           </v-card>
                         </v-dialog>
-                        <v-dialog v-model="dialogDelete" max-width="900">
+                        <v-dialog v-model="dialogDelete" max-width="1100px">
                         <v-card>
                           <v-row no-gutters>
                             <v-col cols="12" sm="13" offset-sm="0.2">
@@ -291,12 +291,12 @@
                                       <v-list-item-content>
                                         <v-list-item-title
                                           ><h2>
-                                            {{ resources.name }}
+                                            {{ editedItem.nama }}
                                           </h2></v-list-item-title
                                         >
                                         <v-list-item-subtitle
                                           ><h4>
-                                            {{ npp }}
+                                            {{ editedItem.npp }}
                                           </h4></v-list-item-subtitle
                                         >
                                         <v-list-item-subtitle
@@ -315,7 +315,7 @@
                                           >Name</v-list-item-subtitle
                                         >
                                         <v-list-item-title>{{
-                                          nama
+                                          editedItem.nama
                                         }}</v-list-item-title>
                                       </v-list-item-content>
                                     </v-list-item>
@@ -325,7 +325,7 @@
                                           >NPP</v-list-item-subtitle
                                         >
                                         <v-list-item-title>{{
-                                          npp
+                                          editedItem.npp
                                         }}</v-list-item-title>
                                       </v-list-item-content>
                                     </v-list-item>
@@ -335,7 +335,7 @@
                                           >Email</v-list-item-subtitle
                                         >
                                         <v-list-item-title>{{
-                                          email
+                                          editedItem.email
                                         }}</v-list-item-title>
                                       </v-list-item-content>
                                     </v-list-item>
@@ -345,7 +345,7 @@
                                           >Phone Number</v-list-item-subtitle
                                         >
                                         <v-list-item-title>{{
-                                          phone
+                                          editedItem.phone
                                         }}</v-list-item-title>
                                       </v-list-item-content>
                                     </v-list-item>
@@ -358,8 +358,8 @@
                                           >Active Date</v-list-item-subtitle
                                         >
                                         <v-list-item-title
-                                          >26 Juni 2021</v-list-item-title
-                                        >
+                                        >{{editedItem.dateActive}}
+                                        </v-list-item-title>
                                       </v-list-item-content>
                                     </v-list-item>
                                     <v-list-item two-line>
@@ -368,7 +368,7 @@
                                           >Kelompok</v-list-item-subtitle
                                         >
                                         <v-list-item-title>{{
-                                          kelompok
+                                          editedItem.kelompok
                                         }}</v-list-item-title>
                                       </v-list-item-content>
                                     </v-list-item>
@@ -378,7 +378,7 @@
                                           >Skillset</v-list-item-subtitle
                                         >
                                         <v-list-item-title
-                                          v-for="skill in skills"
+                                          v-for="skill in editedItem.skills"
                                           :key="skill"
                                           >{{ skill }}</v-list-item-title
                                         >
@@ -387,9 +387,8 @@
                                     <v-list-item two-line>
                                       <v-list-item-content>
                                         <v-list-item-subtitle
-                                          >Manhour/Day</v-list-item-subtitle
-                                        >
-                                        <v-list-item-title> </v-list-item-title>
+                                          >Manhour/Day</v-list-item-subtitle>
+                                        <v-list-item-title>{{editedItem.manhour}}</v-list-item-title>
                                       </v-list-item-content>
                                     </v-list-item>
                                   </v-col>
@@ -398,27 +397,26 @@
                                       <v-list-item-content>
                                         <v-list-item-subtitle
                                           >Last Working
-                                          Date</v-list-item-subtitle
-                                        >
-                                        <v-list-item-title> </v-list-item-title>
+                                          Date</v-list-item-subtitle>
+                                        <v-list-item-title>{{editedItem.dateLast}}</v-list-item-title>
                                       </v-list-item-content>
                                     </v-list-item>
                                     <v-list-item two-line>
                                       <v-list-item-content>
                                         <v-list-item-subtitle
-                                          >Resource Type</v-list-item-subtitle
-                                        >
+                                          >Resource Type</v-list-item-subtitle>
                                         <v-list-item-title>{{
-                                          tipe
+                                          editedItem.tipe
                                         }}</v-list-item-title>
                                       </v-list-item-content>
                                     </v-list-item>
                                     <v-list-item two-line>
                                       <v-list-item-content>
-                                        <v-list-item-subtitle
-                                          >Jenjang Jabatan</v-list-item-subtitle
-                                        >
-                                        <v-list-item-title> </v-list-item-title>
+                                        <v-list-item-subtitle>
+                                        Jenjang Jabatan</v-list-item-subtitle>                                        >
+                                        <v-list-item-title>{{
+                                          editedItem.jenjab
+                                          }}</v-list-item-title>
                                       </v-list-item-content>
                                     </v-list-item>
                                     <v-list-item two-line>
@@ -426,7 +424,7 @@
                                         <v-list-item-subtitle
                                           >Total Manhour</v-list-item-subtitle
                                         >
-                                        <v-list-item-title> </v-list-item-title>
+                                        <v-list-item-title>{{editedItem.totalMH}}</v-list-item-title>
                                       </v-list-item-content>
                                     </v-list-item>
                                   </v-col>
@@ -436,7 +434,7 @@
                                         <v-list-item-subtitle
                                           >Status</v-list-item-subtitle
                                         >
-                                        <v-list-item-title> </v-list-item-title>
+                                        <v-list-item-title>{{editedItem.status}}</v-list-item-title>
                                       </v-list-item-content>
                                     </v-list-item>
                                     <v-list-item two-line>
@@ -444,7 +442,7 @@
                                         <v-list-item-subtitle
                                           >Role</v-list-item-subtitle
                                         >
-                                        <v-list-item-title> </v-list-item-title>
+                                        <v-list-item-title>{{editedItem.role}}</v-list-item-title>
                                       </v-list-item-content>
                                     </v-list-item>
                                     <v-list-item two-line>
@@ -453,7 +451,7 @@
                                           >Project
                                           Experience</v-list-item-subtitle
                                         >
-                                        <v-list-item-title> </v-list-item-title>
+                                        <v-list-item-title> Progo </v-list-item-title>
                                       </v-list-item-content>
                                     </v-list-item>
                                     <v-list-item two-line>
@@ -461,7 +459,7 @@
                                         <v-list-item-subtitle
                                           >Pricing</v-list-item-subtitle
                                         >
-                                        <v-list-item-title> </v-list-item-title>
+                                        <v-list-item-title>{{editedItem.price}}</v-list-item-title>
                                       </v-list-item-content>
                                     </v-list-item>
                                   </v-col>
@@ -469,6 +467,16 @@
                               </v-card>
                             </v-col>
                           </v-row>
+                          <v-card-actions>
+                              <v-spacer></v-spacer>
+                              <v-btn
+                                color="blue darken-1"
+                                text
+                                @click="closeDelete"
+                              >
+                                Close
+                              </v-btn>
+                            </v-card-actions>
                         </v-card>
                       </v-dialog>
                         
@@ -598,6 +606,7 @@
         tipe:'',
         role: '',
         status: '',
+        price: '',
       },
       defaultItem: {
         nama: '',
@@ -614,6 +623,7 @@
         tipe:'',
         role: '',
         status: '',
+        price: '',
       },
       detailItem: {
         nama: '',
@@ -658,6 +668,9 @@
       dialog (val) {
         val || this.close()
       },
+      dialogDetail (val) {
+        val || this.closeDetail()
+      },
       dialogDelete (val) {
          val || this.closeDelete()
        },
@@ -683,6 +696,7 @@
             tipe:'FTE',
             role: 'FrontEnd Developer',
             status: 'Active',
+            price: 'Rp. 10.000.000'
           },
           {
             nama: 'Sofwan',
@@ -697,6 +711,7 @@
             tipe:'FTE',
             role: 'FrontEnd Developer',
             status: 'Active',
+            price: 'Rp. 15.000.000'
           },
           {
             nama: 'Jamal Udin',
@@ -711,6 +726,7 @@
             tipe:'XTC',
             role: 'FrontEnd Infantry',
             status: 'Active',
+            price: 'Rp. 2.000',
           },
           {
             nama: 'Solehudin',
@@ -725,20 +741,13 @@
             tipe:'MBT',
             role: 'Marbot',
             status: 'Inactive',
+            price: 'Rp. 2.500'
           },
         ]
       },
       createItem(item){
         this.createItem=item;
         this.$router.push("/createNewResource")
-      },
-      detailHandler(item){
-        this.detailID=item;
-        this.$router.push("/resourceDetail")
-      },
-      editHandler(item){
-        this.editID=item;
-        this.$router.push("/editResource")
       },
       editItem (item) {
         this.editedIndex = this.resources.indexOf(item)
@@ -757,10 +766,10 @@
         this.dialogDelete = true
       },
 
-      // deleteItemConfirm () {
-      //   this.resources.splice(this.editedIndex, 1)
-      //   this.closeDelete()
-      // },
+      deleteItemConfirm () {
+        this.resources.splice(this.editedIndex, 1)
+        this.closeDelete()
+      },
 
       close () {
         this.dialog = false
@@ -770,13 +779,13 @@
         })
       },
       closeDetail () {
-        this.dialogDetail = false
+        this.dialog = false
         this.$nextTick(() => {
-          this.detailItem = Object.assign({}, this.defaultItem)
+          this.editedItem = Object.assign({}, this.defaultItem)
           this.editedIndex = -1
         })
       },
-
+      
       closeDelete () {
         this.dialogDelete = false
         this.$nextTick(() => {
