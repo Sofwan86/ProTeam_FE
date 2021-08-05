@@ -36,14 +36,15 @@
                       </div>
                       <v-dialog v-model="dialog" max-width="1000px">
                         <template v-slot:activator="{ on, attrs }">
-                          <v-btn color="primary" dark @click="createItem(item)">
+                          <v-btn color="primary" dark v-bind="attrs" v-on="on">
                             + Create New Resource
                           </v-btn>
                         </template>
                         <v-card>
                           <v-card-title>
                             <span class="text-h5"
-                              ><h2>{{ formTitle }}</h2></span>
+                              ><h2>{{ formTitle }}</h2></span
+                            >
                           </v-card-title>
                           <v-card-text>
                             <v-container>
@@ -60,8 +61,6 @@
                                     v-model="editedItem.npp"
                                     label="NPP"
                                     required
-                                    readonly
-                                    disabled
                                   ></v-text-field>
                                 </v-col>
                                 <v-col cols="12" sm="6" md="4">
