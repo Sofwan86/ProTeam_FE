@@ -6,7 +6,12 @@
       <v-row no-gutters>
         <v-col cols="12" sm="13" offset-sm="0.2">
           <v-card class="pa-2" offset-sm="3" outlined tile>
-            <h1>Master Admin</h1>
+            <h1 class="pl-5 pt-3">Master Admin</h1>
+            <v-tabs>
+              <v-tab href="/usermanagemnt">User Management</v-tab>
+              <v-tab class="active">Mandays Vendor</v-tab>
+              <v-tab href="/lookup">Lookup</v-tab>
+            </v-tabs>
             <v-row>
               <v-col>
                 <v-data-table
@@ -554,5 +559,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>
