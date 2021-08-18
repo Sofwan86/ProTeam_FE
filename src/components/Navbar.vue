@@ -9,16 +9,14 @@
       <v-spacer></v-spacer>
       <v-spacer></v-spacer>
       <v-spacer></v-spacer>
-      <v-spacer></v-spacer>
       <v-avatar id="ava" color="black">
         <v-icon dark> mdi-account-circle </v-icon>
       </v-avatar>
-      <v-list-item-content>
-        <v-list-item-title> {{nama}} </v-list-item-title>
-        <v-list-item-subtitle> {{role}} </v-list-item-subtitle>
+      <v-list-item-content class="px-2 mx-2">
+        <v-list-item-title> {{ nama }} </v-list-item-title>
+        <v-list-item-subtitle> {{ role }} </v-list-item-subtitle>
       </v-list-item-content>
-      <v-icon @click="logout" >mdi-logout</v-icon>
-      
+      <v-icon @click="logout">mdi-logout</v-icon>
     </v-app-bar>
 
     <v-navigation-drawer app color="#004483" permanent>
@@ -32,94 +30,96 @@
       </v-list-item>
 
       <v-divider></v-divider>
-        <v-list outlined dense nav>
+      <v-list outlined dense nav>
+        <v-list-item
+          v-for="item in items1"
+          :key="item.title"
+          router
+          :to="item.route"
+        >
+          <v-list-item-icon>
+            <v-icon color="#FFF">{{ item.icon }}</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content color="#FFF">
+            <v-list-item-title class="white--text" color="#FFF">{{
+              item.title
+            }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-group
+          color="#FFF"
+          no-action
+          :value="false"
+          prepend-icon="mdi-account-circle"
+        >
+          <template v-slot:activator>
+            <v-list-item-title class="white--text">Profile</v-list-item-title>
+          </template>
+
           <v-list-item
-            v-for="item in items1"
+            v-for="item in itemProfile"
             :key="item.title"
             router
             :to="item.route"
           >
+            <v-list-item-title class="white--text">
+              {{ item.title }}
+            </v-list-item-title>
+
             <v-list-item-icon>
-              <v-icon color="#FFF">{{ item.icon }}</v-icon>
+              <v-icon color="#FFF"> {{ item.icon }} </v-icon>
             </v-list-item-icon>
-
-            <v-list-item-content color="#FFF">
-              <v-list-item-title class="white--text" color="#FFF">{{
-                item.title
-              }}</v-list-item-title>
-            </v-list-item-content>
           </v-list-item>
-          <v-list-group
-            color="#FFF"
-            no-action
-            :value="false"
-            prepend-icon="mdi-account-circle"
-          >
-            <template v-slot:activator>
-              <v-list-item-title class="white--text">Profile</v-list-item-title>
-            </template>
+        </v-list-group>
+        <v-list-item
+          v-for="item in items2"
+          :key="item.title"
+          router
+          :to="item.route"
+        >
+          <v-list-item-icon>
+            <v-icon color="#FFF">{{ item.icon }}</v-icon>
+          </v-list-item-icon>
 
-            <v-list-item v-for="item in itemProfile"
-            :key="item.title"
-            router
-            :to="item.route">
-              <v-list-item-title
-                class="white--text"
-                
-              > {{item.title}} </v-list-item-title>
+          <v-list-item-content color="#FFF">
+            <v-list-item-title class="white--text" color="#FFF">{{
+              item.title
+            }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-group
+          color="#FFF"
+          no-action
+          :value="false"
+          prepend-icon="mdi-cog-outline"
+        >
+          <template v-slot:activator>
+            <v-list-item-title class="white--text"
+              >Master Admin</v-list-item-title
+            >
+          </template>
 
-              <v-list-item-icon>
-                <v-icon color="#FFF"> {{item.icon}} </v-icon>
-              </v-list-item-icon>
-            </v-list-item>
-          </v-list-group>
           <v-list-item
-            v-for="item in items2"
+            v-for="item in itemMaster"
             :key="item.title"
             router
             :to="item.route"
           >
+            <v-list-item-title class="white--text">{{
+              item.title
+            }}</v-list-item-title>
+
             <v-list-item-icon>
-              <v-icon color="#FFF">{{ item.icon }}</v-icon>
+              <v-icon color="#FFF"> {{ item.icon }} </v-icon>
             </v-list-item-icon>
-
-            <v-list-item-content color="#FFF">
-              <v-list-item-title class="white--text" color="#FFF">{{
-                item.title
-              }}</v-list-item-title>
-            </v-list-item-content>
           </v-list-item>
-          <v-list-group
-            color="#FFF"
-            no-action
-            :value="false"
-            prepend-icon="mdi-cog-outline"
-          >
-            <template v-slot:activator>
-              <v-list-item-title class="white--text">Master Admin</v-list-item-title>
-            </template>
-
-            <v-list-item v-for="item in itemMaster"
-            :key="item.title"
-            router
-            :to="item.route">
-              <v-list-item-title
-                class="white--text"
-              >{{item.title}}</v-list-item-title>
-
-              <v-list-item-icon>
-                <v-icon color="#FFF"> {{item.icon}} </v-icon>
-              </v-list-item-icon>
-            </v-list-item>
-          </v-list-group>
-        </v-list>
+        </v-list-group>
+      </v-list>
     </v-navigation-drawer>
-          <div class="pa-5" >
-            <router-view>
-
-          </router-view>
-          </div>
-          
+    <div class="pa-5">
+      <router-view> </router-view>
+    </div>
   </nav>
 </template>
 
@@ -155,7 +155,7 @@ export default {
           route: "/report",
         },
       ],
-      itemProfile:[
+      itemProfile: [
         {
           title: "Resource",
           icon: "mdi-account-tie-outline",
@@ -167,7 +167,7 @@ export default {
           route: "/kelompokprofile",
         },
       ],
-      itemMaster:[
+      itemMaster: [
         {
           title: "User Management",
           icon: "mdi-account-cog-outline",
@@ -185,21 +185,19 @@ export default {
         },
       ],
       right: null,
-      nama: localStorage.getItem('name,'),
+      nama: localStorage.getItem("name,"),
       // role: localStorage.getItem('role')
-      role:"Project Manager"
-    
+      role: "Project Manager",
     };
   },
   methods: {
-    logout(){
-      localStorage.removeItem('TOKEN')
-      localStorage.removeItem('name,')
-      this.$router.push('/')
-    }
-  }
+    logout() {
+      localStorage.removeItem("TOKEN");
+      localStorage.removeItem("name,");
+      this.$router.push("/");
+    },
+  },
 };
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>
