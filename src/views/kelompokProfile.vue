@@ -15,12 +15,11 @@
         <v-card class="pa-2" offset-sm="3" outlined tile>
           <h1>Profile</h1>
           <v-tabs>
-            <v-tab disabled>Resource</v-tab>
             <v-tab>Kelompok</v-tab>
           </v-tabs>
           <v-row>
             <v-col>
-              <h1>Kelompok Profile</h1>
+              <h2 >Kelompok Profile</h2>
             </v-col>
               <v-col
                   cols="12"
@@ -127,5 +126,4 @@
 </script>
 
 <style lang="scss" scoped>
-
 </style>

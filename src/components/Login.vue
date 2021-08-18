@@ -26,9 +26,7 @@
                             Login to start your session
                           </h4>
 
-                          <v-form
-                            class="text-center mt-4"
-                          >
+                          <v-form class="text-center mt-4">
                             <v-text-field
                               label="Username"
                               name="Username"
@@ -84,7 +82,9 @@
 </template>
 
 <script>
-import axios from "axios";
+// import axios from "axios";
+import { Axios } from "../views/Axios";
+const apiService = new Axios();
 export default {
   data: () => ({
     step: 1,
@@ -94,25 +94,45 @@ export default {
   }),
   methods: {
     async handleSubmit() {
-      const response = await axios.post(
-        "https://kelompok4-api-gateway.azurewebsites.net/api/auth/login",
-        {
-          "username": this.username,
-          "password": this.password,
-        })
-        .then(response => {
-          localStorage.TOKEN = response.data.token;
-          localStorage.setItem('name',this.username);
-          // localStorage.setItem('name',response.data.role);
-          this.$router.push('/dashboard')
-          // console.log(localStorage.TOKEN);
-        })
-        response
+      const data = {
+        userName: this.username,
+        password: this.password,
+      };
+      const response = await apiService
+        .login(data)
+        .then((succ) => succ)
+        .catch((err) => err);
+      if (response.status === 200) {
+        // this.$session.start();
+        // this.$session.set("loginStat", true);
+        // this.$session.set("token", response.token);
+        localStorage.TOKEN = response.data.token;
+        localStorage.setItem('name,',response.data.userName)
+        localStorage.setItem('role', response.data.role)
+        this.$router.push("/dashboard");
+         
 
+      }else{
+        alert(response)
+      }
     },
   },
   props: {
     source: String,
   },
 };
+// const response = await axios.post(
+//     "https://kelompok4-api-gateway.azurewebsites.net/api/auth/login",
+//     {
+//       "username": this.username,
+//       "password": this.password,
+//     })
+//     .then(response => {
+//       localStorage.TOKEN = response.data.token;
+//       localStorage.setItem('name',this.username);
+//       // localStorage.setItem('name',response.data.role);
+//       this.$router.push('/dashboard')
+//       // console.log(localStorage.TOKEN);
+//     })
+//     response
 </script>

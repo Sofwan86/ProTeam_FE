@@ -6,12 +6,12 @@
       <v-row no-gutters>
         <v-col cols="12" sm="13" offset-sm="0.2">
           <v-card class="pa-2" offset-sm="3" outlined tile>
-            <h1>Master Admin</h1>
+            <h1>Profile {{resources}} </h1>
             <v-row>
               <v-col>
                 <v-data-table
                   :headers="headers"
-                  :items="mandaysvendor"
+                  :items="resources"
                   :search="search"
                   class="elevation-1"
                 >
@@ -329,10 +329,10 @@
                       mdi-account-details-outline
                     </v-icon>
                   </template>
-                  <template v-slot:[`item.status`]="{ item }">
-                    <p v-if="item.status == 0" class="red--text">inactive</p>
-                    <p v-else class="green--text">active</p>
-                  </template>
+                  <!-- <template v-slot:[`item.status`]="{ item }">
+                    <p v-if="item.status == 0" class="red--text" >inactive</p>
+                    <p v-else class="green--text" >active</p>
+                  </template> -->
                   <template v-slot:no-data>
                     <v-btn color="red" @click="initialize"> No Data </v-btn>
                   </template>
@@ -375,66 +375,65 @@ export default {
     mandays: [],
     editedIndex: -1,
     editedItem: {
-      vendorName: "",
-      contractNumber: "",
-      startContract: "",
-      lastContract: "",
-      totalMandays: "",
-      usageMandays: "",
-      availableMandays: "",
+      nama: "",
+      npp: "",
+      email: "",
+      phone: "",
+      skills: [""],
+      dateActive: "",
+      dateLast: "",
+      jenjab: "",
+      kelompok: "",
+      tipe: "",
+      role: "",
       status: "",
-      notes: "",
-      createdTime: "",
-      createdBy: "",
-      updatedBy: "",
-      showStatus: "",
-      mandaysId: "",
+      price: "",
     },
     defaultItem: {
-      vendorName: "",
-      contractNumber: "",
-      totalMandays: "",
-      usageMandays: "",
-      availableMandays: "",
+      nama: "",
+      npp: "",
+      email: "",
+      phone: "",
+      skills: [""],
+      dateActive: "",
+      dateLast: "",
+      jenjab: "",
+      kelompok: "",
+      tipe: "",
+      role: "",
       status: "",
-      notes: "",
-      createdTime: "",
-      createdBy: "",
-      updatedBy: "",
-      showStatus: "",
-      mandaysId: 0,
+      price: "",
     },
 
     tab: null,
     menus: ["Resource", "Kelompok"],
     headers: [
       {
-        text: "Vendor Name",
+        text: "Nama",
         align: "start",
         sortable: true,
-        value: "vendorName",
+        value: "employeeName",
       },
-      { text: "Contact", value: "contractNumber" },
-      { text: "Total Mandays", value: "totalMandays" },
-      { text: "Usage Mandays", value: "usageMandays" },
-      { text: "Avilable Mandays", value: "availableMandays" },
+      { text: "NPP", value: "npp" },
+      { text: "Kelompok", value: "kelompok" },
+      { text: "Role", value: "nama_role" },
       { text: "Status", value: "status" },
       { text: "Action", value: "actions" },
     ],
 
     items: [
       {
-        text: "Master Admin",
-        disabled: false,
-        href: "/usermanagement",
+        text: "Profile",
+        disabled: true,
+        href: "breadcrumbs_dashboard",
       },
       {
-        text: "Data Mandays Vendor",
-        disabled: true,
-        href: "/mandaysvendor",
+        text: "Resource",
+        disabled: false,
+        href: "/resourceProfile",
       },
     ],
-    mandaysvendor: [],
+    resources: [],
   }),
   computed: {
     formTitle() {
@@ -457,25 +456,18 @@ export default {
   },
 
   methods: {
-    async getData() {
+   async getData() {
       const response = await apiService
-        .getManday()
+        .getResourceProfile()
         .then((response) => {
-          this.mandaysvendor = response.data;
+          this.resources = response.employee;
         })
         .catch((err) => err);
       response;
     },
     initialize() {
-      this.mandays = [
-        {
-          name: "Frozen Yogurt",
-          calories: 159,
-          fat: 6.0,
-          carbs: 24,
-          protein: 4.0,
-        },
-      ];
+    //   this.resources = [
+    //   ];
     },
 
     editItem(item) {
@@ -516,8 +508,9 @@ export default {
         .then((succ) => succ)
         .catch((err) => err);
       response;
-      if (response) {
-        if (response) this.getData();
+      if(response){
+        if(response)
+        this.getData()
       }
     },
     updateData(Data, id) {
@@ -526,27 +519,30 @@ export default {
         .then((succ) => succ)
         .catch((err) => err);
       response;
-      if (response) {
-        if (response) this.getData();
+      if(response){
+        if(response)
+        this.getData()
       }
     },
     save() {
       if (this.editedIndex > -1) {
         // Object.assign(this.mandays[this.editedIndex], this.editedItem);
-        if (this.editedItem.status == "active") {
-          this.editedItem.status = 1;
-        } else this.editedItem.status = 0;
-        this.updateData(this.editedItem, this.editedItem.mandaysId);
-      } else {
+     if(this.editedItem.status=="active"){
+          this.editedItem.status = 1 
+        }else this.editedItem.status = 0
+     this.updateData(this.editedItem, this.editedItem.mandaysId);
+     
+     }
+       else {
         this.editedItem.startContract = this.startdate;
         this.editedItem.lastContract = this.lastdate;
         this.editedItem.createdTime = this.nowdate;
-
-        if (this.editedItem.status == "active") {
-          this.editedItem.status = 1;
-        } else this.editedItem.status = 0;
-        // this.snackbar = true;
-        this.createData(this.editedItem);
+        
+        if(this.editedItem.status=="active"){
+          this.editedItem.status = 1 
+        }else this.editedItem.status = 0
+        this.snackbar = true;
+      this.createData(this.editedItem);
       }
       this.close();
     },

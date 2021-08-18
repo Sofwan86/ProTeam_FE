@@ -15,7 +15,7 @@
       </v-avatar>
       <v-list-item-content>
         <v-list-item-title> {{nama}} </v-list-item-title>
-        <v-list-item-subtitle> Role </v-list-item-subtitle>
+        <v-list-item-subtitle> {{role}} </v-list-item-subtitle>
       </v-list-item-content>
       <v-icon @click="logout" >mdi-logout</v-icon>
       
@@ -137,7 +137,7 @@ export default {
         ["Update", "mdi-update"],
         ["Delete", "mdi-delete"],
       ],
-      items1: [{ title: "Dashboard", icon: "mdi-buffer", route: "/" }],
+      items1: [{ title: "Dashboard", icon: "mdi-buffer", route: "/dashboard" }],
       items2: [
         {
           title: "WLA",
@@ -159,7 +159,7 @@ export default {
         {
           title: "Resource",
           icon: "mdi-account-tie-outline",
-          route: "/profile",
+          route: "/profileresource",
         },
         {
           title: "Kelompok",
@@ -185,15 +185,17 @@ export default {
         },
       ],
       right: null,
-      nama: localStorage.getItem('name'),
-
+      nama: localStorage.getItem('name,'),
+      // role: localStorage.getItem('role')
+      role:"Project Manager"
     
     };
   },
   methods: {
     logout(){
       localStorage.removeItem('TOKEN')
-      this.$router.push('/login')
+      localStorage.removeItem('name,')
+      this.$router.push('/')
     }
   }
 };
