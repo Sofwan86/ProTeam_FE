@@ -300,6 +300,10 @@
       menu2: false,
       message:''
     }),
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
     computed: {
       dateActive () {
         return this.formatDate(this.date)
@@ -308,9 +312,17 @@
         return this.formatDate(this.date2)
       },
     },
+<<<<<<< HEAD
     methods: {
       formatDate (date) {
         if (!date) return null
+=======
+
+    methods: {
+      formatDate (date) {
+        if (!date) return null
+
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
         const [year, month, day] = date.split('-')
         return `${month}/${day}/${year}`
       },
@@ -324,4 +336,9 @@
 </script>
 
 <style lang="scss" scoped>
+<<<<<<< HEAD
 </style>
+=======
+
+</style>
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060

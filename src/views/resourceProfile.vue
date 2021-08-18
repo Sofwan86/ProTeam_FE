@@ -15,8 +15,11 @@
                 <v-data-table
                   :headers="headers"
                   :items="resources"
+<<<<<<< HEAD
                   :search="search"
                   :loading="loadingPlaylist"
+=======
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
                   sort-by="nama"
                   class="elevation-1"
                 >
@@ -53,10 +56,16 @@
                               <v-row>
                                 <v-col cols="12" sm="6" md="4">
                                   <v-text-field
+<<<<<<< HEAD
                                     v-model="editedItem.employeeName"
                                     label="Nama"
                                     required
                                     outlined
+=======
+                                    v-model="editedItem.nama"
+                                    label="Nama"
+                                    required
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
                                   ></v-text-field>
                                 </v-col>
                                 <v-col cols="12" sm="6" md="4">
@@ -64,6 +73,7 @@
                                     v-model="editedItem.npp"
                                     label="NPP"
                                     required
+<<<<<<< HEAD
                                     outlined
                                   ></v-text-field>
                                 </v-col>
@@ -75,13 +85,26 @@
                                     outlined
                                     :items="jenjab"
                                   ></v-select>
+=======
+                                  ></v-text-field>
+                                </v-col>
+                                <v-col cols="12" sm="6" md="4">
+                                  <v-text-field
+                                    v-model="editedItem.jenjab"
+                                    label="Jenjang Jabatan"
+                                    required
+                                  ></v-text-field>
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
                                 </v-col>
                                 <v-col cols="12" sm="6" md="4">
                                   <v-text-field
                                     v-model="editedItem.phone"
                                     label="Phone Number"
                                     required
+<<<<<<< HEAD
                                     outlined
+=======
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
                                   ></v-text-field>
                                 </v-col>
                                 <v-col cols="12" sm="6" md="4">
@@ -89,6 +112,7 @@
                                     v-model="editedItem.email"
                                     label="Email"
                                     required
+<<<<<<< HEAD
                                     outlined
                                   ></v-text-field>
                                 </v-col>
@@ -108,6 +132,22 @@
                                     value="7"
                                     required
                                     outlined
+=======
+                                  ></v-text-field>
+                                </v-col>
+                                <v-col cols="12" sm="6" md="4">
+                                  <v-text-field
+                                    v-model="editedItem.tipe"
+                                    label="Resource Type"
+                                    required
+                                  ></v-text-field>
+                                </v-col>
+                                <v-col cols="12" sm="6" md="4">
+                                  <v-text-field
+                                    v-model="editedItem.manhour"
+                                    label="ManHour/Day"
+                                    required
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
                                   ></v-text-field>
                                 </v-col>
                                 <v-col cols="12" sm="6" md="4">
@@ -116,11 +156,15 @@
                                     label="Skills"
                                     :items="skills"
                                     multiple
+<<<<<<< HEAD
                                     outlined
+=======
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
                                     small-chips
                                   ></v-combobox>
                                 </v-col>
                                 <v-col cols="12" sm="6" md="4">
+<<<<<<< HEAD
                                   <v-select
                                     v-model="editedItem.kelompok"
                                     label="Kelompok"
@@ -135,6 +179,18 @@
                                     outlined
                                     :items="role"
                                   ></v-select>
+=======
+                                  <v-text-field
+                                    v-model="editedItem.kelompok"
+                                    label="Kelompok"
+                                  ></v-text-field>
+                                </v-col>
+                                <v-col cols="12" sm="6" md="4">
+                                  <v-text-field
+                                    v-model="editedItem.role"
+                                    label="Role"
+                                  ></v-text-field>
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
                                 </v-col>
                                 <v-col cols="12" sm="6" md="4">
                                   <v-menu
@@ -193,12 +249,20 @@
                                   </v-menu>
                                 </v-col>
                                 <v-col cols="12" sm="6" md="4">
+<<<<<<< HEAD
                                   <v-select
                                     v-model="editedItem.status"
                                     label="Status"
                                     :items="status"
                                     outlined
                                   ></v-select>
+=======
+                                  <v-combobox
+                                    v-model="editedItem.status"
+                                    label="Status"
+                                    :items="status"
+                                  ></v-combobox>
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
                                 </v-col>
                               </v-row>
                             </v-container>
@@ -225,7 +289,11 @@
                                       <v-list-item-content>
                                         <v-list-item-title
                                           ><h2>
+<<<<<<< HEAD
                                             {{ editedItem.employeeName }}
+=======
+                                            {{ editedItem.nama }}
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
                                           </h2></v-list-item-title
                                         >
                                         <v-list-item-subtitle
@@ -234,12 +302,18 @@
                                           </h4></v-list-item-subtitle
                                         >
                                         <v-list-item-subtitle
+<<<<<<< HEAD
                                           >Added
                                           {{
                                             editedItem.createdTime
                                               | str_limit(10)
                                           }}
                                         </v-list-item-subtitle>
+=======
+                                          >Added 24 Januari
+                                          2021</v-list-item-subtitle
+                                        >
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
                                       </v-list-item-content>
                                     </v-list-item>
                                   </v-col>
@@ -252,7 +326,11 @@
                                           >Name</v-list-item-subtitle
                                         >
                                         <v-list-item-title>{{
+<<<<<<< HEAD
                                           editedItem.employeeName
+=======
+                                          editedItem.nama
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
                                         }}</v-list-item-title>
                                       </v-list-item-content>
                                     </v-list-item>
@@ -295,10 +373,14 @@
                                           >Active Date</v-list-item-subtitle
                                         >
                                         <v-list-item-title
+<<<<<<< HEAD
                                           >{{
                                             editedItem.activeDate
                                               | str_limit(10)
                                           }}
+=======
+                                          >{{ editedItem.dateActive }}
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
                                         </v-list-item-title>
                                       </v-list-item-content>
                                     </v-list-item>
@@ -318,8 +400,15 @@
                                           >Skillset</v-list-item-subtitle
                                         >
                                         <v-list-item-title
+<<<<<<< HEAD
                                           v-html="editedItem.skill"
                                         ></v-list-item-title>
+=======
+                                          v-for="skill in editedItem.skills"
+                                          :key="skill"
+                                          >{{ skill }}</v-list-item-title
+                                        >
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
                                       </v-list-item-content>
                                     </v-list-item>
                                     <v-list-item two-line>
@@ -328,7 +417,11 @@
                                           >Manhour/Day</v-list-item-subtitle
                                         >
                                         <v-list-item-title>{{
+<<<<<<< HEAD
                                           editedItem.totalManhour
+=======
+                                          editedItem.manhour
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
                                         }}</v-list-item-title>
                                       </v-list-item-content>
                                     </v-list-item>
@@ -341,8 +434,12 @@
                                           Date</v-list-item-subtitle
                                         >
                                         <v-list-item-title>{{
+<<<<<<< HEAD
                                           editedItem.lastWorkDate
                                             | str_limit(10)
+=======
+                                          editedItem.dateLast
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
                                         }}</v-list-item-title>
                                       </v-list-item-content>
                                     </v-list-item>
@@ -352,7 +449,11 @@
                                           >Resource Type</v-list-item-subtitle
                                         >
                                         <v-list-item-title>{{
+<<<<<<< HEAD
                                           editedItem.tipe_resource
+=======
+                                          editedItem.tipe
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
                                         }}</v-list-item-title>
                                       </v-list-item-content>
                                     </v-list-item>
@@ -362,7 +463,11 @@
                                           Jenjang Jabatan</v-list-item-subtitle
                                         >
                                         <v-list-item-title>{{
+<<<<<<< HEAD
                                           editedItem.jenjangJabatan
+=======
+                                          editedItem.jenjab
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
                                         }}</v-list-item-title>
                                       </v-list-item-content>
                                     </v-list-item>
@@ -372,7 +477,11 @@
                                           >Total Manhour</v-list-item-subtitle
                                         >
                                         <v-list-item-title>{{
+<<<<<<< HEAD
                                           editedItem.totalManhour
+=======
+                                          editedItem.totalMH
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
                                         }}</v-list-item-title>
                                       </v-list-item-content>
                                     </v-list-item>
@@ -394,7 +503,11 @@
                                           >Role</v-list-item-subtitle
                                         >
                                         <v-list-item-title>{{
+<<<<<<< HEAD
                                           editedItem.nama_role
+=======
+                                          editedItem.role
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
                                         }}</v-list-item-title>
                                       </v-list-item-content>
                                     </v-list-item>
@@ -405,7 +518,11 @@
                                           Experience</v-list-item-subtitle
                                         >
                                         <v-list-item-title>
+<<<<<<< HEAD
                                           {{ editedItem.projectExp }}
+=======
+                                          Progo
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
                                         </v-list-item-title>
                                       </v-list-item-content>
                                     </v-list-item>
@@ -446,10 +563,13 @@
                       >Edit</v-btn
                     >
                   </template>
+<<<<<<< HEAD
                   <template v-slot:[`item.status`]="{ item }">
                     <p v-if="item.status == 0" class="red--text">inactive</p>
                     <p v-else class="green--text">active</p>
                   </template>
+=======
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
                 </v-data-table>
               </v-col>
             </v-row>
@@ -461,6 +581,7 @@
 </template>
 
 <script>
+<<<<<<< HEAD
 import { Axios } from "./Axios";
 const apiService = new Axios();
 export default {
@@ -468,6 +589,11 @@ export default {
   data: (vm) => ({
     resourceType: [],
     search: "",
+=======
+export default {
+  name: "resourceProfile",
+  data: (vm) => ({
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
     tab: null,
     menus: ["Resource", "Kelompok"],
     items: [
@@ -490,6 +616,7 @@ export default {
         text: "Nama",
         align: "start",
         sortable: true,
+<<<<<<< HEAD
         value: "employeeName",
       },
       { text: "NPP", value: "npp" },
@@ -507,10 +634,30 @@ export default {
     resources: [],
     editedItem: {
       employeeName: "",
+=======
+        value: "nama",
+      },
+      { text: "NPP", value: "npp" },
+      { text: "Kelompok", value: "kelompok" },
+      { text: "Role", value: "role" },
+      { text: "Status", value: "status" },
+      { text: "Action", value: "action" },
+    ],
+    status: ["Active", "Inactive"],
+    skills: ["React", "Vue", "Java", "Phyton"],
+    kelompok: [""],
+    tipe: [""],
+    role: [""],
+    jenjab: [""],
+    resources: [],
+    editedItem: {
+      nama: "",
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
       npp: "",
       email: "",
       phone: "",
       skills: [""],
+<<<<<<< HEAD
       activeDate: "",
       lastWorkDate: "",
       totalManhour: 7,
@@ -546,6 +693,16 @@ export default {
           },
         },
       ],
+=======
+      dateActive: "",
+      dateLast: "",
+      jenjab: "",
+      kelompok: "",
+      tipe: "",
+      role: "",
+      status: "",
+      price: "",
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
     },
     defaultItem: {
       nama: "",
@@ -576,6 +733,7 @@ export default {
       role: "",
       status: "",
     },
+<<<<<<< HEAD
     newEditedItem: {
       employeeName: "string",
       npp: "string",
@@ -658,6 +816,10 @@ export default {
     nowdate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
       .toISOString()
       .substr(0, 10),
+=======
+    detailID: {},
+    editID: "",
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
     date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
       .toISOString()
       .substr(0, 10),
@@ -669,12 +831,19 @@ export default {
         .toISOString()
         .substr(0, 10)
     ),
+<<<<<<< HEAD
     activeSend: "",
     lastSend: "",
     menu3: false,
     menu2: false,
     rt: {},
   }),
+=======
+    menu3: false,
+    menu2: false,
+  }),
+
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "Create New Resource" : "Edit Resource";
@@ -686,6 +855,10 @@ export default {
       return this.formatDate(this.date2);
     },
   },
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
   watch: {
     dialog(val) {
       val || this.close();
@@ -697,6 +870,7 @@ export default {
       val || this.closeDelete();
     },
   },
+<<<<<<< HEAD
   created() {
     this.initialize();
     this.getData();
@@ -734,6 +908,14 @@ export default {
       response;
       console.log(rt);
     },
+=======
+
+  created() {
+    this.initialize();
+  },
+
+  methods: {
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
     initialize() {
       this.resources = [
         {
@@ -804,15 +986,27 @@ export default {
       this.detailItem = Object.assign({}, item);
       this.dialogDetail = true;
     },
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
     deleteItem(item) {
       this.editedIndex = this.resources.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialogDelete = true;
     },
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
     deleteItemConfirm() {
       this.resources.splice(this.editedIndex, 1);
       this.closeDelete();
     },
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
     close() {
       this.dialog = false;
       this.$nextTick(() => {
@@ -827,6 +1021,10 @@ export default {
         this.editedIndex = -1;
       });
     },
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
     closeDelete() {
       this.dialogDelete = false;
       this.$nextTick(() => {
@@ -834,6 +1032,7 @@ export default {
         this.editedIndex = -1;
       });
     },
+<<<<<<< HEAD
     createData(Data) {
       const response = apiService
         .createResourceProfile(Data)
@@ -935,11 +1134,23 @@ export default {
         } else this.newEditedItem.status = 0;
         this.resources.push(this.editedItem);
         this.createData(this.newEditedItem)
+=======
+
+    save() {
+      if (this.editedIndex > -1) {
+        Object.assign(this.resources[this.editedIndex], this.editedItem);
+      } else {
+        this.resources.push(this.editedItem);
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
       }
       this.close();
     },
     formatDate(date) {
       if (!date) return null;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
       const [year, month, day] = date.split("-");
       return `${month}/${day}/${year}`;
     },
@@ -947,4 +1158,8 @@ export default {
 };
 </script>
 
+<<<<<<< HEAD
 <style lang="scss" scoped></style>
+=======
+<style lang="scss" scoped></style>
+>>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
