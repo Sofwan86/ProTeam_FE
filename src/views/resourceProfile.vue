@@ -929,8 +929,8 @@ export default {
         timer: 2000,
         timerProgressBar: true,
         didOpen: (toast) => {
-          toast.addEventListener("mouseenter", Swal.stopTimer);
-          toast.addEventListener("mouseleave", Swal.resumeTimer);
+          toast.addEventListener("mouseenter", this.$swal.stopTimer);
+          toast.addEventListener("mouseleave", this.$swal.resumeTimer);
         },
         willClose: () => {
     this.$router.go()
@@ -946,10 +946,7 @@ export default {
         if (result.isConfirmed) {
           this.$router.go();
         }
-        let cek = Swal.isTimerRunning()
-          if(!cek){
-            this.$router.go()
-          }
+        
       });
       //this.$router.go()
     },
@@ -962,8 +959,8 @@ export default {
         timer: 3000,
         timerProgressBar: true,
         didOpen: (toast) => {
-          toast.addEventListener("mouseenter", Swal.stopTimer);
-          toast.addEventListener("mouseleave", Swal.resumeTimer);
+          toast.addEventListener("mouseenter", this.$swal.stopTimer);
+          toast.addEventListener("mouseleave", this.$swal.resumeTimer);
         },
         willClose: () => {
      this.$router.go()
