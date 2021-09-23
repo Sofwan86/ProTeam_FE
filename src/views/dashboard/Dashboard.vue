@@ -42,27 +42,31 @@
     </v-row>
     <v-row>
       <v-col>
-        <v-card max-width="500" class="mx-auto" dark>
+        <v-card max-width="500" class="mx-auto" >
+        <v-card  class="mx-auto" dark>
           <h3 class="text-center">Resource by Role</h3>
         </v-card>
-        <v-card max-width="500" class="mx-auto">
+        <v-card class="mx-auto">
           <GChart
             type="ColumnChart"
             :data="chartDataRbR"
             :options="chartOptions"
           />
         </v-card>
+        </v-card>
       </v-col>
       <v-col>
-        <v-card max-width="500" class="mx-auto" dark>
+        <v-card max-width="500" class="mx-auto">
+        <v-card class="mx-auto" dark>
           <h3 class="text-center">Resource by Group</h3>
         </v-card>
-        <v-card max-width="500" class="mx-auto">
+        <v-card class="mx-auto">
           <GChart
             type="ColumnChart"
             :data="chartDataRbG"
             :options="chartOptions"
           />
+        </v-card>
         </v-card>
       </v-col>
     </v-row>

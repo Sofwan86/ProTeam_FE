@@ -26,41 +26,59 @@
                             Login to start your session
                           </h4>
 
-                          <v-form class="text-center mt-4">
+                          <v-form v-model="valid" class="text-center mt-4">
                             <v-text-field
-                              label="Username"
-                              name="Username"
+                              label="NPP"
+                              name="NPP"
+                              outlined
                               prepend-icon="people"
                               type="text"
                               color="indigo darken-4"
-                              v-model="username"
+                              v-model="npp"
                             />
 
                             <v-text-field
-                              id="password"
                               label="Password"
                               name="password"
+                              :rules="passwordRules"
                               prepend-icon="lock"
-                              type="password"
+                              outlined
+                              :type="show1 ? 'text' : 'password'"
                               color="indigo darken-4"
                               v-model="password"
+                              :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                              @click:append="show1 = !show1"
                             />
-                            <p>
-                              Forgot your password ?<a href="/forgotpassword"
+                            <!-- <p>
+                              Update your password ?<a href="/updatepassword"
                                 >klik here</a
                               >
-                            </p>
+                            </p> -->
                             <!-- <v-checkbox
                               v-model="checkbox"
                               :label="`Remember Me`"
                             ></v-checkbox> -->
 
                             <v-btn
+                              v-if="valid"
                               v-on:click="handleSubmit()"
                               class="submit"
                               rounded
+                              :loading="loading"
+                              @click="loader = 'loading'"
                               color="indigo darken-4"
                               dark
+                              >Login</v-btn
+                            >
+                            <v-btn
+                              v-else
+                              v-on:click="handleSubmit()"
+                              class="submit"
+                              rounded
+                              :loading="loading"
+                              @click="loader = 'loading'"
+                              color="indigo darken-4"
+                              disabled
                               >Login</v-btn
                             >
                           </v-form>
@@ -87,15 +105,24 @@ import { Axios } from "../views/Axios";
 const apiService = new Axios();
 export default {
   data: () => ({
+    valid: false,
+    show1: false,
     step: 1,
-    username: "",
+    npp: "",
     password: "",
+    passwordRules: [
+      (v) => !!v || "Password is required",
+      (v) => (v && v.length >= 8) || "Password must have 8+ characters",
+      (v) => /(?=.*[A-Z])/.test(v) || "Must have one uppercase character",
+      (v) => /(?=.*\d)/.test(v) || "Must have one number",
+      (v) => /([!@$%])/.test(v) || "Must have one special character [!@#$%]",
+    ],
     // checkbox: nul,
   }),
   methods: {
     async handleSubmit() {
       const data = {
-        userName: this.username,
+        npp: this.npp,
         password: this.password,
       };
       const response = await apiService
@@ -107,13 +134,14 @@ export default {
         // this.$session.set("loginStat", true);
         // this.$session.set("token", response.token);
         localStorage.TOKEN = response.data.token;
-        localStorage.setItem('name,',response.data.userName)
-        localStorage.setItem('role', response.data.role)
-        this.$router.push("/dashboard");
-         
-
-      }else{
-        alert(response)
+        localStorage.setItem("name,", response.data.fullName);
+        localStorage.setItem("role", response.data.roleName);
+        localStorage.setItem("npp", response.data.npp);
+        response.data.status === 1
+          ? this.$router.push("/dashboard")
+          : alert("akun tidak active");
+      } else {
+        alert("Gagal masuk, akun tidak cocok / tidak aktif");
       }
     },
   },

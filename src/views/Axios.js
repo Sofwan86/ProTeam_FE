@@ -39,6 +39,11 @@ export class Axios{
         const data = axios.put(url,datas).then(response => response.data).bind(this)
         return data
      }
+     async updateManmonth(datas,id){
+      const url = `${BASE_URL}/Manmonth/`+id
+      const data = axios.put(url,datas).then(response => response.data).bind(this)
+      return data
+   }
      async getDashboardVendor(){
         options.headers.Authorization = 'Bearer ' + token
         const url = `${BASE_URL}/Dashboard/GetVendor`
@@ -68,6 +73,61 @@ export class Axios{
      async createResourceProfile(param){
       const url = `${BASE_URL}/ResourceEmployees`
       const data = axios.post(url,param).then(response => response.data)
+      return data
+   }
+   async getKelompokProfile(){
+      const url = `${BASE_URL}/UnitProfile`
+      const data = axios.get(url).then(response => response.data)
+      return data
+   }
+   async getResourceProfileId(id){
+      const url = `${BASE_URL}/ResourceEmployees/GetByKelompokId/`+id
+      const data = axios.get(url).then(response => response.data)
+      return data
+   }
+   async getResourceProfileSkill(id){
+      const url = `${BASE_URL}/ResourceEmployees/GetByEmployeeId/`+id
+      const data = axios.get(url).then(response => response.data)
+      return data
+   }
+   async getUsers(){
+      const url = `${BASE_URL}/Users/GetAllUser`
+      const data = axios.get(url).then(response => response.data)
+      return data
+   }
+   async updateUsers(datas,id){
+      const url = `${BASE_URL}/Users/updatebyid/`+id
+      const data = axios.put(url,datas).then(response => response.data)
+      return data
+   }
+   async createUsers(param){
+      const url = `${BASE_URL}/Users/Registration`
+      const data = axios.post(url,param).then(response => response.data)
+      return data
+   }
+   async updatePass(datas,id){
+      const url = `${BASE_URL}/Users/updatepassword/`+id
+      const data = axios.put(url,datas).then(response => response.data)
+      return data
+   }
+   async getStatusUser(npp){
+      const url = `${BASE_URL}/Users/GetByNpp/`+npp
+      const data = axios.get(url).then(response => response)
+      return data
+   }
+   async getVendor(){
+      const url = `${BASE_URL}/Manmonth/GetAll`
+      const data = axios.get(url).then(response => response.data)
+      return data
+   }
+   async createManmonth(param){
+      const url = `${BASE_URL}/Manmonth`
+      const data = axios.post(url,param).then(response => response.data)
+      return data
+   }
+   async getKelompokByDivisi(idD,idS){
+      const url = `${BASE_URL}/Kelompoks/GetByDivisiStatus/`+idD+'/'+idS
+      const data = axios.get(url).then(response => response.data)
       return data
    }
  }

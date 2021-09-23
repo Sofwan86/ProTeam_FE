@@ -1,155 +1,671 @@
 <template>
-    <div>
-    <v-breadcrumbs
-      :items="items"
-      divider="/"
-    ></v-breadcrumbs>
-  
-  <v-container>
-    <v-row no-gutters>
-      <v-col
-        cols="12"
-        sm="13"
-        offset-sm="0.2">
-    
-        <v-card class="pa-2" offset-sm="3" outlined tile>
-          <h1>Master Admin</h1>
-          <v-tabs>
-            <v-tab>User Management</v-tab>
-            <v-tab href="/mandaysvendor">Mandays Vendor</v-tab>
-            <v-tab href="/lookup">Lookup</v-tab>
-          </v-tabs>
-          <v-row>
-            <v-col>
-              <h2>User Management</h2>
-            </v-col>
-              <v-col
-                  cols="12"
-                  sm="4"
-                  md="2"
-                >
-                  <v-text-field
-                    label="Search"
-                    outlined
-                    dense
-                    append-icon="mdi-file-find"
-                  ></v-text-field>
-                </v-col>
-                <v-col
-                  cols="3"
-                  sm="2"
-                  md="3">
-                  <v-btn
-                    color="primary"
-                    dark
-                    href='/createresource'
+  <v-row>
+    <v-col>
+      <v-data-table
+        :headers="headers"
+        :items="users"
+        :search="search"
+        :loading="loadingPlaylist"
+        sort-by="nama"
+        class="elevation-1"
+        v-bind="size"
+      >
+        <template v-slot:top>
+          <v-toolbar flat>
+            <v-toolbar-title>User Management</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <div class="pa-5" max-width:100>
+              <v-text-field
+                class="shrink"
+                outlined
+                v-bind="size"
+                v-model="search"
+                append-icon="mdi-magnify"
+                label="Search"
+                single-line
+                hide-details
+                dense
+              ></v-text-field>
+            </div>
+            <v-dialog v-model="dialog" max-width="800px">
+              <template v-slot:activator="{ on }">
+                <v-btn color="#004483" dark v-bind="size" v-on="on">
+                  + Create New User
+                </v-btn>
+              </template>
+              <v-card>
+                <v-alert dense text type="success" v-model="snackbar">
+                  <strong>Data sukses diupdate</strong>
+                </v-alert>
+                <v-alert dense text type="success" v-model="snackbar1">
+                  <strong>Data sukses ditambah</strong>
+                </v-alert>
+                 <v-card color="#004483" >
+                <v-card-title class="white--text" >
+                  <span class="text-h5"
+                    ><h3>{{ formTitle }}</h3></span
                   >
-                    + Create New User
+                  <v-spacer></v-spacer>
+                <v-icon @click="close" color="white">mdi-close</v-icon>
+                </v-card-title>
+                 </v-card>
+                <v-card-text>
+                  <v-form v-model="valid">
+                    <v-container>
+                      <v-row>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-text-field
+                            v-model="editedItem.fullName"
+                            label="Full Name*"
+                            :rules="nameRules"
+                            required
+                            outlined
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-text-field
+                            v-if="editedIndex > -1"
+                            v-model="editedItem.npp"
+                            :rules="nameRules"
+                            label="NPP*"
+                            required
+                            disabled
+                            filled
+                            outlined
+                          ></v-text-field>
+                          <v-text-field
+                            v-else
+                            v-model="editedItem.npp"
+                            :rules="nameRules"
+                            label="NPP*"
+                            required
+                            outlined
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-autocomplete
+                            v-model="editedItem.kelompokId"
+                            label="Kelompok*"
+                            :rules="nameRules"
+                            required
+                            outlined
+                            :items="kelompok"
+                          ></v-autocomplete>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-text-field
+                            v-model="editedItem.email"
+                            label="Email"
+                            required
+                            outlined
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-text-field
+                            v-if="editedIndex > -1"
+                            v-model="editedItem.password"
+                            label="Password"
+                            filled
+                            disabled
+                            value="Proteam@12345"
+                            required
+                            outlined
+                          ></v-text-field>
+                          <v-text-field
+                            v-else
+                            v-model="editedItem.password"
+                            label="Password"
+                            filled
+                            value="Proteam@12345"
+                            required
+                            outlined
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-autocomplete
+                            v-model="editedItem.role"
+                            label="Role*"
+                            :rules="nameRules"
+                            outlined
+                            :items="role"
+                          ></v-autocomplete>
+                        </v-col>
+
+                        <v-col cols="12" sm="6" md="4">
+                          <v-select
+                            v-model="editedItem.statusName"
+                            :rules="nameRules"
+                            label="Status*"
+                            :items="status"
+                            outlined
+                          ></v-select>
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                  </v-form>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn outlined color="blue darken-1" text @click="close">
+                    Cancel
                   </v-btn>
-                </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col>
-                    <v-data-table
-                      :headers="headers"
-                      :items="users"
-                      :items-per-page="10"
-                      class="elevation-1"
-                      :footer-props="{
-                      showFirstLastPage: true,
-                      firstIcon: 'mdi-arrow-collapse-left',
-                      lastIcon: 'mdi-arrow-collapse-right',
-                      prevIcon: 'mdi-minus',
-                      nextIcon: 'mdi-plus'
-                    }"
-                    ></v-data-table>
-                    </v-col>
-                  </v-row>
-                </v-card>
-              </v-col>
-    </v-row>
-  </v-container>
-  </div>
+                  <v-btn color="#004483" dark v-if="valid" @click="save">
+                    Save
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+            <v-dialog v-model="dialogDelete" max-width="700">
+              <v-card>
+                <v-row no-gutters>
+                  <v-col cols="12" sm="13" offset-sm="0.2">
+                    <v-card class="pa-2" offset-sm="3" outlined tile>
+                      <v-row>
+                        <v-col cols="12" md="6">
+                          <v-list-item two-line>
+                            <v-list-item-content>
+                              <v-list-item-title
+                                ><h2>
+                                  {{ editedItem.fullName }}
+                                </h2></v-list-item-title
+                              >
+                              <h3>
+                                {{ editedItem.npp }}
+                              </h3>
+                              <v-list-item-subtitle
+                                >Added
+                                {{ editedItem.createdTime | str_limit(10) }}
+                              </v-list-item-subtitle>
+                            </v-list-item-content>
+                          </v-list-item>
+                        </v-col>
+                      </v-row>
+                      <h2 class="mx-4">Information</h2>
+                      <v-row>
+                        <v-col cols="7" md="6">
+                          <v-list-item two-line>
+                            <v-list-item-content>
+                              <v-list-item-subtitle>Name</v-list-item-subtitle>
+                              <v-list-item-title>
+                                {{ editedItem.fullName }}
+                              </v-list-item-title>
+                            </v-list-item-content>
+                          </v-list-item>
+                          <v-list-item two-line>
+                            <v-list-item-content>
+                              <v-list-item-subtitle>NPP</v-list-item-subtitle>
+                              <v-list-item-title>{{
+                                editedItem.npp
+                              }}</v-list-item-title>
+                            </v-list-item-content>
+                          </v-list-item>
+                          <v-list-item two-line>
+                            <v-list-item-content>
+                              <v-list-item-subtitle>Unit</v-list-item-subtitle>
+                              <v-list-item-title>
+                                {{ editedItem.kelompok }}
+                              </v-list-item-title>
+                            </v-list-item-content>
+                          </v-list-item>
+                        </v-col>
+                        <v-divider vertical></v-divider>
+                        <v-col cols="5" md="4">
+                          <v-list-item two-line>
+                            <v-list-item-content>
+                              <v-list-item-subtitle>Role</v-list-item-subtitle>
+                              <v-list-item-title>
+                                {{ editedItem.roleName }}
+                              </v-list-item-title>
+                            </v-list-item-content>
+                          </v-list-item>
+                          <v-list-item two-line>
+                            <v-list-item-content>
+                              <v-list-item-subtitle>Email</v-list-item-subtitle>
+                              <v-list-item-title>
+                                {{ editedItem.email }}
+                              </v-list-item-title>
+                            </v-list-item-content>
+                          </v-list-item>
+                          <v-list-item two-line>
+                            <v-list-item-content>
+                              <v-list-item-subtitle
+                                >Status</v-list-item-subtitle
+                              >
+                              <v-list-item-title>
+                                <p
+                                  v-if="editedItem.statusName == 'Active'"
+                                  class="green--text"
+                                >
+                                  Active
+                                </p>
+                                <p v-else class="red--text">Inactive</p>
+                              </v-list-item-title>
+                            </v-list-item-content>
+                          </v-list-item>
+                        </v-col>
+                      </v-row>
+                    </v-card>
+                  </v-col>
+                </v-row>
+              </v-card>
+            </v-dialog>
+          </v-toolbar>
+        </template>
+        <template v-slot:[`item.action`]="{ item }">
+          <v-btn v-bind="size" @click="deleteItem(item)">Detail</v-btn>
+          <v-btn v-bind="size" class="mx-3" @click="editItem(item)">Edit</v-btn>
+        </template>
+        <template v-slot:[`item.statusName`]="{ item }">
+          <p v-if="item.status == 0" class="red--text">Inactive</p>
+          <p v-else class="green--text">Active</p>
+        </template>
+        <template v-slot:[`item.no`]="{ item }">
+          <td>
+            {{ resources.indexOf(item) + 1 }}
+          </td>
+        </template>
+        <template v-slot:no-data>
+          <v-progress-circular
+            :size="70"
+            :width="7"
+            color="#004483"
+            indeterminate
+          ></v-progress-circular>
+        </template>
+      </v-data-table>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
-    export default {
-        name: 'UserManagement',
-    data: () => ({
-      tab: null,
-      menus: [
-          'Resource', 'Kelompok',
-        ],
-      headers: [
-          {
-            text: 'Name',
-            align: 'start',
-            sortable: true,
-            value: 'nama',
-          },
-          { text: 'NPP', value: 'npp' },
-          { text: 'Username', value: 'username' },
-          { text: 'Email', value: 'email' },
-          { text: 'Status', value: 'status' },
-          { text: 'Action', value: '' },
-        ],
-      users: [
-        {
-          nama: 'Marvin Janitra Akmal',
-          npp: '12345678',
-          email: 'marvinjanitra@gmail.com',
-          username: 'marfin',
-          phone: '081212786101',
-          kelompok: 'OFA',
-          role: 'Front End Dev',
-          skills: [
-              'React', 'Vue', 'Java', 'Phyton'
-          ],
-          tipe: 'FTE',
-        },
-        {
-          nama: 'Marvin Janitra Akmal',
-          npp: '12345678',
-          email: 'marvinjanitra@gmail.com',
-          username: 'marfin',
-          phone: '081212786101',
-          kelompok: 'OFA',
-          role: 'Front End Dev',
-          skills: [
-              'React', 'Vue', 'Java', 'Phyton'
-          ],
-          tipe: 'FTE',
-        },  
-        {
-          nama: 'Marvin Janitra Akmal',
-          npp: '12345678',
-          email: 'marvinjanitra@gmail.com',
-          username: 'marfin',
-          phone: '081212786101',
-          kelompok: 'OFA',
-          role: 'Front End Dev',
-          skills: [
-              'React', 'Vue', 'Java', 'Phyton'
-          ],
-          tipe: 'FTE',
+import { Axios } from "./Axios";
+const apiService = new Axios();
+export default {
+  name: "userManagement",
+  data: (vm) => ({
+    snackbar1: false,
+    snackbar: false,
+    text: `Hello, I'm a snackbar`,
+    valid: false,
+    nameRules: [(v) => !!v || "Required"],
+    resourceType: [],
+    search: "",
+    tab: null,
+    menus: ["Resource", "Kelompok"],
+    items: [
+      {
+        text: "Master Admin",
+        disabled: false,
+        href: "/usermanagement",
+      },
+      {
+        text: "User Management",
+        disabled: true,
+        href: "/usermanagement",
+      },
+    ],
+    dialog: false,
+    editedIndex: -1,
+    dialogDetail: false,
+    dialogDelete: false,
+    headers: [
+      {
+        text: "Name",
+        align: "start",
+        sortable: true,
+        value: "fullName",
+      },
+      { text: "NPP", value: "npp" },
+      { text: "Email", value: "email" },
+      { text: "Status", value: "statusName" },
+      { text: "Action", value: "action" },
+    ],
+    users: [],
+    skills: [],
+    skillid: [],
+    obj: {},
+    tempk: [],
+    tempr: [],
+    temptipe: [],
+    tempj: [],
+    tempskill: [],
+    kelompok: [],
+    kelompokid: [],
+    tipeid: [],
+    roleid: [],
+    tipe: [],
+    role: [],
+    status: ["Active", "Inactive"],
+    statusId: [],
+    tstatus: [],
+    jenjab: [],
+    jenjabid: [],
+    resources: [],
+    temp: {},
+    s: [],
+    editedItem: {
+      password: "Proteam@12345",
+    },
+    defaultItem: {
+      nama: "",
+      npp: "",
+      email: "",
+      phone: "",
+      skills: [],
+      dateActive: "",
+      dateLast: "",
+      jenjab: "",
+      kelompok: "",
+      tipe: "",
+      role: "",
+      status: "",
+      price: "",
+    },
+    detailItem: {
+      nama: "",
+      npp: "",
+      email: "",
+      phone: "",
+      skills: [],
+      dateActive: "",
+      dateLast: "",
+      jenjab: "",
+      kelompok: "",
+      tipe: "",
+      role: "",
+      status: "",
+    },
+    newEditedItem: {},
+    detailID: {},
+    editID: "",
+    nowdate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+      .toISOString()
+      .substr(0, 10),
+    date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+      .toISOString()
+      .substr(0, 10),
+    date2: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+      .toISOString()
+      .substr(0, 10),
+    dateFormatted: vm.formatDate(
+      new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10)
+    ),
+    activeSend: "",
+    lastSend: "",
+    menu3: false,
+    menu2: false,
+    rt: {},
+    no: [],
+  }),
+  computed: {
+    size () {
+      const size = {xs:'x-small'}[this.$vuetify.breakpoint.name];
+      return size ? { [size]: true } : {}
+    },
+    formTitle() {
+      return this.editedIndex === -1 ? "Create New User" : "Edit User";
+    },
+    dateActive() {
+      return this.formatDate(this.date);
+    },
+    dateLast() {
+      return this.formatDate(this.date2);
+    },
+  },
+  watch: {
+    dialog(val) {
+      val || this.close();
+    },
+    dialogDetail(val) {
+      val || this.closeDetail();
+    },
+    dialogDelete(val) {
+      val || this.closeDelete();
+    },
+  },
+  created() {
+    this.initialize();
+    this.getData();
+    this.getData2();
+  },
+  methods: {
+    async getData() {
+      const response = await apiService
+        .getUsers()
+        .then((response) => {
+          this.users = response.newuserdata;
+        })
+        .catch((err) => err);
+      response;
+      for (var i = 1; i <= this.resources.length; i++) {
+        this.resources.no.push(i);
+      }
+      this.resources.no = this.no;
+      console.log(this.resources);
+      this.editedItem.tempAD = response.employee.activeDate;
+      this.editedItem.tempLD = response.employee.lastWorkDate;
+    },
+    async getData2() {
+      //let rt = { text: "", value: 0 };
+      //const obj = {}
+      const response = await apiService
+        .getLookup()
+        .then((response) => {
+          response.map((item) => {
+            if (item.type == "RoleApp") {
+              this.tempr.push(item.name);
+              this.roleid.push(item.value);
+            }
+            if (item.type == "Kelompok") {
+              this.tempk.push(item.name);
+              this.kelompokid.push(item.value);
+            }
+          });
+        })
+        .catch((err) => err);
+      response;
+      console.log("aa", this.tstatus);
+      console.log("aa", this.statusId);
+      for (var m = 0; m < this.tempk.length; m++) {
+        //this.tempskill.push(obj2)
+        let oo = {};
+        oo.text = this.tempk[m];
+        oo.value = this.kelompokid[m];
+        this.kelompok.push(oo);
+      }
+      console.log("kel", this.status);
+      for (var n = 0; n < this.tempr.length; n++) {
+        //this.tempskill.push(obj2)
+        let oo = {};
+        oo.text = this.tempr[n];
+        oo.value = this.roleid[n];
+        this.role.push(oo);
+      }
+    },
+    initialize() {
+      this.users = [];
+    },
+    createItem(item) {
+      this.createItem = item;
+      this.$router.push("/createNewResource");
+    },
+    editItem(item) {
+      this.editedIndex = this.users.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialog = true;
+      this.getData();
+      const a = [];
+      item.listSkill.map((item) => {
+        a.push(item.skillset);
+        let oo = {};
+        oo.text = item.skillset;
+        oo.value = item.skillset_id;
+        // this.s.push(item.skillset)
+        if (item.skillset) {
+          this.s.push(oo);
         }
-      ],
-      
-      items: [
-        {
-          text: 'Master Admin',
-          disabled: false,
-          href: '/usermanagement',
-        },
-        {
-          text: 'User Management',
-          disabled: true,
-          href: '/usermanagement',
-        },
-      ],
-    }),
-  }
+      });
+      this.editedItem.skills = a;
+    },
+    detailItem(item) {
+      this.editedIndex = this.resources.indexOf(item);
+      this.detailItem = Object.assign({}, item);
+      this.dialogDetail = true;
+    },
+    deleteItem(item) {
+      this.editedIndex = this.users.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialogDelete = true;
+      //       const format = item.cost.toString().split('').reverse().join('');
+      // const convert = format.match(/\d{1,3}/g);
+      // this.editedItem.cost = 'Rp ' + convert.join('.').split('').reverse().join('')
+    },
+    deleteItemConfirm() {
+      this.resources.splice(this.editedIndex, 1);
+      this.closeDelete();
+    },
+    close() {
+      this.s = [];
+      this.dialog = false;
+      this.dialogDelete = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+        this.$router.go();
+      });
+    },
+    closeDetail() {
+      this.s = [];
+      this.dialog = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+        this.$router.go();
+      });
+    },
+    closeDelete() {
+      this.s = [];
+      this.dialogDelete = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+        this.$router.go();
+      });
+    },
+    createData(Data) {
+      const response = apiService
+        .createUsers(Data)
+        .then((succ) => {
+          // alert(succ);
+          this.snackbar1 = true;
+          this.getData();
+          // this.$router.go();
+          succ;
+        })
+        .catch((err) => {
+          err;
+          alert("Gagal, NPP tidak boleh sama");
+        });
+      response;
+      if (response) {
+        if (response) this.getData();
+      }
+    },
+    updateData(Data, id) {
+      const response = apiService
+        .updateUsers(Data, id)
+        .then((succ) => {
+          // alert(succ);
+          this.snackbar = true;
+          this.getData();
+          // this.$router.go();
+          succ;
+        })
+        .catch((err) => {
+          err;
+        });
+      response;
+      this.snackbar = true;
+      this.s = [];
+      if (response.status === 200) alert("Sukses");
+      if (response.status === 200) {
+        alert("sukses");
+      }
+      console.log(response.status);
+    },
+    tempUpdate(roles, jenjabs, kelompoks, tipes) {
+      const response = apiService
+        .getLookup()
+        .then((response) => {
+          let role = response.find((el) => el.name == roles);
+          let jenjab = response.find((el) => el.name == jenjabs);
+          let kelompok = response.find((el) => el.name == kelompoks);
+          let tipe = response.find((el) => el.name == tipes);
+          role.map((item) => {
+            this.newEditedItem.role = item.value;
+          });
+          jenjab.map((item) => {
+            this.newEditedItem.jenjabId = item.value;
+          });
+          kelompok.map((item) => {
+            this.newEditedItem.kelompokId = item.value;
+            //this.newEditedItem.kelompok.kelompokId = item.value;
+          });
+          tipe.map((item) => {
+            this.newEditedItem.resourceType = item.value;
+          });
+        })
+        .catch((err) => err);
+      response;
+    },
+
+    save() {
+      if (this.editedIndex > -1) {
+        this.newEditedItem.id = this.editedItem.id;
+        this.newEditedItem.password = "Proteam@12345";
+        this.newEditedItem.updatedBy = localStorage.getItem("name,");
+        this.newEditedItem.createdBy = localStorage.getItem("name,");
+        this.newEditedItem.fullName = this.editedItem.fullName;
+        this.newEditedItem.npp = this.editedItem.npp;
+        this.newEditedItem.email = this.editedItem.email;
+        this.newEditedItem.role = this.editedItem.role;
+        this.newEditedItem.kelompokId = this.editedItem.kelompokId;
+        if (this.editedItem.statusName === "Active") {
+          this.newEditedItem.status = 1;
+        } else this.newEditedItem.status = 0;
+        this.updateData(this.newEditedItem, this.editedItem.id);
+        console.log("fd" + this.editedItem.skills);
+      } else {
+        this.newEditedItem.password = "Proteam@12345";
+        this.newEditedItem.createdBy = localStorage.getItem("name,");
+        this.newEditedItem.fullName = this.editedItem.fullName;
+        this.newEditedItem.npp = this.editedItem.npp;
+        this.newEditedItem.email = this.editedItem.email;
+        this.newEditedItem.role = this.editedItem.role;
+        this.newEditedItem.kelompokId = this.editedItem.kelompokId;
+        // this.newEditedItem.status = this.editedItem.status
+        this.editedItem.statusName === "Active"
+          ? (this.newEditedItem.status = 1)
+          : (this.newEditedItem.status = 0);
+        this.createData(this.newEditedItem);
+        console.log(this.newEditedItem);
+        console.log("fd" + this.editedItem.skills);
+      }
+      this.close();
+    },
+    formatDate(date) {
+      if (!date) return null;
+      const [year, month, day] = date.split("-");
+      return `${month}/${day}/${year}`;
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
+.v-progress-circular {
+  margin: 1rem;
+}
 </style>

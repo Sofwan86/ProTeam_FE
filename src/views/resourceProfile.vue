@@ -1,599 +1,556 @@
 <template>
-  <div>
-    <v-breadcrumbs :items="items" divider="/"></v-breadcrumbs>
-    <v-container>
-      <v-row no-gutters>
-        <v-col cols="12" sm="13" offset-sm="0.2">
-          <v-card class="pa-2" offset-sm="3" outlined tile>
-            <h1>Profile</h1>
-            <v-tabs>
-              <v-tab>Resource</v-tab>
-              <v-tab disabled>Kelompok</v-tab>
-            </v-tabs>
-            <v-row>
-              <v-col>
-                <v-data-table
-                  :headers="headers"
-                  :items="resources"
-<<<<<<< HEAD
-                  :search="search"
-                  :loading="loadingPlaylist"
-=======
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
-                  sort-by="nama"
-                  class="elevation-1"
-                >
-                  <template v-slot:top>
-                    <v-toolbar flat>
-                      <v-toolbar-title
-                        ><h1>Resource Profile</h1></v-toolbar-title
-                      >
-                      <v-spacer></v-spacer>
-                      <div class="pa-5" max-width:100>
-                        <v-text-field
-                          outlined
-                          v-model="search"
-                          append-icon="mdi-magnify"
-                          label="Search"
-                          single-line
-                          hide-details
-                        ></v-text-field>
-                      </div>
-                      <v-dialog v-model="dialog" max-width="1000px">
-                        <template v-slot:activator="{ on, attrs }">
-                          <v-btn color="primary" dark v-bind="attrs" v-on="on">
-                            + Create New Resource
+  <v-row>
+    <v-col>
+      <v-data-table
+        :headers="headers"
+        :items="resources"
+        :search="search"
+        :sort-by.sync="updateTime"
+        :sort-desc.sync="sortDesc"
+        class="elevation-1"
+      >
+        <template v-slot:top>
+          <v-toolbar flat>
+            <v-toolbar-title>Resource Profile</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <div class="pa-5" max-width:100>
+              <v-text-field
+                class="shrink"
+                outlined
+                v-model="search"
+                append-icon="mdi-magnify"
+                label="Search"
+                single-line
+                hide-details
+                dense
+              ></v-text-field>
+            </div>
+            <v-btn class="white--text" @click="editItem(7,7)" color="#004483" >
+                  + Create New Resource
+                </v-btn>
+            <v-dialog v-model="dialog" max-width="1000px">
+              <!-- <template v-slot:activator="{ on, attrs }">
+                <v-btn color="#004483" dark v-bind="attrs" v-on="on">
+                  + Create New Resource
+                </v-btn>
+              </template> -->
+              <v-card>
+                <v-card color="#004483">
+                  <v-card-title class="white--text">
+                    <span class="text-h5"
+                      ><h3>{{ formTitle }}</h3></span
+                    >
+                    <v-spacer></v-spacer>
+                    <v-icon @click="close" color="white">mdi-close</v-icon>
+                  </v-card-title>
+                </v-card>
+                <v-card-text>
+                  <v-alert dense text type="success" v-model="snackbar">
+                    <strong>Data sukses diupdate</strong>
+                  </v-alert>
+                  <v-alert dense text type="success" v-model="snackbar1">
+                    <strong>Data sukses ditambah</strong>
+                  </v-alert>
+                  <v-alert
+                    v-model="alert"
+                    border="left"
+                    close-text="Close Alert"
+                    color="deep-purple accent-4"
+                    dark
+                    dismissible
+                  >
+                    Aenean imperdiet. Quisque id odio. Cras dapibus.
+                    Pellentesque ut neque. Cras dapibus. Vivamus consectetuer
+                    hendrerit lacus. Sed mollis, eros et ultrices tempus, mauris
+                    ipsum aliquam libero, non adipiscing dolor urna a orci. Sed
+                    mollis, eros et ultrices tempus, mauris ipsum aliquam
+                    libero, non adipiscing dolor urna a orci. Curabitur blandit
+                    mollis lacus. Curabitur ligula sapien, tincidunt non,
+                    euismod vitae, posuere imperdiet, leo.
+                  </v-alert>
+                  <v-form ref="form" v-model="valid">
+                    <v-container>
+                      <v-row>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-text-field
+                            v-model="editedItem.employeeName"
+                            label="Nama*"
+                            :rules="nameRules"
+                            required
+                            outlined
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-autocomplete
+                            v-model="editedItem.divisiId"
+                            label="Divisi*"
+                            :rules="nameRules"
+                            required
+                            outlined
+                            :items="divisi"
+                          ></v-autocomplete>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-autocomplete
+                            v-model="editedItem.jenjangJabatan"
+                            label="Jenjang Jabatan*"
+                            :rules="nameRules"
+                            required
+                            outlined
+                            :items="tempj"
+                          ></v-autocomplete>
+                        </v-col>
+
+                        <v-col v-if="editedIndex > -1" cols="12" sm="6" md="4">
+                          <v-text-field
+                            v-model="editedItem.npp"
+                            :rules="nameRules"
+                            disabled
+                            label="NPP*"
+                            required
+                            outlined
+                          ></v-text-field>
+                        </v-col>
+                        <v-col v-else cols="12" sm="6" md="4">
+                          <v-text-field
+                            v-model="editedItem.npp"
+                            :rules="nameRules"
+                            label="NPP*"
+                            required
+                            outlined
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-autocomplete
+                            v-model="editedItem.kelompok"
+                            label="Kelompok*"
+                            :rules="nameRules"
+                            outlined
+                            :items="tempk"
+                          ></v-autocomplete>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-autocomplete
+                            v-model="editedItem.tipe_resource"
+                            :items="temptipe"
+                            label="Resource Type*"
+                            :rules="nameRules"
+                            required
+                            outlined
+                          ></v-autocomplete>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-text-field
+                            v-model="editedItem.phone"
+                            label="Phone Number"
+                            required
+                            outlined
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-autocomplete
+                            v-model="editedItem.nama_role"
+                            label="Role*"
+                            :rules="nameRules"
+                            outlined
+                            :items="tempr"
+                          ></v-autocomplete>
+                        </v-col>
+                        <v-col
+                          v-if="editedItem.tipe_resource == 'OS'"
+                          cols="12"
+                          sm="6"
+                          md="4"
+                        >
+                          <v-autocomplete
+                            v-model="editedItem.vendorId"
+                            label="Vendor (OS only)*"
+                            :rules="nameRules"
+                            outlined
+                            :items="listVendor"
+                          ></v-autocomplete>
+                        </v-col>
+                        <v-col v-else cols="12" sm="6" md="4">
+                          <v-autocomplete
+                            disabled
+                            v-model="editedItem.namaVendor"
+                            label="Vendor (OS only)"
+                            outlined
+                            :items="tempr"
+                          ></v-autocomplete>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-text-field
+                            v-model="editedItem.email"
+                            label="Email"
+                            required
+                            outlined
+                          ></v-text-field>
+                        </v-col>
+
+                        <v-col cols="12" sm="6" md="4">
+                          <v-text-field
+                            v-model="editedItem.totalManhour"
+                            label="ManHour/Day"
+                            value="7"
+                            required
+                            outlined
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-combobox
+                            v-model="s"
+                            label="Skills*"
+                            value="skill"
+                            :items="tempskill"
+                            :rules="nameRules"
+                            multiple
+                            outlined
+                            small-chips
+                          ></v-combobox>
+                        </v-col>
+
+                        <v-col v-if="editedIndex > -1" cols="12" sm="6" md="4">
+                          Active Date
+                          <v-btn outlined color="grey" width="900" height="35">
+                            <VueDatePicker
+                              placeholder="Active date"
+                              fullscreen-mobile
+                              v-model="editedItem.activeDate"
+                              :rules="nameRules"
+                            />
                           </v-btn>
-                        </template>
-                        <v-card>
-                          <v-card-title>
-                            <span class="text-h5"
-                              ><h2>{{ formTitle }}</h2></span
-                            >
-                          </v-card-title>
-                          <v-card-text>
-                            <v-container>
-                              <v-row>
-                                <v-col cols="12" sm="6" md="4">
-                                  <v-text-field
-<<<<<<< HEAD
-                                    v-model="editedItem.employeeName"
-                                    label="Nama"
-                                    required
-                                    outlined
-=======
-                                    v-model="editedItem.nama"
-                                    label="Nama"
-                                    required
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
-                                  ></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6" md="4">
-                                  <v-text-field
-                                    v-model="editedItem.npp"
-                                    label="NPP"
-                                    required
-<<<<<<< HEAD
-                                    outlined
-                                  ></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6" md="4">
-                                  <v-select
-                                    v-model="editedItem.jenjangJabatan"
-                                    label="Jenjang Jabatan"
-                                    required
-                                    outlined
-                                    :items="jenjab"
-                                  ></v-select>
-=======
-                                  ></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6" md="4">
-                                  <v-text-field
-                                    v-model="editedItem.jenjab"
-                                    label="Jenjang Jabatan"
-                                    required
-                                  ></v-text-field>
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
-                                </v-col>
-                                <v-col cols="12" sm="6" md="4">
-                                  <v-text-field
-                                    v-model="editedItem.phone"
-                                    label="Phone Number"
-                                    required
-<<<<<<< HEAD
-                                    outlined
-=======
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
-                                  ></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6" md="4">
-                                  <v-text-field
-                                    v-model="editedItem.email"
-                                    label="Email"
-                                    required
-<<<<<<< HEAD
-                                    outlined
-                                  ></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6" md="4">
-                                  <v-select
-                                    v-model="editedItem.tipe_resource"
-                                    :items="resourceType"
-                                    label="Resource Type"
-                                    required
-                                    outlined
-                                  ></v-select>
-                                </v-col>
-                                <v-col cols="12" sm="6" md="4">
-                                  <v-text-field
-                                    v-model="editedItem.totalManhour"
-                                    label="ManHour/Day"
-                                    value="7"
-                                    required
-                                    outlined
-=======
-                                  ></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6" md="4">
-                                  <v-text-field
-                                    v-model="editedItem.tipe"
-                                    label="Resource Type"
-                                    required
-                                  ></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6" md="4">
-                                  <v-text-field
-                                    v-model="editedItem.manhour"
-                                    label="ManHour/Day"
-                                    required
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
-                                  ></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6" md="4">
-                                  <v-combobox
-                                    v-model="editedItem.skills"
-                                    label="Skills"
-                                    :items="skills"
-                                    multiple
-<<<<<<< HEAD
-                                    outlined
-=======
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
-                                    small-chips
-                                  ></v-combobox>
-                                </v-col>
-                                <v-col cols="12" sm="6" md="4">
-<<<<<<< HEAD
-                                  <v-select
-                                    v-model="editedItem.kelompok"
-                                    label="Kelompok"
-                                    outlined
-                                    :items="kelompok"
-                                  ></v-select>
-                                </v-col>
-                                <v-col cols="12" sm="6" md="4">
-                                  <v-select
-                                    v-model="editedItem.nama_role"
-                                    label="Role"
-                                    outlined
-                                    :items="role"
-                                  ></v-select>
-=======
-                                  <v-text-field
-                                    v-model="editedItem.kelompok"
-                                    label="Kelompok"
-                                  ></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6" md="4">
-                                  <v-text-field
-                                    v-model="editedItem.role"
-                                    label="Role"
-                                  ></v-text-field>
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
-                                </v-col>
-                                <v-col cols="12" sm="6" md="4">
-                                  <v-menu
-                                    v-model="menu2"
-                                    :close-on-content-click="false"
-                                    transition="scale-transition"
-                                    offset-y
-                                    max-width="290px"
-                                    min-width="auto"
-                                  >
-                                    <template v-slot:activator="{ on, attrs }">
-                                      <v-text-field
-                                        v-model="dateActive"
-                                        label="Activate Date"
-                                        hint="MM/DD/YYYY format"
-                                        persistent-hint
-                                        prepend-icon="mdi-calendar"
-                                        readonly
-                                        v-bind="attrs"
-                                        v-on="on"
-                                      ></v-text-field>
-                                    </template>
-                                    <v-date-picker
-                                      v-model="date"
-                                      no-title
-                                      @input="menu2 = false"
-                                    ></v-date-picker>
-                                  </v-menu>
-                                </v-col>
-                                <v-col cols="12" sm="6" md="4">
-                                  <v-menu
-                                    v-model="menu3"
-                                    :close-on-content-click="false"
-                                    transition="scale-transition"
-                                    offset-y
-                                    max-width="290px"
-                                    min-width="auto"
-                                  >
-                                    <template v-slot:activator="{ on, attrs }">
-                                      <v-text-field
-                                        v-model="dateLast"
-                                        label="Last Working Date"
-                                        hint="MM/DD/YYYY format"
-                                        persistent-hint
-                                        prepend-icon="mdi-calendar"
-                                        readonly
-                                        v-bind="attrs"
-                                        v-on="on"
-                                      ></v-text-field>
-                                    </template>
-                                    <v-date-picker
-                                      v-model="date2"
-                                      no-title
-                                      @input="menu3 = false"
-                                    ></v-date-picker>
-                                  </v-menu>
-                                </v-col>
-                                <v-col cols="12" sm="6" md="4">
-<<<<<<< HEAD
-                                  <v-select
-                                    v-model="editedItem.status"
-                                    label="Status"
-                                    :items="status"
-                                    outlined
-                                  ></v-select>
-=======
-                                  <v-combobox
-                                    v-model="editedItem.status"
-                                    label="Status"
-                                    :items="status"
-                                  ></v-combobox>
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
-                                </v-col>
-                              </v-row>
-                            </v-container>
-                          </v-card-text>
-                          <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn color="blue darken-1" text @click="close">
-                              Cancel
-                            </v-btn>
-                            <v-btn color="blue darken-1" text @click="save">
-                              Save
-                            </v-btn>
-                          </v-card-actions>
-                        </v-card>
-                      </v-dialog>
-                      <v-dialog v-model="dialogDelete" max-width="1100px">
-                        <v-card>
-                          <v-row no-gutters>
-                            <v-col cols="12" sm="13" offset-sm="0.2">
-                              <v-card class="pa-2" offset-sm="3" outlined tile>
-                                <v-row>
-                                  <v-col cols="12" md="6">
-                                    <v-list-item two-line>
-                                      <v-list-item-content>
-                                        <v-list-item-title
-                                          ><h2>
-<<<<<<< HEAD
-                                            {{ editedItem.employeeName }}
-=======
-                                            {{ editedItem.nama }}
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
-                                          </h2></v-list-item-title
-                                        >
-                                        <v-list-item-subtitle
-                                          ><h4>
-                                            {{ editedItem.npp }}
-                                          </h4></v-list-item-subtitle
-                                        >
-                                        <v-list-item-subtitle
-<<<<<<< HEAD
-                                          >Added
-                                          {{
-                                            editedItem.createdTime
-                                              | str_limit(10)
-                                          }}
-                                        </v-list-item-subtitle>
-=======
-                                          >Added 24 Januari
-                                          2021</v-list-item-subtitle
-                                        >
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
-                                      </v-list-item-content>
-                                    </v-list-item>
-                                  </v-col>
-                                </v-row>
-                                <v-row>
-                                  <v-col cols="4" md="3">
-                                    <v-list-item two-line>
-                                      <v-list-item-content>
-                                        <v-list-item-subtitle
-                                          >Name</v-list-item-subtitle
-                                        >
-                                        <v-list-item-title>{{
-<<<<<<< HEAD
-                                          editedItem.employeeName
-=======
-                                          editedItem.nama
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
-                                        }}</v-list-item-title>
-                                      </v-list-item-content>
-                                    </v-list-item>
-                                    <v-list-item two-line>
-                                      <v-list-item-content>
-                                        <v-list-item-subtitle
-                                          >NPP</v-list-item-subtitle
-                                        >
-                                        <v-list-item-title>{{
-                                          editedItem.npp
-                                        }}</v-list-item-title>
-                                      </v-list-item-content>
-                                    </v-list-item>
-                                    <v-list-item two-line>
-                                      <v-list-item-content>
-                                        <v-list-item-subtitle
-                                          >Email</v-list-item-subtitle
-                                        >
-                                        <v-list-item-title>{{
-                                          editedItem.email
-                                        }}</v-list-item-title>
-                                      </v-list-item-content>
-                                    </v-list-item>
-                                    <v-list-item two-line>
-                                      <v-list-item-content>
-                                        <v-list-item-subtitle
-                                          >Phone Number</v-list-item-subtitle
-                                        >
-                                        <v-list-item-title>{{
-                                          editedItem.phone
-                                        }}</v-list-item-title>
-                                      </v-list-item-content>
-                                    </v-list-item>
-                                  </v-col>
-                                  <v-divider vertical></v-divider>
-                                  <v-col cols="4" md="3">
-                                    <v-list-item two-line>
-                                      <v-list-item-content>
-                                        <v-list-item-subtitle
-                                          >Active Date</v-list-item-subtitle
-                                        >
-                                        <v-list-item-title
-<<<<<<< HEAD
-                                          >{{
-                                            editedItem.activeDate
-                                              | str_limit(10)
-                                          }}
-=======
-                                          >{{ editedItem.dateActive }}
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
-                                        </v-list-item-title>
-                                      </v-list-item-content>
-                                    </v-list-item>
-                                    <v-list-item two-line>
-                                      <v-list-item-content>
-                                        <v-list-item-subtitle
-                                          >Kelompok</v-list-item-subtitle
-                                        >
-                                        <v-list-item-title>{{
-                                          editedItem.kelompok
-                                        }}</v-list-item-title>
-                                      </v-list-item-content>
-                                    </v-list-item>
-                                    <v-list-item two-line>
-                                      <v-list-item-content>
-                                        <v-list-item-subtitle
-                                          >Skillset</v-list-item-subtitle
-                                        >
-                                        <v-list-item-title
-<<<<<<< HEAD
-                                          v-html="editedItem.skill"
-                                        ></v-list-item-title>
-=======
-                                          v-for="skill in editedItem.skills"
-                                          :key="skill"
-                                          >{{ skill }}</v-list-item-title
-                                        >
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
-                                      </v-list-item-content>
-                                    </v-list-item>
-                                    <v-list-item two-line>
-                                      <v-list-item-content>
-                                        <v-list-item-subtitle
-                                          >Manhour/Day</v-list-item-subtitle
-                                        >
-                                        <v-list-item-title>{{
-<<<<<<< HEAD
-                                          editedItem.totalManhour
-=======
-                                          editedItem.manhour
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
-                                        }}</v-list-item-title>
-                                      </v-list-item-content>
-                                    </v-list-item>
-                                  </v-col>
-                                  <v-col cols="4" md="3">
-                                    <v-list-item two-line>
-                                      <v-list-item-content>
-                                        <v-list-item-subtitle
-                                          >Last Working
-                                          Date</v-list-item-subtitle
-                                        >
-                                        <v-list-item-title>{{
-<<<<<<< HEAD
-                                          editedItem.lastWorkDate
-                                            | str_limit(10)
-=======
-                                          editedItem.dateLast
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
-                                        }}</v-list-item-title>
-                                      </v-list-item-content>
-                                    </v-list-item>
-                                    <v-list-item two-line>
-                                      <v-list-item-content>
-                                        <v-list-item-subtitle
-                                          >Resource Type</v-list-item-subtitle
-                                        >
-                                        <v-list-item-title>{{
-<<<<<<< HEAD
-                                          editedItem.tipe_resource
-=======
-                                          editedItem.tipe
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
-                                        }}</v-list-item-title>
-                                      </v-list-item-content>
-                                    </v-list-item>
-                                    <v-list-item two-line>
-                                      <v-list-item-content>
-                                        <v-list-item-subtitle>
-                                          Jenjang Jabatan</v-list-item-subtitle
-                                        >
-                                        <v-list-item-title>{{
-<<<<<<< HEAD
-                                          editedItem.jenjangJabatan
-=======
-                                          editedItem.jenjab
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
-                                        }}</v-list-item-title>
-                                      </v-list-item-content>
-                                    </v-list-item>
-                                    <v-list-item two-line>
-                                      <v-list-item-content>
-                                        <v-list-item-subtitle
-                                          >Total Manhour</v-list-item-subtitle
-                                        >
-                                        <v-list-item-title>{{
-<<<<<<< HEAD
-                                          editedItem.totalManhour
-=======
-                                          editedItem.totalMH
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
-                                        }}</v-list-item-title>
-                                      </v-list-item-content>
-                                    </v-list-item>
-                                  </v-col>
-                                  <v-col cols="3" md="2">
-                                    <v-list-item two-line>
-                                      <v-list-item-content>
-                                        <v-list-item-subtitle
-                                          >Status</v-list-item-subtitle
-                                        >
-                                        <v-list-item-title>{{
-                                          editedItem.status
-                                        }}</v-list-item-title>
-                                      </v-list-item-content>
-                                    </v-list-item>
-                                    <v-list-item two-line>
-                                      <v-list-item-content>
-                                        <v-list-item-subtitle
-                                          >Role</v-list-item-subtitle
-                                        >
-                                        <v-list-item-title>{{
-<<<<<<< HEAD
-                                          editedItem.nama_role
-=======
-                                          editedItem.role
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
-                                        }}</v-list-item-title>
-                                      </v-list-item-content>
-                                    </v-list-item>
-                                    <v-list-item two-line>
-                                      <v-list-item-content>
-                                        <v-list-item-subtitle
-                                          >Project
-                                          Experience</v-list-item-subtitle
-                                        >
-                                        <v-list-item-title>
-<<<<<<< HEAD
-                                          {{ editedItem.projectExp }}
-=======
-                                          Progo
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
-                                        </v-list-item-title>
-                                      </v-list-item-content>
-                                    </v-list-item>
-                                    <v-list-item two-line>
-                                      <v-list-item-content>
-                                        <v-list-item-subtitle
-                                          >Pricing</v-list-item-subtitle
-                                        >
-                                        <v-list-item-title>{{
-                                          editedItem.price
-                                        }}</v-list-item-title>
-                                      </v-list-item-content>
-                                    </v-list-item>
-                                  </v-col>
-                                </v-row>
-                              </v-card>
-                            </v-col>
-                          </v-row>
-                          <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn
-                              color="blue darken-1"
-                              text
-                              @click="closeDelete"
-                            >
-                              Close
-                            </v-btn>
-                          </v-card-actions>
-                        </v-card>
-                      </v-dialog>
-                    </v-toolbar>
-                  </template>
-                  <template v-slot:item.action="{ item }">
-                    <v-btn dense color="primary" @click="deleteItem(item)"
-                      >Detail</v-btn
-                    >
-                    <v-btn dense color="gray" @click="editItem(item)"
-                      >Edit</v-btn
-                    >
-                  </template>
-<<<<<<< HEAD
-                  <template v-slot:[`item.status`]="{ item }">
-                    <p v-if="item.status == 0" class="red--text">inactive</p>
-                    <p v-else class="green--text">active</p>
-                  </template>
-=======
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
-                </v-data-table>
-              </v-col>
-            </v-row>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
-  </div>
+                        </v-col>
+                        <v-col v-else cols="12" sm="6" md="4">
+                          <v-btn outlined color="grey" width="900" height="55">
+                            <VueDatePicker
+                              placeholder="Active date"
+                              fullscreen-mobile
+                              v-model="editedItem.activeDate"
+                            />
+                          </v-btn>
+                        </v-col>
+                        <v-col v-if="editedIndex > -1" cols="12" sm="6" md="4">
+                          Last Working Date
+                          <v-btn outlined color="grey" width="900" height="35">
+                            <VueDatePicker
+                              placeholder="Last working date"
+                              fullscreen-mobile
+                              v-model="editedItem.lastWorkDate"
+                              :rules="nameRules"
+                            />
+                          </v-btn>
+                        </v-col>
+                        <v-col v-else cols="12" sm="6" md="4">
+                          <v-btn outlined color="grey" width="900" height="55">
+                            <VueDatePicker
+                              placeholder="Last working date"
+                              fullscreen-mobile
+                              v-model="editedItem.lastWorkDate"
+                            />
+                          </v-btn>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-select
+                            v-model="editedItem.nama_status"
+                            :rules="nameRules"
+                            label="Status*"
+                            :items="status"
+                            outlined
+                          ></v-select>
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                  </v-form>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn outlined color="blue darken-1" text @click="close">
+                    Cancel
+                  </v-btn>
+                  <v-btn color="#004483" dark v-if="valid" @click="save">
+                    Save
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+            <v-dialog v-model="dialogDelete" max-width="1100px">
+              <v-card>
+                <v-row no-gutters>
+                  <v-col cols="12" sm="13" offset-sm="0.2">
+                    <v-card class="pa-2" offset-sm="3" outlined tile>
+                      <v-row>
+                        <v-col cols="12" md="6">
+                          <v-list-item two-line>
+                            <v-list-item-content>
+                              <v-list-item-title
+                                ><h1>
+                                  {{ editedItem.employeeName }}
+                                </h1></v-list-item-title
+                              >
+                              <v-list-item-subtitle
+                                ><h2>
+                                  {{ editedItem.npp }}
+                                </h2></v-list-item-subtitle
+                              >
+                              <v-list-item-subtitle
+                                >Added
+                                {{ editedItem.createdTime | str_limit(10) }} by
+                                {{ editedItem.createdBy }}
+                              </v-list-item-subtitle>
+                              <v-list-item-subtitle
+                                >Updated
+                                {{ editedItem.updateTime | str_limit(10) }} by
+                                {{ editedItem.updatedBy }}
+                              </v-list-item-subtitle>
+                            </v-list-item-content>
+                          </v-list-item>
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="4" md="3">
+                          <v-list-item two-line>
+                            <v-list-item-content>
+                              <v-list-item-subtitle>Name</v-list-item-subtitle>
+                              <v-list-item-title>{{
+                                editedItem.employeeName
+                              }}</v-list-item-title>
+                            </v-list-item-content>
+                          </v-list-item>
+                          <v-list-item two-line>
+                            <v-list-item-content>
+                              <v-list-item-subtitle>NPP</v-list-item-subtitle>
+                              <v-list-item-title>{{
+                                editedItem.npp
+                              }}</v-list-item-title>
+                            </v-list-item-content>
+                          </v-list-item>
+                          <v-list-item two-line>
+                            <v-list-item-content>
+                              <v-list-item-subtitle>Email</v-list-item-subtitle>
+                              <v-list-item-title>{{
+                                editedItem.email
+                              }}</v-list-item-title>
+                            </v-list-item-content>
+                          </v-list-item>
+                          <v-list-item two-line>
+                            <v-list-item-content>
+                              <v-list-item-subtitle
+                                >Phone Number</v-list-item-subtitle
+                              >
+                              <v-list-item-title>{{
+                                editedItem.phone
+                              }}</v-list-item-title>
+                            </v-list-item-content>
+                          </v-list-item>
+                        </v-col>
+                        <v-divider vertical></v-divider>
+                        <v-col cols="4" md="3">
+                          <v-list-item two-line>
+                            <v-list-item-content>
+                              <v-list-item-subtitle
+                                >Active Date</v-list-item-subtitle
+                              >
+                              <v-list-item-title
+                                >{{ editedItem.activeDate | str_limit(10) }}
+                              </v-list-item-title>
+                            </v-list-item-content>
+                          </v-list-item>
+                          <v-list-item two-line>
+                            <v-list-item-content>
+                              <v-list-item-subtitle
+                                >Divisi</v-list-item-subtitle
+                              >
+                              <v-list-item-title>{{
+                                editedItem.nama_divisi
+                              }}</v-list-item-title>
+                            </v-list-item-content>
+                          </v-list-item>
+                          <v-list-item two-line>
+                            <v-list-item-content>
+                              <v-list-item-subtitle>Role</v-list-item-subtitle>
+                              <v-list-item-title>{{
+                                editedItem.nama_role
+                              }}</v-list-item-title>
+                            </v-list-item-content>
+                          </v-list-item>
+                          <v-list-item two-line>
+                            <v-list-item-content>
+                              <v-list-item-subtitle
+                                >Manhour/Day</v-list-item-subtitle
+                              >
+                              <v-list-item-title>{{
+                                editedItem.totalManhour
+                              }}</v-list-item-title>
+                            </v-list-item-content>
+                          </v-list-item>
+                          <v-list-item two-line>
+                            <v-list-item-content>
+                              <v-list-item-subtitle
+                                >Project Experience</v-list-item-subtitle
+                              >
+                              <v-list-item-title>
+                                {{ editedItem.projectExp }}
+                              </v-list-item-title>
+                            </v-list-item-content>
+                          </v-list-item>
+                        </v-col>
+                        <v-col cols="4" md="3">
+                          <v-list-item two-line>
+                            <v-list-item-content>
+                              <v-list-item-subtitle
+                                >Last Working Date</v-list-item-subtitle
+                              >
+                              <v-list-item-title>{{
+                                editedItem.lastWorkDate | str_limit(10)
+                              }}</v-list-item-title>
+                            </v-list-item-content>
+                          </v-list-item>
+                          <v-list-item two-line>
+                            <v-list-item-content>
+                              <v-list-item-subtitle
+                                >Kelompok</v-list-item-subtitle
+                              >
+                              <v-list-item-title>{{
+                                editedItem.kelompok
+                              }}</v-list-item-title>
+                            </v-list-item-content>
+                          </v-list-item>
+                          <v-list-item two-line>
+                            <v-list-item-content>
+                              <v-list-item-subtitle
+                                >Skillset</v-list-item-subtitle
+                              >
+                              <v-list-item-title
+                                v-html="editedItem.skill"
+                              ></v-list-item-title>
+                            </v-list-item-content>
+                          </v-list-item>
+                          <v-list-item two-line>
+                            <v-list-item-content>
+                              <v-list-item-subtitle
+                                >Pricing</v-list-item-subtitle
+                              >
+                              <v-list-item-title>{{
+                                editedItem.cost + ",-"
+                              }}</v-list-item-title>
+                            </v-list-item-content>
+                          </v-list-item>
+                        </v-col>
+                        <v-col cols="3" md="2">
+                          <v-list-item two-line>
+                            <v-list-item-content>
+                              <v-list-item-subtitle
+                                >Status</v-list-item-subtitle
+                              >
+                              <v-list-item-title>
+                                <p
+                                  v-if="editedItem.nama_status == 'Inactive'"
+                                  class="red--text"
+                                >
+                                  Inactive
+                                </p>
+                                <p v-else class="green--text">Active</p>
+                                <!-- {{
+                                          editedItem.nama_status
+                                        }} -->
+                              </v-list-item-title>
+                            </v-list-item-content>
+                          </v-list-item>
+                          <v-list-item two-line>
+                            <v-list-item-content>
+                              <v-list-item-subtitle
+                                >Resource Type</v-list-item-subtitle
+                              >
+                              <v-list-item-title>{{
+                                editedItem.tipe_resource
+                              }}</v-list-item-title>
+                            </v-list-item-content>
+                          </v-list-item>
+                          <v-list-item
+                            v-if="editedItem.tipe_resource == 'OS'"
+                            two-line
+                          >
+                            <v-list-item-content>
+                              <v-list-item-subtitle
+                                >Vendor</v-list-item-subtitle
+                              >
+                              <v-list-item-title>{{
+                                editedItem.vendorName
+                              }}</v-list-item-title>
+                            </v-list-item-content>
+                          </v-list-item>
+                          <v-list-item two-line>
+                            <v-list-item-content>
+                              <v-list-item-subtitle>
+                                Jenjang Jabatan</v-list-item-subtitle
+                              >
+                              <v-list-item-title>{{
+                                editedItem.jenjangJabatan
+                              }}</v-list-item-title>
+                            </v-list-item-content>
+                          </v-list-item>
+                        </v-col>
+                      </v-row>
+                    </v-card>
+                  </v-col>
+                </v-row>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="blue darken-1" text @click="closeDelete">
+                    Close
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </v-toolbar>
+        </template>
+        <template v-slot:[`item.action`]="{ item }">
+          <v-btn @click="deleteItem(item)">Detail</v-btn>
+          <v-btn class="mx-3" @click="editItem(item)">Edit</v-btn>
+        </template>
+        <template v-slot:[`item.status`]="{ item }">
+          <p v-if="item.status == 0" class="red--text">Inactive</p>
+          <p v-else class="green--text">Active</p>
+        </template>
+        <template v-slot:[`item.updateTime`]="{ item }">
+          <h4>{{ item.updateTime | str_limit(10) }}</h4>
+        </template>
+        <template v-slot:[`item.no`]="{ item }">
+          <td>
+            {{ resources.indexOf(item) + 1 }}
+          </td>
+        </template>
+        <template v-slot:no-data>
+          <v-progress-circular
+            :size="70"
+            :width="7"
+            color="#004483"
+            indeterminate
+          ></v-progress-circular>
+        </template>
+      </v-data-table>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
-<<<<<<< HEAD
 import { Axios } from "./Axios";
 const apiService = new Axios();
 export default {
   name: "resourceProfile",
   data: (vm) => ({
+    alert: false,
+    updateTime: "updateTime",
+    sortDesc: true,
+    dates: null,
+    snackbar1: false,
+    snackbar: false,
+    text: `Hello, I'm a snackbar`,
+    valid: false,
+    nameRules: [(v) => !!v || "Required"],
     resourceType: [],
     search: "",
-=======
-export default {
-  name: "resourceProfile",
-  data: (vm) => ({
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
     tab: null,
     menus: ["Resource", "Kelompok"],
     items: [
@@ -611,55 +568,50 @@ export default {
     dialog: false,
     editedIndex: -1,
     dialogDetail: false,
+    dialogDelete: false,
     headers: [
       {
         text: "Nama",
         align: "start",
         sortable: true,
-<<<<<<< HEAD
         value: "employeeName",
       },
       { text: "NPP", value: "npp" },
       { text: "Kelompok", value: "kelompok" },
       { text: "Role", value: "nama_role" },
       { text: "Status", value: "status" },
-      { text: "Action", value: "action" },
+      { text: "Date Modified", value: "updateTime" },
+      { text: "Action", value: "action", sortable: false },
     ],
     status: [],
     skills: [],
+    skillid: [],
+    divisi: [],
+    tempd: [],
+    divisiid: [],
+    obj: {},
+    tempk: [],
+    tempr: [],
+    temptipe: [],
+    tempj: [],
+    tempskill: [],
     kelompok: [],
+    kelompokid: [],
+    tipeid: [],
+    roleid: [],
     tipe: [],
     role: [],
     jenjab: [],
+    jenjabid: [],
     resources: [],
+    temp: {},
+    s: [],
     editedItem: {
-      employeeName: "",
-=======
-        value: "nama",
-      },
-      { text: "NPP", value: "npp" },
-      { text: "Kelompok", value: "kelompok" },
-      { text: "Role", value: "role" },
-      { text: "Status", value: "status" },
-      { text: "Action", value: "action" },
-    ],
-    status: ["Active", "Inactive"],
-    skills: ["React", "Vue", "Java", "Phyton"],
-    kelompok: [""],
-    tipe: [""],
-    role: [""],
-    jenjab: [""],
-    resources: [],
-    editedItem: {
-      nama: "",
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
+      employeeName: "aaa",
       npp: "",
       email: "",
       phone: "",
-      skills: [""],
-<<<<<<< HEAD
-      activeDate: "",
-      lastWorkDate: "",
+      skills: [],
       totalManhour: 7,
       resourceType: 0,
       jenjabId: 0,
@@ -693,50 +645,11 @@ export default {
           },
         },
       ],
-=======
-      dateActive: "",
-      dateLast: "",
-      jenjab: "",
-      kelompok: "",
-      tipe: "",
-      role: "",
-      status: "",
-      price: "",
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
     },
-    defaultItem: {
-      nama: "",
-      npp: "",
-      email: "",
-      phone: "",
-      skills: [""],
-      dateActive: "",
-      dateLast: "",
-      jenjab: "",
-      kelompok: "",
-      tipe: "",
-      role: "",
-      status: "",
-      price: "",
-    },
-    detailItem: {
-      nama: "",
-      npp: "",
-      email: "",
-      phone: "",
-      skills: [""],
-      dateActive: "",
-      dateLast: "",
-      jenjab: "",
-      kelompok: "",
-      tipe: "",
-      role: "",
-      status: "",
-    },
-<<<<<<< HEAD
+    defaultItem: {},
     newEditedItem: {
       employeeName: "string",
-      npp: "string",
+
       email: "string",
       phone: "string",
       activeDate: "2021-08-08T18:34:10.503Z",
@@ -750,76 +663,13 @@ export default {
       status: 0,
       createdBy: "string",
       updatedBy: "string",
-      createdTime: "2021-08-08T18:34:10.503Z",
-      updateTime: "2021-08-08T18:34:10.503Z",
-      jenjab: {
-        jenjabId: 0,
-        jenjangJabatan: "string",
-        cost: 0,
-        status: 0,
-        createdBy: "string",
-        updatedBy: "string",
-        createdTime: "2021-08-08T18:34:10.503Z",
-        updateTime: "2021-08-08T18:34:10.503Z",
-        resourceEmployees: [null],
-      },
-      kelompok: {
-        kelompokId: 0,
-        kelompok1: "string",
-        status: 0,
-        createdBy: "string",
-        updatedBy: "string",
-        createdTime: "2021-08-08T18:34:10.503Z",
-        updateTime: "2021-08-08T18:34:10.503Z",
-        resourceEmployees: [null],
-        unitProfilings: [
-          {
-            unitId: 0,
-            kelompokId: 0,
-            totalEmployee: 0,
-            totalManhour: 0,
-            empSkillId: 0,
-            employeeSkills: [null],
-          },
-        ],
-      },
-      employeeSkills: [
-        {
-          empSkillId: 0,
-          employeeId: 0,
-          skillsetId: 0,
-          skillset: {
-            skillsetId: 0,
-            skillset1: "string",
-            status: 0,
-            createdBy: "string",
-            updatedBy: "string",
-            createdTime: "2021-08-08T18:34:10.503Z",
-            updateTime: "2021-08-08T18:34:10.503Z",
-            employeeSkills: [null],
-          },
-          unitProfilings: [
-            {
-              unitId: 0,
-              kelompokId: 0,
-              totalEmployee: 0,
-              totalManhour: 0,
-              empSkillId: 0,
-              employeeSkills: [null],
-            },
-          ],
-        },
-      ],
+      listSkill: [],
     },
     detailID: {},
     editID: "",
     nowdate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
       .toISOString()
       .substr(0, 10),
-=======
-    detailID: {},
-    editID: "",
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
     date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
       .toISOString()
       .substr(0, 10),
@@ -831,19 +681,19 @@ export default {
         .toISOString()
         .substr(0, 10)
     ),
-<<<<<<< HEAD
     activeSend: "",
     lastSend: "",
     menu3: false,
     menu2: false,
     rt: {},
+    no: [],
+    vendor: {},
+    listVendor: [],
+    tempv: [],
+    vendorid: [],
+    listnpp: [],
+    ceknpp: false,
   }),
-=======
-    menu3: false,
-    menu2: false,
-  }),
-
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "Create New Resource" : "Edit Resource";
@@ -855,10 +705,6 @@ export default {
       return this.formatDate(this.date2);
     },
   },
-<<<<<<< HEAD
-=======
-
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
   watch: {
     dialog(val) {
       val || this.close();
@@ -870,13 +716,33 @@ export default {
       val || this.closeDelete();
     },
   },
-<<<<<<< HEAD
   created() {
     this.initialize();
     this.getData();
     this.getData2();
+    this.getVendor();
   },
   methods: {
+    async getVendor() {
+      const response = await apiService
+        .getVendor()
+        .then((response) => {
+          this.vendor = response.data;
+        })
+        .catch((err) => err);
+      response;
+      this.vendor.map((item) => {
+        this.tempv.push(item.vendorName);
+        this.vendorid.push(item.manmonthId);
+      });
+      for (var k = 0; k < this.tempv.length; k++) {
+        //this.tempskill.push(obj2)
+        let oo = {};
+        oo.text = this.tempv[k];
+        oo.value = this.vendorid[k];
+        this.listVendor.push(oo);
+      }
+    },
     async getData() {
       const response = await apiService
         .getResourceProfile()
@@ -885,172 +751,270 @@ export default {
         })
         .catch((err) => err);
       response;
-      this.editedItem.tempAD = response.employee.activeDate;
-      this.editedItem.tempLD = response.employee.lastWorkDate;
+      this.resources.map((item) => {
+        this.listnpp.push(item.npp);
+      });
     },
     async getData2() {
-      let rt = { text: "", value: 0 };
+      //let rt = { text: "", value: 0 };
+      //const obj = {}
       const response = await apiService
         .getLookup()
         .then((response) => {
           response.map((item) => {
             if (item.type == "ResourceType") {
-              this.resourceType.push(item.name);
+              this.temptipe.push(item.name);
+              this.tipeid.push(item.value);
             }
-            if (item.type == "Role") this.role.push(item.name);
-            if (item.type == "Kelompok") this.kelompok.push(item.name);
-            if (item.type == "Jenjab") this.jenjab.push(item.name);
+            if (item.type == "Role") {
+              this.tempr.push(item.name);
+              this.roleid.push(item.value);
+            }
+            if (item.type == "Kelompok") {
+              this.tempk.push(item.name);
+              this.kelompokid.push(item.value);
+            }
+            if (item.type == "Jenjab") {
+              this.tempj.push(item.name);
+              this.jenjabid.push(item.value);
+            }
             if (item.type == "StatusActive") this.status.push(item.name);
-            if (item.type == "Skillset") this.skills.push(item.name);
+            if (item.type == "Skillset") {
+              this.skills.push(item.name);
+              this.skillid.push(item.value);
+            }
+            if (item.type == "Divisi") {
+              this.tempd.push(item.name);
+              this.divisiid.push(item.value);
+            }
           });
         })
         .catch((err) => err);
       response;
-      console.log(rt);
+      for (var k = 0; k < this.skills.length; k++) {
+        //this.tempskill.push(obj2)
+        let oo = {};
+        oo.text = this.skills[k];
+        oo.value = this.skillid[k];
+        this.tempskill.push(oo);
+      }
+      for (var l = 0; l < this.tempj.length; l++) {
+        //this.tempskill.push(obj2)
+        let oo = {};
+        oo.text = this.tempj[l];
+        oo.value = this.jenjabid[l];
+        this.jenjab.push(oo);
+      }
+      for (var m = 0; m < this.tempk.length; m++) {
+        //this.tempskill.push(obj2)
+        let oo = {};
+        oo.text = this.tempk[m];
+        oo.value = this.kelompokid[m];
+        this.kelompok.push(oo);
+      }
+      for (var n = 0; n < this.tempr.length; n++) {
+        let oo = {};
+        oo.text = this.tempr[n];
+        oo.value = this.roleid[n];
+        this.role.push(oo);
+      }
+      for (var o = 0; o < this.temptipe.length; o++) {
+        let oo = {};
+        oo.text = this.temptipe[o];
+        oo.value = this.tipeid[o];
+        this.resourceType.push(oo);
+      }
+      for (var p = 0; p < this.tempd.length; p++) {
+        let oo = {};
+        oo.text = this.tempd[p];
+        oo.value = this.divisiid[p];
+        this.divisi.push(oo);
+      }
     },
-=======
-
-  created() {
-    this.initialize();
-  },
-
-  methods: {
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
     initialize() {
-      this.resources = [
-        {
-          nama: "Marvin Janitra Akmal",
-          npp: "12341234",
-          email: "marvinjanitra@gmail.com",
-          phone: "081212786101",
-          skills: ["Google", "Ms. Office"],
-          jenjab: "AMGR",
-          kelompok: "OFA",
-          tipe: "FTE",
-          role: "FrontEnd Developer",
-          status: "Active",
-          price: "Rp. 10.000.000",
-        },
-        {
-          nama: "Sofwan",
-          npp: "12341235",
-          email: "sofwan@gmail.com",
-          phone: "081287126382",
-          skills: ["Google", "React", "Vue"],
-          jenjab: "MGR",
-          kelompok: "TQC",
-          tipe: "FTE",
-          role: "FrontEnd Developer",
-          status: "Active",
-          price: "Rp. 15.000.000",
-        },
-        {
-          nama: "Jamal Udin",
-          npp: "12341226",
-          email: "jamalnaxgenkmotor@gmail.com",
-          phone: "081256781234",
-          skills: ["Riding", "Drag", "Stoopie"],
-          jenjab: "OS",
-          kelompok: "KVM",
-          tipe: "XTC",
-          role: "FrontEnd Infantry",
-          status: "Active",
-          price: "Rp. 2.000",
-        },
-        {
-          nama: "Solehudin",
-          npp: "12341214",
-          email: "udinsolehbanget@gmail.com",
-          phone: "081212344532",
-          skills: ["Solat", "Ngaji", "Doa"],
-          jenjab: "Staff",
-          kelompok: "MJD",
-          tipe: "MBT",
-          role: "Marbot",
-          status: "Inactive",
-          price: "Rp. 2.500",
-        },
-      ];
+      this.resources = [];
     },
     createItem(item) {
       this.createItem = item;
       this.$router.push("/createNewResource");
+      console.log("fds");
     },
-    editItem(item) {
+    editItem(item,t) {
+      console.log("fds");
       this.editedIndex = this.resources.indexOf(item);
       this.editedItem = Object.assign({}, item);
+      if(t) this.editedItem.totalManhour = t
       this.dialog = true;
-    },
-    detailItem(item) {
-      this.editedIndex = this.resources.indexOf(item);
-      this.detailItem = Object.assign({}, item);
-      this.dialogDetail = true;
-    },
-<<<<<<< HEAD
-=======
+      this.getData();
+      const a = [];
+      item.listSkill.map((item) => {
+        a.push(item.skillset);
+        let oo = {};
+        oo.text = item.skillset;
+        oo.value = item.skillset_id;
+        // this.s.push(item.skillset)
+        if (item.skillset) {
+          this.s.push(oo);
+        }
+      });
+      this.editedItem.skills = a;
 
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
+      console.log("dfs");
+    },
     deleteItem(item) {
       this.editedIndex = this.resources.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialogDelete = true;
+      const format = item.cost.toString().split("").reverse().join("");
+      const convert = format.match(/\d{1,3}/g);
+      this.editedItem.cost =
+        "Rp " + convert.join(".").split("").reverse().join("");
     },
-<<<<<<< HEAD
-=======
-
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
     deleteItemConfirm() {
       this.resources.splice(this.editedIndex, 1);
       this.closeDelete();
     },
-<<<<<<< HEAD
-=======
-
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
     close() {
+      this.s = [];
       this.dialog = false;
+      this.$refs.form.reset()
+      this.$refs.form.resetValidation();
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
+        // this.$router.go();
       });
     },
     closeDetail() {
+      this.s = [];
       this.dialog = false;
+      this.$refs.form.reset()
+      this.$refs.form.resetValidation();
+      this.$refs.form.reset()
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
+        //this.editedIndex = -1;
+        //this.$router.go();
       });
     },
-<<<<<<< HEAD
-=======
-
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
     closeDelete() {
+      this.s = [];
+      
       this.dialogDelete = false;
+      this.$refs.form.reset()
+      this.$refs.form.resetValidation();
+      //this.editedItem = null
+      this.editedIndex = -1;
+      this.editedItem = Object.assign({}, this.defaultItem);
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
+        // this.$router.go();
       });
     },
-<<<<<<< HEAD
+    showAlert() {
+      // Use sweetalert2
+      //     this.$swal({title: 'Saved',
+      // icon: 'success',
+      // confirmButtonText: 'OK'}).then((result)=>{
+      //   if(result.isConfirmed){
+      //     this.$router.go()
+      //   }this.$router.go()
+      // });
+      const Toast = this.$swal.mixin({
+        toast: true,
+        position: "top-end",
+
+        confirmButtonText: "go",
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", Swal.stopTimer);
+          toast.addEventListener("mouseleave", Swal.resumeTimer);
+        },
+        willClose: () => {
+    this.$router.go()
+  }
+      });
+
+      Toast.fire({
+        icon: "success",
+        title: "Success",
+        text: "Resource successfully changed.",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.$router.go();
+        }
+        let cek = Swal.isTimerRunning()
+          if(!cek){
+            this.$router.go()
+          }
+      });
+      //this.$router.go()
+    },
+    showAlertFail() {
+      const Toast = this.$swal.mixin({
+        toast: true,
+        position: "top-end",
+
+        confirmButtonText: "go",
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", Swal.stopTimer);
+          toast.addEventListener("mouseleave", Swal.resumeTimer);
+        },
+        willClose: () => {
+     this.$router.go()
+  }
+      });
+
+      Toast.fire({
+        icon: "error",
+        title: "Fail",
+        text: "Resource fail changed.",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.$router.go();
+        }
+      });
+      //this.$router.go()
+    },
     createData(Data) {
       const response = apiService
         .createResourceProfile(Data)
-        .then((succ) => succ)
-        .catch((err) => err);
+        .then((succ) => {
+          // alert(succ);
+          this.snackbar1 = true;
+          this.getData();
+          this.$router.go();
+          succ;
+        })
+        .catch(() => {
+          this.alert = true;
+        });
       response;
-      if (response) {
-        if (response) this.getData();
-      }
     },
     updateData(Data, id) {
       const response = apiService
         .updateResourceProfile(Data, id)
-        .then((succ) => succ)
-        .catch((err) => err);
+        .then((succ) => {
+          // alert(succ);
+          this.snackbar = true;
+          this.getData();
+          // this.$router.go();
+          this.showAlert();
+          succ;
+        })
+        .catch(() => this.showAlertFail() );
       response;
-      if (response) {
-        if (response) this.getData();
+      // this.snackbar = true;
+      this.s = [];
+      if (response.status === 200) alert("Sukses");
+      if (response.status === 200) {
+        alert("sukses");
       }
     },
     tempUpdate(roles, jenjabs, kelompoks, tipes) {
@@ -1069,7 +1033,7 @@ export default {
           });
           kelompok.map((item) => {
             this.newEditedItem.kelompokId = item.value;
-            this.newEditedItem.kelompok.kelompokId = item.value;
+            //this.newEditedItem.kelompok.kelompokId = item.value;
           });
           tipe.map((item) => {
             this.newEditedItem.resourceType = item.value;
@@ -1078,79 +1042,117 @@ export default {
         .catch((err) => err);
       response;
     },
+    getSkillId() {
+      var id = [];
+      for (var i = 0; i < this.skills.length; i++) {
+        if (this.s[i] == this.tempskill[i].text) {
+          id.push(this.tempskill[i].value);
+        }
+      }
+      for (var j = 0; j < this.s.length; j++) {
+        let oo = {};
+        oo.skillId = this.s[j].value;
+        if (this.s[j].value) this.newEditedItem.listSkill.push(oo);
+      }
+    },
+    getjenjabId() {
+      for (var i = 0; i < this.tempj.length; i++) {
+        if (this.editedItem.jenjangJabatan == this.jenjab[i].text) {
+          this.newEditedItem.jenjabId = this.jenjab[i].value;
+        }
+      }
+    },
+    getroleId() {
+      for (var i = 0; i < this.tempr.length; i++) {
+        if (this.editedItem.nama_role == this.role[i].text) {
+          this.newEditedItem.role = this.role[i].value;
+        }
+      }
+    },
+    getkelompokId() {
+      for (var i = 0; i < this.tempk.length; i++) {
+        if (this.editedItem.kelompok == this.kelompok[i].text) {
+          this.newEditedItem.kelompokId = this.kelompok[i].value;
+        }
+      }
+    },
+    gettipeId() {
+      for (var i = 0; i < this.temptipe.length; i++) {
+        if (this.editedItem.tipe_resource == this.resourceType[i].text) {
+          this.newEditedItem.resourceType = this.resourceType[i].value;
+        }
+      }
+    },
 
     save() {
       if (this.editedIndex > -1) {
-        this.tempUpdate(
-          this.editedItem.role,
-          this.editedItem.jenjab,
-          this.editedItem.kelompok,
-          this.editedItem.tipe
-        );
-        this.newEditedItem.employeeName = this.editedItem.employeeName
-        this.newEditedItem.npp = this.editedItem.npp
-        this.newEditedItem.role = this.editedItem.role
-        this.newEditedItem.projectExp = this.editedItem.projectExp
-        this.newEditedItem.totalManhour = this.editedItem.totalManhour
-        this.newEditedItem.updatedBy = localStorage.getItem('name,')
-        this.newEditedItem.activeDate = this.activeSend
-        this.newEditedItem.lastWorkDate = this.lastSend
-        
-        this.editedItem.dateActive === this.nowdate
-          ? (this.activeSend = this.editedItem.tempAD)
-          : (this.activeSend = this.editedItem.activeDate);
-        this.editedItem.lastWorkDate === this.nowdate
-          ? (this.lastSend = this.editedItem.tempLD)
-          : (this.lastSend = this.editedItem.lastWorkDate);
+        this.getSkillId();
+        this.getjenjabId();
+        this.getroleId();
+        this.getkelompokId();
+        this.gettipeId();
+        this.newEditedItem.divisiId = this.editedItem.divisiId;
+        this.editedItem.tipe_resource === "OS"
+          ? (this.newEditedItem.vendorId = this.editedItem.vendorId)
+          : this.newEditedItem.vendorid = 6
+        this.newEditedItem.employeeName = this.editedItem.employeeName;
+        this.newEditedItem.npp = this.editedItem.npp;
+        this.newEditedItem.email = this.editedItem.email;
+        this.newEditedItem.phone = this.editedItem.phone;
+        this.newEditedItem.projectExp = this.editedItem.projectExp;
+        this.newEditedItem.totalManhour = this.editedItem.totalManhour;
+        this.newEditedItem.updatedBy = localStorage.getItem("name,");
+        this.newEditedItem.activeDate = this.activeSend;
+        this.newEditedItem.lastWorkDate = this.lastSend;
+        this.newEditedItem.updateTime = this.nowdate;
         //Object.assign(this.resources[this.editedIndex], this.editedItem);
-        if (this.editedItem.status == "Active") {
+
+        this.newEditedItem.activeDate = this.editedItem.activeDate;
+        this.newEditedItem.lastWorkDate = this.editedItem.lastWorkDate;
+        if (this.editedItem.nama_status == "Active") {
           this.newEditedItem.status = 1;
+          this.editedItem.status = 1;
         } else this.newEditedItem.status = 0;
         this.updateData(this.newEditedItem, this.editedItem.employeeId);
       } else {
-         this.tempUpdate(
-          this.editedItem.role,
-          this.editedItem.jenjab,
-          this.editedItem.kelompok,
-          this.editedItem.tipe
-        );
-        this.newEditedItem.employeeName = this.editedItem.employeeName
-        this.newEditedItem.npp = this.editedItem.npp
-        this.newEditedItem.role = this.editedItem.role
-        this.newEditedItem.projectExp = this.editedItem.projectExp
-        this.newEditedItem.totalManhour = this.editedItem.totalManhour
-        this.newEditedItem.updatedBy = localStorage.getItem('name,')
-        this.newEditedItem.activeDate = this.activeSend
-        this.newEditedItem.lastWorkDate = this.lastSend
-        
-        this.editedItem.dateActive === this.nowdate
-          ? (this.activeSend = this.editedItem.tempAD)
-          : (this.activeSend = this.editedItem.activeDate);
-        this.editedItem.lastWorkDate === this.nowdate
-          ? (this.lastSend = this.editedItem.tempLD)
-          : (this.lastSend = this.editedItem.lastWorkDate);
-        if (this.editedItem.status == "Active") {
+        this.newEditedItem.divisiId = this.editedItem.divisiId;
+        this.editedItem.tipe_resource === "OS"
+          ? (this.newEditedItem.vendorId = this.editedItem.vendorId)
+          : (this.newEditedItem.vendorid = null);
+        this.newEditedItem.role = this.editedItem.role;
+        this.newEditedItem.jenjabId = this.editedItem.jenjabId;
+        this.newEditedItem.kelompokId = this.editedItem.kelompokId;
+        this.newEditedItem.resourceType = this.editedItem.resourceType;
+        this.newEditedItem.employeeName = this.editedItem.employeeName;
+        this.newEditedItem.npp = this.editedItem.npp;
+        this.newEditedItem.email = this.editedItem.email;
+        this.newEditedItem.phone = this.editedItem.phone;
+        this.newEditedItem.projectExp = this.editedItem.projectExp;
+        this.newEditedItem.totalManhour = this.editedItem.totalManhour;
+        this.newEditedItem.createdBy = localStorage.getItem("name,");
+        this.newEditedItem.activeDate = this.activeSend;
+        this.newEditedItem.lastWorkDate = this.lastSend;
+        this.newEditedItem.createdTime = this.nowdate;
+        this.newEditedItem.updateTime = this.nowdate;
+        this.newEditedItem.activeDate = this.editedItem.activeDate;
+        this.newEditedItem.lastWorkDate = this.editedItem.lastWorkDate;
+        if (this.editedItem.nama_status == "Active") {
           this.newEditedItem.status = 1;
         } else this.newEditedItem.status = 0;
-        this.resources.push(this.editedItem);
-        this.createData(this.newEditedItem)
-=======
+        //this.resources.push(this.editedItem);
 
-    save() {
-      if (this.editedIndex > -1) {
-        Object.assign(this.resources[this.editedIndex], this.editedItem);
-      } else {
-        this.resources.push(this.editedItem);
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
+        this.getSkillId();
+        this.getjenjabId();
+        this.getroleId();
+        this.getkelompokId();
+        this.gettipeId();
+        console.log(this.newEditedItem);
+        this.createData(this.newEditedItem);
       }
-      this.close();
+       this.close(); this.closeDelete() ;
     },
     formatDate(date) {
       if (!date) return null;
-<<<<<<< HEAD
-=======
-
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
       const [year, month, day] = date.split("-");
       return `${month}/${day}/${year}`;
     },
@@ -1158,8 +1160,8 @@ export default {
 };
 </script>
 
-<<<<<<< HEAD
-<style lang="scss" scoped></style>
-=======
-<style lang="scss" scoped></style>
->>>>>>> 6d20cd9474dff1d0cf466019b549d7b015ae1060
+<style lang="scss" scoped>
+.v-progress-circular {
+  margin: 1rem;
+}
+</style>

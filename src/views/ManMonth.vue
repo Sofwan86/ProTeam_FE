@@ -3,14 +3,13 @@
     <v-col>
       <v-data-table
         :headers="headers"
-        :items="mandaysvendor"
+        :items="manmonth"
         :search="search"
-        :loading="loadingPlaylist"
         class="elevation-1"
       >
         <template v-slot:top>
           <v-toolbar flat>
-            <v-toolbar-title>Data Mandays Vendor</v-toolbar-title>
+            <v-toolbar-title>Data Man Month</v-toolbar-title>
             <v-spacer></v-spacer>
             <div class="pa-5" max-width:100>
               <v-text-field
@@ -27,20 +26,18 @@
             <v-dialog v-model="dialog" max-width="1000px">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn color="#004483" dark v-bind="attrs" v-on="on">
-                  + Create New Mandays
+                  + Create New Manmonth
                 </v-btn>
               </template>
               <v-card>
-                
-                <v-card color="#004483" >
-                <v-card-title class="white--text" >
-                  <span class="text-h5"
-                    ><h3 >{{ formTitle }}</h3></span
-                  >
-                <v-spacer></v-spacer>
-                <v-icon @click="close" color="white">mdi-close</v-icon>
-                </v-card-title>
-
+                <v-card color="#004483">
+                  <v-card-title class="white--text">
+                    <span class="text-h5"
+                      ><h3>{{ formTitle }}</h3></span
+                    >
+                    <v-spacer></v-spacer>
+                    <v-icon @click="close" color="white">mdi-close</v-icon>
+                  </v-card-title>
                 </v-card>
                 <v-card-text>
                   <v-form v-model="valid">
@@ -66,15 +63,13 @@
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
                           <v-text-field
-                            v-model="editedItem.totalMandays"
-                            label="Total Mandays"
+                            v-model="editedItem.totalManmonth"
+                            label="Total Manmonth"
                             required
                             outlined
                           ></v-text-field>
                         </v-col>
-                       
 
-                
                         <v-col v-if="editedIndex > -1" cols="12" sm="6" md="4">
                           Start Contract Date
                           <v-btn outlined color="grey" width="900" height="35">
@@ -115,7 +110,7 @@
                             />
                           </v-btn>
                         </v-col>
-                  
+
                         <v-col cols="12" sm="6" md="4">
                           <v-select
                             v-model="editedItem.nama_status"
@@ -124,7 +119,7 @@
                             outlined
                           ></v-select>
                         </v-col>
-                         <v-col cols="12" sm="6" md="4">
+                        <v-col cols="12" sm="6" md="4">
                           <v-textarea
                             v-model="editedItem.notes"
                             label="Notes"
@@ -235,20 +230,20 @@
                           <v-list-item two-line>
                             <v-list-item-content>
                               <v-list-item-subtitle
-                                >Total Mandays</v-list-item-subtitle
+                                >Total Manmonth</v-list-item-subtitle
                               >
                               <v-list-item-title>{{
-                                editedItem.totalMandays
+                                editedItem.totalManmonth
                               }}</v-list-item-title>
                             </v-list-item-content>
                           </v-list-item>
                           <v-list-item two-line>
                             <v-list-item-content>
                               <v-list-item-subtitle
-                                >Usage Mandays</v-list-item-subtitle
+                                >Usage Manmonth</v-list-item-subtitle
                               >
                               <v-list-item-title>
-                                {{ editedItem.usageMandays }}
+                                {{ editedItem.usageManmonth }}
                               </v-list-item-title>
                             </v-list-item-content>
                           </v-list-item>
@@ -267,10 +262,10 @@
                           <v-list-item two-line>
                             <v-list-item-content>
                               <v-list-item-subtitle
-                                >Available Mandays</v-list-item-subtitle
+                                >Available Manmonth</v-list-item-subtitle
                               >
                               <v-list-item-title>
-                                {{ editedItem.availableMandays }}
+                                {{ editedItem.availableManmonth }}
                               </v-list-item-title>
                             </v-list-item-content>
                           </v-list-item>
@@ -325,7 +320,7 @@
 import { Axios } from "./Axios";
 const apiService = new Axios();
 export default {
-  name: "MandaysVendor",
+  name: "Manmonth",
   data: (vm) => ({
     valid: false,
     nameRules: [(v) => !!v || "Required"],
@@ -352,7 +347,7 @@ export default {
     dialog: false,
     editedIndex: -1,
     dialogDetail: false,
-    dialogDelete:false,
+    dialogDelete: false,
     headers: [
       {
         text: "Vendor Name",
@@ -361,9 +356,9 @@ export default {
         value: "vendorName",
       },
       { text: "Contract", value: "contractNumber" },
-      { text: "Total Mandays", value: "totalMandays" },
-      { text: "Usage Mandays", value: "usageMandays" },
-      { text: "Avilable Mandays", value: "availableMandays" },
+      { text: "Total Manmonth", value: "totalManmonth" },
+      { text: "Usage Manmonth", value: "usageManmonth" },
+      { text: "Avilable Manmonth", value: "availableManmonth" },
       { text: "Status", value: "status" },
       { text: "Action", value: "actions" },
     ],
@@ -427,21 +422,7 @@ export default {
       role: "",
       status: "",
     },
-    newEditedItem: {
-      vendorName: "string",
-      contractNumber: "string",
-      startContract: "2021-08-24T06:00:02.744Z",
-      lastContract: "2021-08-24T06:00:02.744Z",
-      totalMandays: 0,
-      usageMandays: 0,
-      availableMandays: 0,
-      status: 0,
-      notes: "string",
-      createdBy: "string",
-      updatedBy: "string",
-      createdTime: "2021-08-24T06:00:02.744Z",
-      updateTime: "2021-08-24T06:00:02.744Z",
-    },
+    newEditedItem: {},
     detailID: {},
     editID: "",
     nowdate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
@@ -463,11 +444,11 @@ export default {
     menu3: false,
     menu2: false,
     rt: {},
-    mandaysvendor: [],
+    manmonth: [],
   }),
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "Create New Mandays" : "Edit Mandays";
+      return this.editedIndex === -1 ? "Create New Manmonth" : "Edit Manmonth";
     },
     dateActive() {
       return this.formatDate(this.date);
@@ -495,9 +476,9 @@ export default {
   methods: {
     async getData() {
       const response = await apiService
-        .getManday()
+        .getVendor()
         .then((response) => {
-          this.mandaysvendor = response.data;
+          this.manmonth = response.data;
         })
         .catch((err) => err);
       response;
@@ -531,15 +512,9 @@ export default {
       this.$router.push("/createNewResource");
     },
     editItem(item) {
-      this.editedIndex = this.mandaysvendor.indexOf(item);
+      this.editedIndex = this.manmonth.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
-      for (var i = 0; i < this.mandaysvendor.length; i++) {
-        if (this.mandaysvendor.mandaysId == item.mandaysId) {
-          this.sss = this.mandaysvendor.nama_status;
-        }
-      }
-      console.log(this.editedItem.nama_status);
     },
     detailItem(item) {
       this.editedIndex = this.mandaysvendor.indexOf(item);
@@ -547,7 +522,7 @@ export default {
       this.dialogDetail = true;
     },
     deleteItem(item) {
-      this.editedIndex = this.mandaysvendor.indexOf(item);
+      this.editedIndex = this.manmonth.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialogDelete = true;
       for (var i = 0; i < this.mandaysvendor.length; i++) {
@@ -562,8 +537,8 @@ export default {
       this.closeDelete();
     },
     close() {
+      this.dialogDelete = false;
       this.dialog = false;
-      this.dialogDelete = false
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
@@ -588,7 +563,7 @@ export default {
     },
     createData(Data) {
       const response = apiService
-        .createManday(Data)
+        .createManmonth(Data)
         .then((succ) => {
           this.getData();
           this.snackbar1 = true;
@@ -602,14 +577,14 @@ export default {
     },
     updateData(Data, id) {
       const response = apiService
-        .updateManday(Data, id)
+        .updateManmonth(Data, id)
         .then((succ) => {
           alert(succ);
           this.getData();
-          this.snackbar = true
         })
         .catch((err) => {
           // alert("Sukses Update");
+          this.snackbar = true;
           err;
           this.getData();
         });
@@ -625,9 +600,10 @@ export default {
       if (this.editedIndex > -1) {
         this.newEditedItem.vendorName = this.editedItem.vendorName;
         this.newEditedItem.contractNumber = this.editedItem.contractNumber;
-        this.newEditedItem.totalMandays = this.editedItem.totalMandays;
-        this.newEditedItem.usageMandays = this.editedItem.usageMandays;
-        this.newEditedItem.availableMandays = this.editedItem.availableMandays;
+        this.newEditedItem.totalManmonth = this.editedItem.totalManmonth;
+        this.newEditedItem.usageManmonth = this.editedItem.usageManmonth;
+        this.newEditedItem.availableManmonth =
+          this.editedItem.availableManmonth;
         this.newEditedItem.updatedBy = localStorage.getItem("name,");
         this.newEditedItem.notes = this.editedItem.notes;
         this.newEditedItem.startContract = this.editedItem.startContract;
@@ -635,15 +611,17 @@ export default {
         if (this.editedItem.nama_status == "Active") {
           this.newEditedItem.status = 1;
         } else this.newEditedItem.status = 0;
-        this.updateData(this.newEditedItem, this.editedItem.mandaysId);
+        this.updateData(this.newEditedItem, this.editedItem.manmonthId);
       } else {
         this.newEditedItem.vendorName = this.editedItem.vendorName;
         this.newEditedItem.contractNumber = this.editedItem.contractNumber;
-        this.newEditedItem.totalMandays = this.editedItem.totalMandays;
-        this.newEditedItem.usageMandays = this.editedItem.usageMandays;
-        this.newEditedItem.availableMandays = this.editedItem.availableMandays;
+        this.newEditedItem.totalManmonth = this.editedItem.totalManmonth;
+        this.newEditedItem.usageManmonth = this.editedItem.usageManmonth;
+        this.newEditedItem.availableManmonth =
+          this.editedItem.availableManmonth;
         this.newEditedItem.createdBy = localStorage.getItem("name,");
         this.newEditedItem.notes = this.editedItem.notes;
+
         this.newEditedItem.startContract = this.editedItem.startContract;
         this.newEditedItem.lastContract = this.editedItem.lastContract;
         if (this.editedItem.nama_status == "Active") {
