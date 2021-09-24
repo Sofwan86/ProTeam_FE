@@ -27,12 +27,15 @@
                 dense
               ></v-text-field>
             </div>
+            <v-btn v-bind="size"  class="white--text" @click="editItem(7,'dfsf')" color="#004483">
+              + Create New User
+            </v-btn>
             <v-dialog v-model="dialog" max-width="800px">
-              <template v-slot:activator="{ on }">
+              <!-- <template v-slot:activator="{ on }">
                 <v-btn color="#004483" dark v-bind="size" v-on="on">
                   + Create New User
                 </v-btn>
-              </template>
+              </template> -->
               <v-card>
                 <v-alert dense text type="success" v-model="snackbar">
                   <strong>Data sukses diupdate</strong>
@@ -50,7 +53,7 @@
                 </v-card-title>
                  </v-card>
                 <v-card-text>
-                  <v-form v-model="valid">
+                  <v-form ref="form" v-model="valid">
                     <v-container>
                       <v-row>
                         <v-col cols="12" sm="6" md="4">
@@ -107,6 +110,7 @@
                             label="Password"
                             filled
                             disabled
+                            type="password"
                             value="Proteam@12345"
                             required
                             outlined
@@ -347,33 +351,9 @@ export default {
       password: "Proteam@12345",
     },
     defaultItem: {
-      nama: "",
-      npp: "",
-      email: "",
-      phone: "",
-      skills: [],
-      dateActive: "",
-      dateLast: "",
-      jenjab: "",
-      kelompok: "",
-      tipe: "",
-      role: "",
-      status: "",
-      price: "",
+
     },
     detailItem: {
-      nama: "",
-      npp: "",
-      email: "",
-      phone: "",
-      skills: [],
-      dateActive: "",
-      dateLast: "",
-      jenjab: "",
-      kelompok: "",
-      tipe: "",
-      role: "",
-      status: "",
     },
     newEditedItem: {},
     detailID: {},
@@ -432,6 +412,7 @@ export default {
   },
   methods: {
     async getData() {
+      this.editedItem.password='Proteam@123'
       const response = await apiService
         .getUsers()
         .then((response) => {
@@ -491,26 +472,28 @@ export default {
       this.createItem = item;
       this.$router.push("/createNewResource");
     },
-    editItem(item) {
+    editItem(item,pw) {
+      if(pw) this.editedItem.password = pw
+      this.editedItem.email = "fdss"
       this.editedIndex = this.users.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
       this.getData();
-      const a = [];
-      item.listSkill.map((item) => {
-        a.push(item.skillset);
-        let oo = {};
-        oo.text = item.skillset;
-        oo.value = item.skillset_id;
-        // this.s.push(item.skillset)
-        if (item.skillset) {
-          this.s.push(oo);
-        }
-      });
-      this.editedItem.skills = a;
+      //const a = [];
+      // item.listSkill.map((item) => {
+      //   a.push(item.skillset);
+      //   let oo = {};
+      //   oo.text = item.skillset;
+      //   oo.value = item.skillset_id;
+      //   // this.s.push(item.skillset)
+      //   if (item.skillset) {
+      //     this.s.push(oo);
+      //   }
+      // });
+      // this.editedItem.skills = a;
     },
     detailItem(item) {
-      this.editedIndex = this.resources.indexOf(item);
+      this.editedIndex = this.users.indexOf(item);
       this.detailItem = Object.assign({}, item);
       this.dialogDetail = true;
     },
@@ -530,43 +513,106 @@ export default {
       this.s = [];
       this.dialog = false;
       this.dialogDelete = false;
+      this.$refs.form.reset();
+      this.$refs.form.resetValidation();
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
-        this.$router.go();
+        // this.$router.go();
       });
     },
     closeDetail() {
       this.s = [];
       this.dialog = false;
+           this.$refs.form.reset();
+      this.$refs.form.resetValidation();
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
-        this.$router.go();
+        //this.$router.go();
       });
     },
     closeDelete() {
       this.s = [];
       this.dialogDelete = false;
+           this.$refs.form.reset();
+      this.$refs.form.resetValidation();
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
-        this.$router.go();
+        //this.$router.go();
       });
+    },
+      showAlert() {
+      const Toast = this.$swal.mixin({
+        toast: true,
+        position: "top-end",
+        confirmButtonText: "go",
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", this.$swal.stopTimer);
+          toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+        },
+        willClose: () => {
+          this.$router.go();
+        },
+      });
+
+      Toast.fire({
+        icon: "success",
+        title: "Success",
+        text: "Users successfully changed.",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.$router.go();
+        }
+      });
+      //this.$router.go()
+    },
+    showAlertFail() {
+      const Toast = this.$swal.mixin({
+        toast: true,
+        position: "top-end",
+
+        confirmButtonText: "go",
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", this.$swal.stopTimer);
+          toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+        },
+        willClose: () => {
+          this.$router.go();
+        },
+      });
+
+      Toast.fire({
+        icon: "error",
+        title: "Fail",
+        text: "Users fail changed.",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.$router.go();
+        }
+      });
+      //this.$router.go()
     },
     createData(Data) {
       const response = apiService
         .createUsers(Data)
         .then((succ) => {
           // alert(succ);
-          this.snackbar1 = true;
+          //this.snackbar1 = true;
           this.getData();
           // this.$router.go();
+          this.showAlert();
           succ;
         })
-        .catch((err) => {
-          err;
-          alert("Gagal, NPP tidak boleh sama");
+        .catch(() => {
+          this.showAlertFail()
         });
       response;
       if (response) {
@@ -578,52 +624,21 @@ export default {
         .updateUsers(Data, id)
         .then((succ) => {
           // alert(succ);
-          this.snackbar = true;
+          //this.snackbar = true;
           this.getData();
           // this.$router.go();
+          this.showAlert();
           succ;
         })
         .catch((err) => {
+          this.showAlertFail()
           err;
         });
-      response;
-      this.snackbar = true;
-      this.s = [];
-      if (response.status === 200) alert("Sukses");
-      if (response.status === 200) {
-        alert("sukses");
-      }
-      console.log(response.status);
-    },
-    tempUpdate(roles, jenjabs, kelompoks, tipes) {
-      const response = apiService
-        .getLookup()
-        .then((response) => {
-          let role = response.find((el) => el.name == roles);
-          let jenjab = response.find((el) => el.name == jenjabs);
-          let kelompok = response.find((el) => el.name == kelompoks);
-          let tipe = response.find((el) => el.name == tipes);
-          role.map((item) => {
-            this.newEditedItem.role = item.value;
-          });
-          jenjab.map((item) => {
-            this.newEditedItem.jenjabId = item.value;
-          });
-          kelompok.map((item) => {
-            this.newEditedItem.kelompokId = item.value;
-            //this.newEditedItem.kelompok.kelompokId = item.value;
-          });
-          tipe.map((item) => {
-            this.newEditedItem.resourceType = item.value;
-          });
-        })
-        .catch((err) => err);
       response;
     },
 
     save() {
       if (this.editedIndex > -1) {
-        this.newEditedItem.id = this.editedItem.id;
         this.newEditedItem.password = "Proteam@12345";
         this.newEditedItem.updatedBy = localStorage.getItem("name,");
         this.newEditedItem.createdBy = localStorage.getItem("name,");

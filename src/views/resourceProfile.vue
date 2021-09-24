@@ -25,9 +25,9 @@
                 dense
               ></v-text-field>
             </div>
-            <v-btn class="white--text" @click="editItem(7,7)" color="#004483" >
-                  + Create New Resource
-                </v-btn>
+            <v-btn v-bind="size" class="white--text" @click="editItem(7, 7)" color="#004483">
+              + Create New Resource
+            </v-btn>
             <v-dialog v-model="dialog" max-width="1000px">
               <!-- <template v-slot:activator="{ on, attrs }">
                 <v-btn color="#004483" dark v-bind="attrs" v-on="on">
@@ -41,6 +41,7 @@
                       ><h3>{{ formTitle }}</h3></span
                     >
                     <v-spacer></v-spacer>
+
                     <v-icon @click="close" color="white">mdi-close</v-icon>
                   </v-card-title>
                 </v-card>
@@ -70,6 +71,21 @@
                   </v-alert>
                   <v-form ref="form" v-model="valid">
                     <v-container>
+                      <div>
+                        <h3>Import data exel</h3>
+                        <input type="file" @change="onChange" />
+                        <xlsx-read :file="file">
+                          <xlsx-json>
+                            <template #default="{ collection }">
+                              <div>
+                                {{ collection   }}
+                                {{collection.length}}
+                              </div>
+                              <v-btn @click="upload(collection)" >Upload</v-btn>
+                            </template>
+                          </xlsx-json>
+                        </xlsx-read>
+                      </div>
                       <v-row>
                         <v-col cols="12" sm="6" md="4">
                           <v-text-field
@@ -506,8 +522,8 @@
           </v-toolbar>
         </template>
         <template v-slot:[`item.action`]="{ item }">
-          <v-btn @click="deleteItem(item)">Detail</v-btn>
-          <v-btn class="mx-3" @click="editItem(item)">Edit</v-btn>
+          <v-btn v-bind="size" @click="deleteItem(item)">Detail</v-btn>
+          <v-btn v-bind="size" class="mx-3" @click="editItem(item)">Edit</v-btn>
         </template>
         <template v-slot:[`item.status`]="{ item }">
           <p v-if="item.status == 0" class="red--text">Inactive</p>
@@ -536,10 +552,17 @@
 
 <script>
 import { Axios } from "./Axios";
+import XlsxRead from "../components/XlsxRead";
+import XlsxJson from "../components/XlsxJson";
 const apiService = new Axios();
 export default {
   name: "resourceProfile",
+  components: {
+    XlsxRead,
+    XlsxJson,
+  },
   data: (vm) => ({
+    file: null,
     alert: false,
     updateTime: "updateTime",
     sortDesc: true,
@@ -695,6 +718,10 @@ export default {
     ceknpp: false,
   }),
   computed: {
+    size () {
+      const size = {xs:'x-small'}[this.$vuetify.breakpoint.name];
+      return size ? { [size]: true } : {}
+    },
     formTitle() {
       return this.editedIndex === -1 ? "Create New Resource" : "Edit Resource";
     },
@@ -723,6 +750,9 @@ export default {
     this.getVendor();
   },
   methods: {
+    onChange(event) {
+      this.file = event.target.files ? event.target.files[0] : null;
+    },
     async getVendor() {
       const response = await apiService
         .getVendor()
@@ -839,11 +869,14 @@ export default {
       this.$router.push("/createNewResource");
       console.log("fds");
     },
-    editItem(item,t) {
+    upload(a){
+        console.log(a)
+    },
+    editItem(item, t) {
       console.log("fds");
       this.editedIndex = this.resources.indexOf(item);
       this.editedItem = Object.assign({}, item);
-      if(t) this.editedItem.totalManhour = t
+      if (t) this.editedItem.totalManhour = t;
       this.dialog = true;
       this.getData();
       const a = [];
@@ -858,7 +891,6 @@ export default {
         }
       });
       this.editedItem.skills = a;
-
       console.log("dfs");
     },
     deleteItem(item) {
@@ -877,7 +909,7 @@ export default {
     close() {
       this.s = [];
       this.dialog = false;
-      this.$refs.form.reset()
+      this.$refs.form.reset();
       this.$refs.form.resetValidation();
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
@@ -888,9 +920,9 @@ export default {
     closeDetail() {
       this.s = [];
       this.dialog = false;
-      this.$refs.form.reset()
+      this.$refs.form.reset();
       this.$refs.form.resetValidation();
-      this.$refs.form.reset()
+      this.$refs.form.reset();
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         //this.editedIndex = -1;
@@ -899,9 +931,9 @@ export default {
     },
     closeDelete() {
       this.s = [];
-      
+
       this.dialogDelete = false;
-      this.$refs.form.reset()
+      this.$refs.form.reset();
       this.$refs.form.resetValidation();
       //this.editedItem = null
       this.editedIndex = -1;
@@ -913,18 +945,9 @@ export default {
       });
     },
     showAlert() {
-      // Use sweetalert2
-      //     this.$swal({title: 'Saved',
-      // icon: 'success',
-      // confirmButtonText: 'OK'}).then((result)=>{
-      //   if(result.isConfirmed){
-      //     this.$router.go()
-      //   }this.$router.go()
-      // });
       const Toast = this.$swal.mixin({
         toast: true,
         position: "top-end",
-
         confirmButtonText: "go",
         timer: 2000,
         timerProgressBar: true,
@@ -933,8 +956,8 @@ export default {
           toast.addEventListener("mouseleave", this.$swal.resumeTimer);
         },
         willClose: () => {
-    this.$router.go()
-  }
+          this.$router.go();
+        },
       });
 
       Toast.fire({
@@ -946,7 +969,6 @@ export default {
         if (result.isConfirmed) {
           this.$router.go();
         }
-        
       });
       //this.$router.go()
     },
@@ -963,8 +985,8 @@ export default {
           toast.addEventListener("mouseleave", this.$swal.resumeTimer);
         },
         willClose: () => {
-     this.$router.go()
-  }
+          this.$router.go();
+        },
       });
 
       Toast.fire({
@@ -986,11 +1008,12 @@ export default {
           // alert(succ);
           this.snackbar1 = true;
           this.getData();
-          this.$router.go();
+          //this.$router.go();
+          this.showAlert();
           succ;
         })
         .catch(() => {
-          this.alert = true;
+          this.showAlertFail()
         });
       response;
     },
@@ -1005,7 +1028,7 @@ export default {
           this.showAlert();
           succ;
         })
-        .catch(() => this.showAlertFail() );
+        .catch(() => this.showAlertFail());
       response;
       // this.snackbar = true;
       this.s = [];
@@ -1091,7 +1114,7 @@ export default {
         this.newEditedItem.divisiId = this.editedItem.divisiId;
         this.editedItem.tipe_resource === "OS"
           ? (this.newEditedItem.vendorId = this.editedItem.vendorId)
-          : this.newEditedItem.vendorid = 6
+          : (this.newEditedItem.vendorid = 6);
         this.newEditedItem.employeeName = this.editedItem.employeeName;
         this.newEditedItem.npp = this.editedItem.npp;
         this.newEditedItem.email = this.editedItem.email;
@@ -1146,7 +1169,8 @@ export default {
         console.log(this.newEditedItem);
         this.createData(this.newEditedItem);
       }
-       this.close(); this.closeDelete() ;
+      this.close();
+      this.closeDelete();
     },
     formatDate(date) {
       if (!date) return null;

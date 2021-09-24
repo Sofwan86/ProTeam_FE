@@ -16,6 +16,7 @@
               <v-text-field
                 class="shrink"
                 outlined
+                v-bind="size"
                 v-model="search"
                 append-icon="mdi-magnify"
                 label="Search"
@@ -24,26 +25,27 @@
                 dense
               ></v-text-field>
             </div>
+            <v-btn v-bind="size" class="white--text" @click="editItem()" color="#004483">
+              + Create New Mandays
+            </v-btn>
             <v-dialog v-model="dialog" max-width="1000px">
-              <template v-slot:activator="{ on, attrs }">
+              <!-- <template v-slot:activator="{ on, attrs }">
                 <v-btn color="#004483" dark v-bind="attrs" v-on="on">
                   + Create New Mandays
                 </v-btn>
-              </template>
+              </template> -->
               <v-card>
-                
-                <v-card color="#004483" >
-                <v-card-title class="white--text" >
-                  <span class="text-h5"
-                    ><h3 >{{ formTitle }}</h3></span
-                  >
-                <v-spacer></v-spacer>
-                <v-icon @click="close" color="white">mdi-close</v-icon>
-                </v-card-title>
-
+                <v-card color="#004483">
+                  <v-card-title class="white--text">
+                    <span class="text-h5"
+                      ><h3>{{ formTitle }}</h3></span
+                    >
+                    <v-spacer></v-spacer>
+                    <v-icon @click="close" color="white">mdi-close</v-icon>
+                  </v-card-title>
                 </v-card>
                 <v-card-text>
-                  <v-form v-model="valid">
+                  <v-form ref="form" v-model="valid">
                     <v-container>
                       <v-row>
                         <v-col cols="12" sm="6" md="4">
@@ -72,9 +74,7 @@
                             outlined
                           ></v-text-field>
                         </v-col>
-                       
 
-                
                         <v-col v-if="editedIndex > -1" cols="12" sm="6" md="4">
                           Start Contract Date
                           <v-btn outlined color="grey" width="900" height="35">
@@ -115,7 +115,7 @@
                             />
                           </v-btn>
                         </v-col>
-                  
+
                         <v-col cols="12" sm="6" md="4">
                           <v-select
                             v-model="editedItem.nama_status"
@@ -124,7 +124,7 @@
                             outlined
                           ></v-select>
                         </v-col>
-                         <v-col cols="12" sm="6" md="4">
+                        <v-col cols="12" sm="6" md="4">
                           <v-textarea
                             v-model="editedItem.notes"
                             label="Notes"
@@ -296,8 +296,8 @@
           </v-toolbar>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn @click="deleteItem(item)">Detail</v-btn>
-          <v-btn class="mx-3" @click="editItem(item)">Edit</v-btn>
+          <v-btn v-bind="size" @click="deleteItem(item)">Detail</v-btn>
+          <v-btn v-bind="size" class="mx-3" @click="editItem(item)">Edit</v-btn>
         </template>
         <template v-slot:[`item.status`]="{ item }">
           <p v-if="item.status == 0" class="red--text">Inactive</p>
@@ -352,7 +352,7 @@ export default {
     dialog: false,
     editedIndex: -1,
     dialogDetail: false,
-    dialogDelete:false,
+    dialogDelete: false,
     headers: [
       {
         text: "Vendor Name",
@@ -466,6 +466,10 @@ export default {
     mandaysvendor: [],
   }),
   computed: {
+    size () {
+      const size = {xs:'x-small'}[this.$vuetify.breakpoint.name];
+      return size ? { [size]: true } : {}
+    },
     formTitle() {
       return this.editedIndex === -1 ? "Create New Mandays" : "Edit Mandays";
     },
@@ -563,62 +567,117 @@ export default {
     },
     close() {
       this.dialog = false;
-      this.dialogDelete = false
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-        this.$router.go();
-      });
-    },
-    closeDetail() {
-      this.dialog = false;
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-        this.$router.go();
-      });
-    },
-    closeDelete() {
+      this.$refs.form.reset();
+      this.$refs.form.resetValidation();
       this.dialogDelete = false;
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
-        this.$router.go();
+      });
+    },
+    closeDetail() {
+      this.dialog = false;
+      this.$refs.form.reset();
+      this.$refs.form.resetValidation();
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
+    },
+    closeDelete() {
+      this.dialogDelete = false;
+      this.$refs.form.reset();
+      this.$refs.form.resetValidation();
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
       });
     },
     createData(Data) {
       const response = apiService
         .createManday(Data)
         .then((succ) => {
-          this.getData();
-          this.snackbar1 = true;
+          this.showAlert();
           succ;
         })
-        .catch((err) => err);
+        .catch(() => this.showAlertFail());
       response;
-      if (response) {
-        if (response) this.getData();
-      }
     },
-    updateData(Data, id) {
-      const response = apiService
+    showAlert() {
+      const Toast = this.$swal.mixin({
+        toast: true,
+        position: "top-end",
+        confirmButtonText: "go",
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", this.$swal.stopTimer);
+          toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+        },
+        willClose: () => {
+          this.$router.go();
+        },
+      });
+
+      Toast.fire({
+        icon: "success",
+        title: "Success",
+        text: "Mandays successfully changed.",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.$router.go();
+        }
+      });
+      //this.$router.go()
+    },
+    showAlertFail() {
+      const Toast = this.$swal.mixin({
+        toast: true,
+        position: "top-end",
+
+        confirmButtonText: "go",
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", this.$swal.stopTimer);
+          toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+        },
+        willClose: () => {
+          this.$router.go();
+        },
+      });
+
+      Toast.fire({
+        icon: "error",
+        title: "Fail",
+        text: "Mandays fail changed.",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.$router.go();
+        }
+      });
+      //this.$router.go()
+    },
+    async updateData(Data, id) {
+      const response = await apiService
         .updateManday(Data, id)
         .then((succ) => {
-          alert(succ);
-          this.getData();
-          this.snackbar = true
+          // alert(succ);
+          succ;
+          this.showAlert();
         })
         .catch((err) => {
           // alert("Sukses Update");
           err;
-          this.getData();
+          console.log("dsffd" + err);
+         this.showAlertFail()
         });
+      // if(response.status == 200){
+      //   this.showAlert()
+      // }else this.showAlertFail()
       response;
-      if (response.status === 200) alert("Sukses");
-      if (response.status === 200) {
-        alert("sukses");
-      }
-      console.log("aa" + this.editedItem.nama_status);
     },
 
     save() {

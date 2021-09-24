@@ -36,12 +36,12 @@ export class Axios{
      }
      async updateManday(datas,id){
         const url = `${BASE_URL}/Manday/`+id
-        const data = axios.put(url,datas).then(response => response.data).bind(this)
+        const data = axios.put(url,datas).then(response => response.data)
         return data
      }
      async updateManmonth(datas,id){
       const url = `${BASE_URL}/Manmonth/`+id
-      const data = axios.put(url,datas).then(response => response.data).bind(this)
+      const data = axios.put(url,datas).then(response => response.data)
       return data
    }
      async getDashboardVendor(){

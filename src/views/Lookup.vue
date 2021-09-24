@@ -33,6 +33,7 @@
               </v-col>
               <v-col>
                 <v-btn
+                v-bind="size"
                   class="white--text"
                   @click="editItem(1)"
                   color="#004483"
@@ -236,6 +237,10 @@ export default {
       .substr(0, 10),
   }),
   computed: {
+    size () {
+      const size = {xs:'x-small'}[this.$vuetify.breakpoint.name];
+      return size ? { [size]: true } : {}
+    },
     formTitle() {
       return this.editedIndex === -1 ? "New Data" : "Edit Data";
     },

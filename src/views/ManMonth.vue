@@ -23,12 +23,15 @@
                 dense
               ></v-text-field>
             </div>
+            <v-btn v-bind="size"  class="white--text" @click="editItem()" color="#004483">
+              + Create New Manmonth
+            </v-btn>
             <v-dialog v-model="dialog" max-width="1000px">
-              <template v-slot:activator="{ on, attrs }">
+              <!-- <template v-slot:activator="{ on, attrs }">
                 <v-btn color="#004483" dark v-bind="attrs" v-on="on">
                   + Create New Manmonth
                 </v-btn>
-              </template>
+              </template> -->
               <v-card>
                 <v-card color="#004483">
                   <v-card-title class="white--text">
@@ -40,7 +43,7 @@
                   </v-card-title>
                 </v-card>
                 <v-card-text>
-                  <v-form v-model="valid">
+                  <v-form ref="form" v-model="valid">
                     <v-container>
                       <v-row>
                         <v-col cols="12" sm="6" md="4">
@@ -291,8 +294,8 @@
           </v-toolbar>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn @click="deleteItem(item)">Detail</v-btn>
-          <v-btn class="mx-3" @click="editItem(item)">Edit</v-btn>
+          <v-btn v-bind="size" @click="deleteItem(item)">Detail</v-btn>
+          <v-btn v-bind="size" class="mx-3" @click="editItem(item)">Edit</v-btn>
         </template>
         <template v-slot:[`item.status`]="{ item }">
           <p v-if="item.status == 0" class="red--text">Inactive</p>
@@ -447,6 +450,10 @@ export default {
     manmonth: [],
   }),
   computed: {
+    size () {
+      const size = {xs:'x-small'}[this.$vuetify.breakpoint.name];
+      return size ? { [size]: true } : {}
+    },
     formTitle() {
       return this.editedIndex === -1 ? "Create New Manmonth" : "Edit Manmonth";
     },
@@ -469,7 +476,6 @@ export default {
     },
   },
   created() {
-    this.initialize();
     this.getData();
     this.getData2();
   },
@@ -496,17 +502,6 @@ export default {
         .catch((err) => err);
       response;
     },
-    initialize() {
-      this.mandays = [
-        {
-          name: "Frozen Yogurt",
-          calories: 159,
-          fat: 6.0,
-          carbs: 24,
-          protein: 4.0,
-        },
-      ];
-    },
     createItem(item) {
       this.createItem = item;
       this.$router.push("/createNewResource");
@@ -517,7 +512,7 @@ export default {
       this.dialog = true;
     },
     detailItem(item) {
-      this.editedIndex = this.mandaysvendor.indexOf(item);
+      this.editedIndex = this.manmonth.indexOf(item);
       this.detailItem = Object.assign({}, item);
       this.dialogDetail = true;
     },
@@ -525,11 +520,6 @@ export default {
       this.editedIndex = this.manmonth.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialogDelete = true;
-      for (var i = 0; i < this.mandaysvendor.length; i++) {
-        if (this.mandaysvendor.mandaysId == item.mandaysId) {
-          this.sss = this.mandaysvendor.nama_status;
-        }
-      }
       console.log(this.sss);
     },
     deleteItemConfirm() {
@@ -539,61 +529,115 @@ export default {
     close() {
       this.dialogDelete = false;
       this.dialog = false;
+                       this.$refs.form.reset();
+      this.$refs.form.resetValidation();
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
-        this.$router.go();
+        //this.$router.go();
       });
     },
     closeDetail() {
       this.dialog = false;
+                       this.$refs.form.reset();
+      this.$refs.form.resetValidation();
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
-        this.$router.go();
+        //this.$router.go();
       });
     },
     closeDelete() {
       this.dialogDelete = false;
+                       this.$refs.form.reset();
+      this.$refs.form.resetValidation();
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
-        this.$router.go();
       });
+    },
+      showAlert() {
+      const Toast = this.$swal.mixin({
+        toast: true,
+        position: "top-end",
+        confirmButtonText: "go",
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", this.$swal.stopTimer);
+          toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+        },
+        willClose: () => {
+          this.$router.go();
+        },
+      });
+
+      Toast.fire({
+        icon: "success",
+        title: "Success",
+        text: "Manmonth successfully changed.",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.$router.go();
+        }
+      });
+      //this.$router.go()
+    },
+    showAlertFail() {
+      const Toast = this.$swal.mixin({
+        toast: true,
+        position: "top-end",
+
+        confirmButtonText: "go",
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", this.$swal.stopTimer);
+          toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+        },
+        willClose: () => {
+          this.$router.go();
+        },
+      });
+
+      Toast.fire({
+        icon: "error",
+        title: "Fail",
+        text: "Manmonth fail changed.",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.$router.go();
+        }
+      });
+      //this.$router.go()
     },
     createData(Data) {
       const response = apiService
         .createManmonth(Data)
         .then((succ) => {
           this.getData();
-          this.snackbar1 = true;
+          this.showAlert()
           succ;
         })
-        .catch((err) => err);
+        .catch(() => this.showAlertFail());
       response;
-      if (response) {
-        if (response) this.getData();
-      }
     },
     updateData(Data, id) {
       const response = apiService
         .updateManmonth(Data, id)
         .then((succ) => {
-          alert(succ);
-          this.getData();
+          succ
+          this.showAlert()
         })
         .catch((err) => {
           // alert("Sukses Update");
-          this.snackbar = true;
+          //this.snackbar = true;
           err;
-          this.getData();
+           this.showAlertFail()
         });
       response;
-      if (response.status === 200) alert("Sukses");
-      if (response.status === 200) {
-        alert("sukses");
-      }
-      console.log("aa" + this.editedItem.nama_status);
     },
 
     save() {
