@@ -28,7 +28,7 @@
 
 <script>
 import Resource from "./resourceProfile.vue"
-import Kelompok from "./KelompokProfile.vue"
+import Kelompok from "./UnitProfile.vue"
 
 export default {
   name: "Profile",

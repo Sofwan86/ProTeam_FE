@@ -16,73 +16,78 @@
               <v-col>
                 <h3>Manage Lookup</h3>
               </v-col>
-              
-              <v-col cols="12" sm="5" md="3">
-                
-              <v-text-field
-                class="shrink"
-                outlined
-                v-model="search"
-                append-icon="mdi-magnify"
-                label="Search"
-                single-line
-                hide-details
-                dense
-              ></v-text-field>
-            
-              </v-col>
-              <v-col cols="12" sm="4" md="2">
-                
-                
-                  
 
-                  <v-select
-                    v-model="selected"
-                    :items="itemm"
-                    label="Select Type"
-                    item-text="name"
-                    item-value="item"
-                    return-object
-                    outlined
-                    dense
-                  >
-                  </v-select>
-                
-               </v-col>
-              <v-col cols="3" sm="2" md="3">
-                <v-btn color="primary" dark href="/createresource">
-                  + Create New Data
+              <v-spacer></v-spacer>
+              <v-col>
+                <v-select
+                  v-model="selected"
+                  :items="itemm"
+                  label="Select Type"
+                  item-text="name"
+                  item-value="item"
+                  return-object
+                  outlined
+                  dense
+                >
+                </v-select>
+              </v-col>
+              <v-col>
+                <v-btn
+                  class="white--text"
+                  @click="editItem(1)"
+                  color="#004483"
+                >
+                  + Create New Type
                 </v-btn>
               </v-col>
             </v-row>
-            
+
             <v-row>
               <v-col>
                 <v-data-table
-                   v-if="selected.name"
-                v-bind:headers="headers"
-                :items="selected.data"
-                hide-actions
+                  v-if="selected.name"
+                  v-bind:headers="headers"
+                  :items="selected.data"
+                  :search="search"
+                  hide-actions
                 >
                   <template v-slot:top>
                     <v-toolbar flat>
-                      <v-toolbar-title><h3 v-if="selected.name">
-                {{ selected.name }}
-                <v-icon @click="editItem(selected.name)">mdi-pencil</v-icon>
-                <v-icon>mdi-plus</v-icon>
-              </h3></v-toolbar-title>
+                      <v-toolbar-title
+                        ><h3 v-if="selected.name">
+                          {{ selected.name }}
+                          <v-icon @click="editItem(selected.name)"
+                            >mdi-pencil</v-icon
+                          >
+                        </h3></v-toolbar-title
+                      >
+
                       <v-divider class="mx-4" inset vertical></v-divider>
                       <v-spacer></v-spacer>
+                      <v-col cols="12" sm="5" md="3">
+                        <v-text-field
+                          class="shrink"
+                          outlined
+                          v-if="selected.name"
+                          v-model="search"
+                          append-icon="mdi-magnify"
+                          label="Search"
+                          single-line
+                          hide-details
+                          dense
+                        ></v-text-field>
+                      </v-col>
                       <v-dialog v-model="dialog" max-width="500px">
                         <template v-slot:activator="{ on, attrs }">
                           <v-btn
-                            color="primary"
+                            class="mb-2 white--text"
+                            @click="editItem()"
+                            color="#004483"
                             dark
-                            class="mb-2"
                             v-bind="attrs"
                             v-on="on"
                           >
-                            New Item
+                            New Data
                           </v-btn>
                         </template>
                         <v-card>
@@ -110,8 +115,11 @@
                                 >
                                   Cancel
                                 </v-btn>
-                                <v-btn color="#004483" dark @click="save">
-                                  Create New Type
+                                <v-btn v-if="editedIndex == -1" color="#004483" dark @click="save">
+                                  Create New Data
+                                </v-btn>
+                                <v-btn v-else color="#004483" dark @click="save">
+                                  Update Data
                                 </v-btn>
                               </v-card-actions>
                             </v-container>
@@ -149,9 +157,9 @@
                       mdi-pencil
                     </v-icon>
                   </template>
-                  <template v-slot:no-data>
-                    <v-btn color="primary" @click="initialize"> Reset </v-btn>
-                  </template>
+                  <template v-slot:[`item.updateTime`]="{ item }">
+          <h4>{{ item.updateTime | str_limit(10) }}</h4>
+        </template>
                 </v-data-table>
               </v-col>
             </v-row>
@@ -170,7 +178,7 @@ const apiService = new Axios();
 export default {
   name: "Lookup",
   data: () => ({
-    selected: ["Role"],
+    selected: [],
     dataType: [],
     tab: null,
     menus: ["Resource", "Kelompok"],
@@ -188,19 +196,6 @@ export default {
       { text: "Avilable Mandays", value: "avilableMandays" },
       { text: "Status", value: "status" },
       { text: "Action", value: "" },
-    ],
-
-    items: [
-      {
-        text: "Master Admin",
-        disabled: false,
-        href: "/usermanagement",
-      },
-      {
-        text: "Lookup",
-        disabled: true,
-        href: "/lookup",
-      },
     ],
     dialog: false,
     dialogDelete: false,
@@ -235,356 +230,14 @@ export default {
     },
     obj: {},
     itemm: [],
-    itemss: [
-      {
-        value: false,
-        id: 0,
-        name: "Finch Conway",
-        age: 49,
-        weight: 66,
-        height: 61.69,
-        bloodsugars: [
-          {
-            value: 86,
-            time: "12/17 02:56:18",
-          },
-          {
-            value: 92,
-            time: "12/17 06:12:47",
-          },
-          {
-            value: 98,
-            time: "12/08 12:45:01",
-          },
-          {
-            value: 82,
-            time: "11/21 05:31:09",
-          },
-          {
-            value: 86,
-            time: "11/25 09:35:45",
-          },
-          {
-            value: 83,
-            time: "12/02 02:43:38",
-          },
-          {
-            value: 84,
-            time: "11/30 05:29:29",
-          },
-          {
-            value: 90,
-            time: "12/08 04:27:22",
-          },
-          {
-            value: 98,
-            time: "11/28 09:18:24",
-          },
-        ],
-      },
-      {
-        value: false,
-        id: 1,
-        name: "Patrick Odonnell",
-        age: 37,
-        weight: 52,
-        height: 64.36,
-        bloodsugars: [
-          {
-            value: 93,
-            time: "12/02 07:39:07",
-          },
-          {
-            value: 98,
-            time: "12/02 11:47:32",
-          },
-          {
-            value: 93,
-            time: "11/30 08:24:25",
-          },
-          {
-            value: 81,
-            time: "11/21 09:56:25",
-          },
-          {
-            value: 98,
-            time: "12/13 03:03:37",
-          },
-          {
-            value: 99,
-            time: "12/24 04:14:42",
-          },
-          {
-            value: 101,
-            time: "12/06 12:02:28",
-          },
-        ],
-      },
-      {
-        value: false,
-        id: 2,
-        name: "Alyson Finch",
-        age: 60,
-        weight: 63,
-        height: 71.23,
-        bloodsugars: [
-          {
-            value: 90,
-            time: "12/17 12:38:49",
-          },
-          {
-            value: 80,
-            time: "12/19 09:33:01",
-          },
-          {
-            value: 105,
-            time: "12/15 07:42:52",
-          },
-          {
-            value: 92,
-            time: "12/24 06:59:48",
-          },
-          {
-            value: 75,
-            time: "12/05 05:04:14",
-          },
-          {
-            value: 98,
-            time: "12/11 02:22:55",
-          },
-          {
-            value: 79,
-            time: "12/17 10:24:27",
-          },
-        ],
-      },
-      {
-        value: false,
-        id: 3,
-        name: "Marva Oneil",
-        age: 75,
-        weight: 32,
-        height: 71.9,
-        bloodsugars: [
-          {
-            value: 88,
-            time: "12/20 04:36:09",
-          },
-          {
-            value: 85,
-            time: "12/15 09:33:38",
-          },
-          {
-            value: 97,
-            time: "12/17 09:37:49",
-          },
-          {
-            value: 75,
-            time: "11/21 05:29:54",
-          },
-          {
-            value: 99,
-            time: "12/04 03:59:08",
-          },
-          {
-            value: 83,
-            time: "12/12 07:59:39",
-          },
-          {
-            value: 96,
-            time: "11/27 10:28:51",
-          },
-        ],
-      },
-      {
-        value: false,
-        id: 4,
-        name: "Mavis Mcguire",
-        age: 72,
-        weight: 66,
-        height: 61.44,
-        bloodsugars: [
-          {
-            value: 89,
-            time: "11/22 12:00:20",
-          },
-          {
-            value: 104,
-            time: "12/13 09:53:57",
-          },
-          {
-            value: 100,
-            time: "12/13 10:24:02",
-          },
-          {
-            value: 102,
-            time: "12/12 01:29:38",
-          },
-          {
-            value: 104,
-            time: "12/08 07:16:21",
-          },
-          {
-            value: 80,
-            time: "12/26 07:44:18",
-          },
-          {
-            value: 99,
-            time: "12/21 12:49:04",
-          },
-          {
-            value: 91,
-            time: "12/01 05:36:21",
-          },
-          {
-            value: 105,
-            time: "12/19 01:17:25",
-          },
-        ],
-      },
-      {
-        value: false,
-        id: 5,
-        name: "Paul Watson",
-        age: 23,
-        weight: 24,
-        height: 59.58,
-        bloodsugars: [
-          {
-            value: 96,
-            time: "12/13 04:02:20",
-          },
-          {
-            value: 96,
-            time: "12/26 04:58:19",
-          },
-          {
-            value: 75,
-            time: "12/12 04:16:00",
-          },
-          {
-            value: 80,
-            time: "12/05 05:35:08",
-          },
-          {
-            value: 98,
-            time: "11/24 01:56:01",
-          },
-          {
-            value: 83,
-            time: "12/05 10:19:18",
-          },
-          {
-            value: 104,
-            time: "12/17 05:57:27",
-          },
-          {
-            value: 86,
-            time: "12/01 08:19:39",
-          },
-          {
-            value: 103,
-            time: "12/15 04:49:34",
-          },
-        ],
-      },
-      {
-        value: false,
-        id: 6,
-        name: "Fernandez Matthews",
-        age: 49,
-        weight: 51,
-        height: 70.76,
-        bloodsugars: [
-          {
-            value: 96,
-            time: "12/21 05:14:04",
-          },
-          {
-            value: 94,
-            time: "11/22 08:42:01",
-          },
-          {
-            value: 76,
-            time: "12/26 05:25:51",
-          },
-          {
-            value: 83,
-            time: "12/08 11:33:56",
-          },
-          {
-            value: 93,
-            time: "12/24 07:16:02",
-          },
-          {
-            value: 86,
-            time: "11/21 11:55:26",
-          },
-          {
-            value: 89,
-            time: "11/23 02:08:45",
-          },
-          {
-            value: 99,
-            time: "12/05 03:45:01",
-          },
-          {
-            value: 97,
-            time: "12/23 08:05:11",
-          },
-        ],
-      },
-      {
-        value: false,
-        id: 7,
-        name: "Lindsay Long",
-        age: 76,
-        weight: 75,
-        height: 62.65,
-        bloodsugars: [
-          {
-            value: 98,
-            time: "12/03 08:29:15",
-          },
-          {
-            value: 105,
-            time: "12/15 12:26:06",
-          },
-          {
-            value: 91,
-            time: "11/25 11:34:06",
-          },
-          {
-            value: 100,
-            time: "12/20 09:00:24",
-          },
-          {
-            value: 89,
-            time: "12/05 08:38:34",
-          },
-          {
-            value: 76,
-            time: "12/26 02:37:50",
-          },
-          {
-            value: 84,
-            time: "12/22 03:41:40",
-          },
-          {
-            value: 85,
-            time: "12/07 09:34:51",
-          },
-          {
-            value: 78,
-            time: "11/24 10:50:34",
-          },
-        ],
-      },
-    ],
+    search: "",
+    nowdate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+      .toISOString()
+      .substr(0, 10),
   }),
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "New Item" : "Edit Item";
+      return this.editedIndex === -1 ? "New Data" : "Edit Data";
     },
   },
 
@@ -598,7 +251,6 @@ export default {
   },
 
   created() {
-    this.initialize();
     this.getData();
     this.createData();
   },
@@ -612,29 +264,7 @@ export default {
         .getLookup()
         .then((response) => {
           response.map((item) => {
-            // let data={}
-            // data.name = item.type
-            // data.datas = item
-            // arr.push(data)
-
             this.dataType.push(item.type);
-            // if (item.type == "Role") {
-            //   this.tempr.push(item.name);
-            //   this.roleid.push(item.value);
-            // }
-            // if (item.type == "Kelompok") {
-            //   this.tempk.push(item.name);
-            //   this.kelompokid.push(item.value);
-            // }
-            // if (item.type == "Jenjab") {
-            //   this.tempj.push(item.name);
-            //   this.jenjabid.push(item.value);
-            // }
-            // if (item.type == "StatusActive") this.status.push(item.name);
-            // if (item.type == "Skillset") {
-            //   this.skills.push(item.name);
-            //   this.skillid.push(item.value);
-            // }
             console.log(data);
           });
           let uniqueChars = [...new Set(this.dataType)];
@@ -697,56 +327,8 @@ export default {
       }
       console.log("aaa" + this.resourceType);
     },
-    //     async createData() {
-    //       const Data = {
-    //   "mandaysId": 0,
-    //   "vendorName": "PT. ABC Sejahtera",
-    //   "contractNumber": "STI/123/123",
-    //   "startContract": "1 January 2020",
-    //   "lastContract": "1 January 2021",
-    //   "totalMandays": 1000,
-    //   "usageMandays": 400,
-    //   "availableMandays": 600,
-    //   "status": 1,
-    //   "createdBy": "Supervisor",
-    //   "updatedBy": "string",
-    //   "notes": "Vendor ini belum menyediakan komputer merk asus"
-    // }
-    //       const response = await apiService
-    //         .createLookup(Data)
-    //         .then((succ) => succ)
-    //         .catch((err) => err);
-    //       response
-    //     },
-
-    initialize() {
-      this.mandays = [
-        {
-          name: "AMGR",
-          nomor: 1,
-          type: "Jenjab",
-          value: "1",
-          time: "21 Juli 2021, 13.21",
-        },
-        {
-          name: "AMGR",
-          nomor: 2,
-          type: "Jenjab",
-          value: "1",
-          time: "21 Juli 2021, 13.21",
-        },
-        {
-          name: "AMGR",
-          nomor: 3,
-          type: "Jenjab",
-          value: "1",
-          time: "21 Juli 2021, 13.21",
-        },
-      ];
-    },
-
     editItem(item) {
-      this.editedIndex = this.mandays.indexOf(item);
+      this.editedIndex = this.selected.data.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
     },
@@ -777,10 +359,58 @@ export default {
         this.editedIndex = -1;
       });
     },
+    showAlert() {
+      const Toast = this.$swal.mixin({
+        toast: true,
+        position: "top-end",
+        confirmButtonText: "go",
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", this.$swal.stopTimer);
+          toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+        },
+        willClose: () => {
+          this.$router.go();
+        },
+      });
+
+      Toast.fire({
+        icon: "success",
+        title: "Success",
+        text: "Data type successfully changed.",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.$router.go();
+        }
+      });
+      //this.$router.go()
+    },
+    updateData(Data, id) {
+      const response = apiService
+        .updateDataLookup(Data, id)
+        .then((succ) => {
+          // alert(succ);
+          this.snackbar = true;
+          this.getData();
+          // this.$router.go();
+           this.showAlert();
+          succ;
+        })
+        .catch((err) => err);
+      response;
+    },
 
     save() {
-      this.push(this.mandays);
+      if (this.editedIndex > -1) {
+        console.log("dfga" + this.editedItem);
+        this.editedItem.updateTime = this.nowdate
+        this.updateData(this.editedItem, this.editedItem.lookupId);
 
+      }
+      console.log("dfg" + this.editedItem.name);
+      
       this.close();
     },
   },

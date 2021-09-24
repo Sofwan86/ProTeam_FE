@@ -130,4 +130,14 @@ export class Axios{
       const data = axios.get(url).then(response => response.data)
       return data
    }
+   async updateDataLookup(datas,id){
+      const url = `${BASE_URL}/Lookups/`+id
+      const data = axios.put(url,datas).then(response => response.data)
+      return data
+   }
+   async createTypeLookup(param){
+      const url = `${BASE_URL}/Lookups`
+      const data = axios.post(url,param).then(response => response.data)
+      return data
+   }
  }
