@@ -87,7 +87,6 @@
           </v-list-item>
         </div>
       </v-app-bar>
-
       <v-navigation-drawer
         app
         color="#004483"
@@ -314,6 +313,9 @@ export default {
     this.getData();
   },
   methods: {
+    menuItems () {
+      return this.menu
+    },
     profile() {
       this.$router.push("/profile");
     },

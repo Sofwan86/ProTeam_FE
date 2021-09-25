@@ -71,7 +71,7 @@
                   </v-alert>
                   <v-form ref="form" v-model="valid">
                     <v-container>
-                      <div>
+                      <div v-if="editedIndex ==-1">
                         <h3>Import data exel</h3>
                         <input type="file" @change="onChange" />
                         <xlsx-read :file="file">
