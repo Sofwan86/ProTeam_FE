@@ -80,6 +80,7 @@
                               <div>
                                 {{ collection   }}
                                 {{collection.length}}
+                                {{ collection[0] }}
                               </div>
                               <v-btn @click="upload(collection)" >Upload</v-btn>
                             </template>
@@ -871,6 +872,9 @@ export default {
     },
     upload(a){
         console.log(a)
+        for(var i=0;i<a.length;i++){
+            this.save(a[i])
+        }
     },
     editItem(item, t) {
       console.log("fds");
@@ -1011,9 +1015,10 @@ export default {
           //this.$router.go();
           this.showAlert();
           succ;
+
         })
         .catch(() => {
-          this.showAlertFail()
+          //this.showAlertFail()
         });
       response;
     },
@@ -1062,8 +1067,15 @@ export default {
         .catch((err) => err);
       response;
     },
-    getSkillId() {
-      var id = [];
+    getSkillId(a) {
+      let b = 0
+      if(a && b<1){
+        let oo ={}
+        oo.skillId = a
+        this.newEditedItem.listSkill.push(oo);
+        b++
+      }
+      else{var id = [];
       for (var i = 0; i < this.skills.length; i++) {
         if (this.s[i] == this.tempskill[i].text) {
           id.push(this.tempskill[i].value);
@@ -1074,37 +1086,87 @@ export default {
         oo.skillId = this.s[j].value;
         if (this.s[j].value) this.newEditedItem.listSkill.push(oo);
       }
+      }
     },
-    getjenjabId() {
-      for (var i = 0; i < this.tempj.length; i++) {
+    getjenjabId(a) {
+      if(a){
+        for (var j = 0; j < this.tempj.length; j++) {
+        if (a == this.jenjab[j].text) {
+          this.newEditedItem.jenjabId = this.jenjab[j].value;
+        }
+      }
+      }
+      else {for (var i = 0; i < this.tempj.length; i++) {
         if (this.editedItem.jenjangJabatan == this.jenjab[i].text) {
           this.newEditedItem.jenjabId = this.jenjab[i].value;
         }
       }
+      }
     },
-    getroleId() {
-      for (var i = 0; i < this.tempr.length; i++) {
+    getroleId(a) {
+      if(a){
+        for (var j = 0; j < this.tempr.length; j++) {
+        if (a == this.role[j].text) {
+          this.newEditedItem.role = this.role[j].value;
+        }
+      }
+      }
+
+      else {for (var i = 0; i < this.tempr.length; i++) {
         if (this.editedItem.nama_role == this.role[i].text) {
           this.newEditedItem.role = this.role[i].value;
         }
       }
+      }
     },
-    getkelompokId() {
-      for (var i = 0; i < this.tempk.length; i++) {
+    getkelompokId(a) {
+      if(a){
+        for (var j = 0; j < this.tempk.length; j++) {
+        if (a == this.kelompok[j].text) {
+          this.newEditedItem.kelompokId = this.kelompok[j].value;
+        }
+      }
+      }
+
+      else {for (var i = 0; i < this.tempk.length; i++) {
         if (this.editedItem.kelompok == this.kelompok[i].text) {
           this.newEditedItem.kelompokId = this.kelompok[i].value;
         }
       }
+      }
     },
-    gettipeId() {
-      for (var i = 0; i < this.temptipe.length; i++) {
+    gettipeId(a) {
+      if(a){
+        for (var j = 0; j < this.temptipe.length; j++) {
+        if (a == this.resourceType[j].text) {
+          this.newEditedItem.resourceType = this.resourceType[j].value;
+        }
+      }
+      }
+      else { for (var i = 0; i < this.temptipe.length; i++) {
         if (this.editedItem.tipe_resource == this.resourceType[i].text) {
           this.newEditedItem.resourceType = this.resourceType[i].value;
         }
       }
+      }
+    },
+    getdivisiId(a) {
+      for (var j = 0; j < this.tempd.length; j++) {
+        if (a == this.divisi[j].text) {
+          this.newEditedItem.divisiId = this.divisi[j].value;
+        }
+      }
+    },
+    getvendorId(a) {
+      for (var i = 0; i < this.tempv.length; i++) {
+        if (a == this.listVendor[i].text) {
+          this.newEditedItem.vendorId = this.listVendor[i].value;
+        }
+      }
     },
 
-    save() {
+    save(a) {
+      console.log("sd"+a.vendorId)
       if (this.editedIndex > -1) {
         this.getSkillId();
         this.getjenjabId();
@@ -1135,7 +1197,37 @@ export default {
         } else this.newEditedItem.status = 0;
         this.updateData(this.newEditedItem, this.editedItem.employeeId);
       } else {
-        this.newEditedItem.divisiId = this.editedItem.divisiId;
+        if(a.employeeName){
+        if(a.vendorId){
+          this.getvendorId(a.vendorId)
+        }else{
+          this.newEditedItem.vendorid = null;
+        }
+        this.newEditedItem.employeeName = a.employeeName;
+        this.newEditedItem.npp = a.npp;
+        this.newEditedItem.email = a.email;
+        this.newEditedItem.phone = a.phone;
+        this.newEditedItem.projectExp = a.projectExp;
+        this.newEditedItem.totalManhour = a.totalManhour;
+        this.newEditedItem.createdBy = localStorage.getItem("name,");
+        this.newEditedItem.activeDate = this.activeSend;
+        this.newEditedItem.lastWorkDate = this.lastSend;
+        this.newEditedItem.createdTime = this.nowdate;
+        this.newEditedItem.updateTime = this.nowdate;
+        this.newEditedItem.activeDate = a.activeDate;
+        this.newEditedItem.lastWorkDate = a.lastWorkDate;
+        if (a.status == "Active") {
+          this.newEditedItem.status = 1;
+        } else this.newEditedItem.status = 0;
+        this.getdivisiId(a.divisiId)
+        this.getjenjabId(a.jenjabId);
+        this.getroleId(a.role);
+        this.getkelompokId(a.kelompokId);
+        this.gettipeId(a.resourceType);
+        this.getSkillId(1);
+        console.log(a)
+        }
+        else {this.newEditedItem.divisiId = this.editedItem.divisiId;
         this.editedItem.tipe_resource === "OS"
           ? (this.newEditedItem.vendorId = this.editedItem.vendorId)
           : (this.newEditedItem.vendorid = null);
@@ -1160,13 +1252,14 @@ export default {
           this.newEditedItem.status = 1;
         } else this.newEditedItem.status = 0;
         //this.resources.push(this.editedItem);
-
+        
         this.getSkillId();
         this.getjenjabId();
         this.getroleId();
         this.getkelompokId();
         this.gettipeId();
-        console.log(this.newEditedItem);
+        console.log("asa"+a);
+        }
         this.createData(this.newEditedItem);
       }
       this.close();
