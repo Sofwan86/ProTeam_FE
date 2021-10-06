@@ -25,7 +25,49 @@
                 dense
               ></v-text-field>
             </div>
-            <v-btn v-bind="size" class="white--text" @click="editItem(7, 7)" color="#004483">
+            <div class="pa-1" >
+              <div  class="text-center">
+                <v-menu  offset-y top :close-on-content-click="false">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn outlined class="btn-imp dark-blue--text" v-bind="attrs" v-on="on">
+                      Import Data
+                    </v-btn>
+                  </template>
+                  <v-list>
+                    <input type="file" @change="onChange" />
+                    <xlsx-read :file="file">
+                      <xlsx-json>
+                        <template #default="{ collection }">
+                         <div v-if="collection" class=" text--center">
+                           <v-btn rounded color="green" class="white--text"  @click="upload(collection)">Upload</v-btn>
+                           </div> 
+                        </template>
+                      </xlsx-json>
+                    </xlsx-read>
+                  </v-list>
+                </v-menu>
+              </div>
+            </div>
+            <div class="pa-3">
+               <xlsx-workbook>
+        <xlsx-sheet
+          :collection="sheetss"
+          filename="Report Resource Profile"
+        />
+        <xlsx-download filename="Report Resource Profile.xlsx">
+              <v-btn outlined class="btn-imp">
+                Download Report
+              </v-btn>
+              <!-- <button>Download</button> -->
+        </xlsx-download>
+      </xlsx-workbook>
+            </div>
+            <v-btn
+              v-bind="size"
+              class="white--text"
+              @click="editItem(7, 7)"
+              color="#004483"
+            >
               + Create New Resource
             </v-btn>
             <v-dialog v-model="dialog" max-width="1000px">
@@ -71,22 +113,6 @@
                   </v-alert>
                   <v-form ref="form" v-model="valid">
                     <v-container>
-                      <div v-if="editedIndex ==-1">
-                        <h3>Import data exel</h3>
-                        <input type="file" @change="onChange" />
-                        <xlsx-read :file="file">
-                          <xlsx-json>
-                            <template #default="{ collection }">
-                              <div>
-                                {{ collection   }}
-                                {{collection.length}}
-                                {{ collection[0] }}
-                              </div>
-                              <v-btn @click="upload(collection)" >Upload</v-btn>
-                            </template>
-                          </xlsx-json>
-                        </xlsx-read>
-                      </div>
                       <v-row>
                         <v-col cols="12" sm="6" md="4">
                           <v-text-field
@@ -555,14 +581,21 @@
 import { Axios } from "./Axios";
 import XlsxRead from "../components/XlsxRead";
 import XlsxJson from "../components/XlsxJson";
+import XlsxWorkbook from "../components/XlsxWorkbook";
+import XlsxSheet from "../components/XlsxSheet";
+import XlsxDownload from "../components/XlsxDownload";
 const apiService = new Axios();
 export default {
   name: "resourceProfile",
   components: {
     XlsxRead,
     XlsxJson,
+    XlsxWorkbook,
+    XlsxSheet,
+    XlsxDownload
   },
   data: (vm) => ({
+    fileRecords: "",
     file: null,
     alert: false,
     updateTime: "updateTime",
@@ -716,12 +749,29 @@ export default {
     tempv: [],
     vendorid: [],
     listnpp: [],
+    npp_r:{},
     ceknpp: false,
+    skillni:false,
+    sheets: [{ name: "Report", data: [{asdfs:1}] }],
+    sheetss:[],
+    r_nama:[],
+    r_npp:[],
+    r_email:[],
+    r_nohp:[],
+    r_adate:[],
+    r_ldate:[],
+    r_unit:[],
+    r_tipe:[],
+    r_role:[],
+    r_jenjab:[],
+    r_manhour:[],
+    r_cost:[],
+    r_skill:[]
   }),
   computed: {
-    size () {
-      const size = {xs:'x-small'}[this.$vuetify.breakpoint.name];
-      return size ? { [size]: true } : {}
+    size() {
+      const size = { xs: "x-small" }[this.$vuetify.breakpoint.name];
+      return size ? { [size]: true } : {};
     },
     formTitle() {
       return this.editedIndex === -1 ? "Create New Resource" : "Edit Resource";
@@ -783,8 +833,51 @@ export default {
         .catch((err) => err);
       response;
       this.resources.map((item) => {
-        this.listnpp.push(item.npp);
+        this.r_nama.push(item.employeeName);
+        this.r_npp.push(item.npp);
+        this.r_email.push(item.email);
+        this.r_nohp.push(item.phone);
+        this.r_adate.push(item.activeDate);
+        this.r_ldate.push(item.lastWorkDate);
+        this.r_unit.push(item.kelompok);
+        this.r_tipe.push(item.tipe_resource);
+        this.r_role.push(item.nama_role);
+        this.r_jenjab.push(item.jenjangJabatan);
+        this.r_manhour.push(item.totalManhour);
+        this.r_cost.push(item.cost);
+        this.r_skill.push(item.skill);
+        
       });
+      for (var k = 0; k < this.r_nama.length; k++) {
+        //this.tempskill.push(obj2)
+        let oo = {};
+        oo.Nama = this.r_nama[k];
+        oo.NPP = this.r_npp[k];
+        oo.Email = this.r_email[k];
+        oo.NoHP = this.r_nohp[k];
+        const ad = this.r_adate[k].slice(0,10)
+        oo.ActiveDate = ad;
+        console.log(ad)
+        const ld = this.r_ldate[k].slice(0,10)
+        oo.LastDate = ld;
+        oo.Unit = this.r_unit[k];
+        oo.TipeResource = this.r_tipe[k];
+        // ('Nama AS').oo = this.r_nama[k];
+        var regex = /<br\s*[/]?>/gi;
+        const skill = this.r_skill[k].replace(regex,' ')
+        oo.Role = this.r_role[k];
+        oo.Skillset = skill
+        oo.JenjangJabatan = this.r_jenjab[k];
+        oo.TotalManhour = this.r_manhour[k];
+        const format = this.r_cost[k].toString().split("").reverse().join("");
+      const convert = format.match(/\d{1,3}/g);
+      const price =
+        "Rp " + convert.join(".").split("").reverse().join("");
+        oo.Pricing = price;
+        console.log(skill)
+        this.sheetss.push(oo)
+        // this.sheets.data.push(oo);
+      } 
     },
     async getData2() {
       //let rt = { text: "", value: 0 };
@@ -870,11 +963,11 @@ export default {
       this.$router.push("/createNewResource");
       console.log("fds");
     },
-    upload(a){
-        console.log(a)
-        for(var i=0;i<a.length;i++){
-            this.save(a[i])
-        }
+    upload(a) {
+      console.log(a);
+      for (var i = 0; i < a.length; i++) {
+        this.save(a[i]);
+      }
     },
     editItem(item, t) {
       console.log("fds");
@@ -1015,7 +1108,6 @@ export default {
           //this.$router.go();
           this.showAlert();
           succ;
-
         })
         .catch(() => {
           //this.showAlertFail()
@@ -1068,86 +1160,84 @@ export default {
       response;
     },
     getSkillId(a) {
-      let b = 0
-      if(a && b<1){
-        let oo ={}
-        oo.skillId = a
-        this.newEditedItem.listSkill.push(oo);
-        b++
-      }
-      else{var id = [];
-      for (var i = 0; i < this.skills.length; i++) {
-        if (this.s[i] == this.tempskill[i].text) {
-          id.push(this.tempskill[i].value);
-        }
-      }
-      for (var j = 0; j < this.s.length; j++) {
+      let b = 0;
+      if (a && b < 1) {
         let oo = {};
-        oo.skillId = this.s[j].value;
-        if (this.s[j].value) this.newEditedItem.listSkill.push(oo);
-      }
+        oo.skillId = a;
+        this.newEditedItem.listSkill.push(oo);
+        b++;
+      } else {
+        var id = [];
+        for (var i = 0; i < this.skills.length; i++) {
+          if (this.s[i] == this.tempskill[i].text) {
+            id.push(this.tempskill[i].value);
+          }
+        }
+        for (var j = 0; j < this.s.length; j++) {
+          let oo = {};
+          oo.skillId = this.s[j].value;
+          if (this.s[j].value) this.newEditedItem.listSkill.push(oo);
+        }
       }
     },
     getjenjabId(a) {
-      if(a){
+      if (a) {
         for (var j = 0; j < this.tempj.length; j++) {
-        if (a == this.jenjab[j].text) {
-          this.newEditedItem.jenjabId = this.jenjab[j].value;
+          if (a == this.jenjab[j].text) {
+            this.newEditedItem.jenjabId = this.jenjab[j].value;
+          }
         }
-      }
-      }
-      else {for (var i = 0; i < this.tempj.length; i++) {
-        if (this.editedItem.jenjangJabatan == this.jenjab[i].text) {
-          this.newEditedItem.jenjabId = this.jenjab[i].value;
+      } else {
+        for (var i = 0; i < this.tempj.length; i++) {
+          if (this.editedItem.jenjangJabatan == this.jenjab[i].text) {
+            this.newEditedItem.jenjabId = this.jenjab[i].value;
+          }
         }
-      }
       }
     },
     getroleId(a) {
-      if(a){
+      if (a) {
         for (var j = 0; j < this.tempr.length; j++) {
-        if (a == this.role[j].text) {
-          this.newEditedItem.role = this.role[j].value;
+          if (a == this.role[j].text) {
+            this.newEditedItem.role = this.role[j].value;
+          }
         }
-      }
-      }
-
-      else {for (var i = 0; i < this.tempr.length; i++) {
-        if (this.editedItem.nama_role == this.role[i].text) {
-          this.newEditedItem.role = this.role[i].value;
+      } else {
+        for (var i = 0; i < this.tempr.length; i++) {
+          if (this.editedItem.nama_role == this.role[i].text) {
+            this.newEditedItem.role = this.role[i].value;
+          }
         }
-      }
       }
     },
     getkelompokId(a) {
-      if(a){
+      if (a) {
         for (var j = 0; j < this.tempk.length; j++) {
-        if (a == this.kelompok[j].text) {
-          this.newEditedItem.kelompokId = this.kelompok[j].value;
+          if (a == this.kelompok[j].text) {
+            this.newEditedItem.kelompokId = this.kelompok[j].value;
+          }
         }
-      }
-      }
-
-      else {for (var i = 0; i < this.tempk.length; i++) {
-        if (this.editedItem.kelompok == this.kelompok[i].text) {
-          this.newEditedItem.kelompokId = this.kelompok[i].value;
+      } else {
+        for (var i = 0; i < this.tempk.length; i++) {
+          if (this.editedItem.kelompok == this.kelompok[i].text) {
+            this.newEditedItem.kelompokId = this.kelompok[i].value;
+          }
         }
-      }
       }
     },
     gettipeId(a) {
-      if(a){
+      if (a) {
         for (var j = 0; j < this.temptipe.length; j++) {
-        if (a == this.resourceType[j].text) {
-          this.newEditedItem.resourceType = this.resourceType[j].value;
+          if (a == this.resourceType[j].text) {
+            this.newEditedItem.resourceType = this.resourceType[j].value;
+          }
         }
-      }
-      }
-      else { for (var i = 0; i < this.temptipe.length; i++) {
-        if (this.editedItem.tipe_resource == this.resourceType[i].text) {
-          this.newEditedItem.resourceType = this.resourceType[i].value;
+      } else {
+        for (var i = 0; i < this.temptipe.length; i++) {
+          if (this.editedItem.tipe_resource == this.resourceType[i].text) {
+            this.newEditedItem.resourceType = this.resourceType[i].value;
+          }
         }
-      }
       }
     },
     getdivisiId(a) {
@@ -1166,7 +1256,7 @@ export default {
     },
 
     save(a) {
-      console.log("sd"+a.vendorId)
+      console.log("sd" + a.vendorId);
       if (this.editedIndex > -1) {
         this.getSkillId();
         this.getjenjabId();
@@ -1197,68 +1287,68 @@ export default {
         } else this.newEditedItem.status = 0;
         this.updateData(this.newEditedItem, this.editedItem.employeeId);
       } else {
-        if(a.employeeName){
-        if(a.vendorId){
-          this.getvendorId(a.vendorId)
-        }else{
-          this.newEditedItem.vendorid = null;
-        }
-        this.newEditedItem.employeeName = a.employeeName;
-        this.newEditedItem.npp = a.npp;
-        this.newEditedItem.email = a.email;
-        this.newEditedItem.phone = a.phone;
-        this.newEditedItem.projectExp = a.projectExp;
-        this.newEditedItem.totalManhour = a.totalManhour;
-        this.newEditedItem.createdBy = localStorage.getItem("name,");
-        this.newEditedItem.activeDate = this.activeSend;
-        this.newEditedItem.lastWorkDate = this.lastSend;
-        this.newEditedItem.createdTime = this.nowdate;
-        this.newEditedItem.updateTime = this.nowdate;
-        this.newEditedItem.activeDate = a.activeDate;
-        this.newEditedItem.lastWorkDate = a.lastWorkDate;
-        if (a.status == "Active") {
-          this.newEditedItem.status = 1;
-        } else this.newEditedItem.status = 0;
-        this.getdivisiId(a.divisiId)
-        this.getjenjabId(a.jenjabId);
-        this.getroleId(a.role);
-        this.getkelompokId(a.kelompokId);
-        this.gettipeId(a.resourceType);
-        this.getSkillId(1);
-        console.log(a)
-        }
-        else {this.newEditedItem.divisiId = this.editedItem.divisiId;
-        this.editedItem.tipe_resource === "OS"
-          ? (this.newEditedItem.vendorId = this.editedItem.vendorId)
-          : (this.newEditedItem.vendorid = null);
-        this.newEditedItem.role = this.editedItem.role;
-        this.newEditedItem.jenjabId = this.editedItem.jenjabId;
-        this.newEditedItem.kelompokId = this.editedItem.kelompokId;
-        this.newEditedItem.resourceType = this.editedItem.resourceType;
-        this.newEditedItem.employeeName = this.editedItem.employeeName;
-        this.newEditedItem.npp = this.editedItem.npp;
-        this.newEditedItem.email = this.editedItem.email;
-        this.newEditedItem.phone = this.editedItem.phone;
-        this.newEditedItem.projectExp = this.editedItem.projectExp;
-        this.newEditedItem.totalManhour = this.editedItem.totalManhour;
-        this.newEditedItem.createdBy = localStorage.getItem("name,");
-        this.newEditedItem.activeDate = this.activeSend;
-        this.newEditedItem.lastWorkDate = this.lastSend;
-        this.newEditedItem.createdTime = this.nowdate;
-        this.newEditedItem.updateTime = this.nowdate;
-        this.newEditedItem.activeDate = this.editedItem.activeDate;
-        this.newEditedItem.lastWorkDate = this.editedItem.lastWorkDate;
-        if (this.editedItem.nama_status == "Active") {
-          this.newEditedItem.status = 1;
-        } else this.newEditedItem.status = 0;
-        //this.resources.push(this.editedItem);
-        
-        this.getSkillId();
-        this.getjenjabId();
-        this.getroleId();
-        this.getkelompokId();
-        this.gettipeId();
-        console.log("asa"+a);
+        if (a.employeeName) {
+          if (a.vendorId) {
+            this.getvendorId(a.vendorId);
+          } else {
+            this.newEditedItem.vendorid = null;
+          }
+          this.newEditedItem.employeeName = a.employeeName;
+          this.newEditedItem.npp = a.npp;
+          this.newEditedItem.email = a.email;
+          this.newEditedItem.phone = a.phone;
+          this.newEditedItem.projectExp = a.projectExp;
+          this.newEditedItem.totalManhour = a.totalManhour;
+          this.newEditedItem.createdBy = localStorage.getItem("name,");
+          this.newEditedItem.activeDate = this.activeSend;
+          this.newEditedItem.lastWorkDate = this.lastSend;
+          this.newEditedItem.createdTime = this.nowdate;
+          this.newEditedItem.updateTime = this.nowdate;
+          this.newEditedItem.activeDate = a.activeDate;
+          this.newEditedItem.lastWorkDate = a.lastWorkDate;
+          if (a.status == "Active") {
+            this.newEditedItem.status = 1;
+          } else this.newEditedItem.status = 0;
+          this.getdivisiId(a.divisiId);
+          this.getjenjabId(a.jenjabId);
+          this.getroleId(a.role);
+          this.getkelompokId(a.kelompokId);
+          this.gettipeId(a.resourceType);
+          this.getSkillId(1);
+          console.log(a);
+        } else {
+          this.newEditedItem.divisiId = this.editedItem.divisiId;
+          this.editedItem.tipe_resource === "OS"
+            ? (this.newEditedItem.vendorId = this.editedItem.vendorId)
+            : (this.newEditedItem.vendorid = null);
+          this.newEditedItem.role = this.editedItem.role;
+          this.newEditedItem.jenjabId = this.editedItem.jenjabId;
+          this.newEditedItem.kelompokId = this.editedItem.kelompokId;
+          this.newEditedItem.resourceType = this.editedItem.resourceType;
+          this.newEditedItem.employeeName = this.editedItem.employeeName;
+          this.newEditedItem.npp = this.editedItem.npp;
+          this.newEditedItem.email = this.editedItem.email;
+          this.newEditedItem.phone = this.editedItem.phone;
+          this.newEditedItem.projectExp = this.editedItem.projectExp;
+          this.newEditedItem.totalManhour = this.editedItem.totalManhour;
+          this.newEditedItem.createdBy = localStorage.getItem("name,");
+          this.newEditedItem.activeDate = this.activeSend;
+          this.newEditedItem.lastWorkDate = this.lastSend;
+          this.newEditedItem.createdTime = this.nowdate;
+          this.newEditedItem.updateTime = this.nowdate;
+          this.newEditedItem.activeDate = this.editedItem.activeDate;
+          this.newEditedItem.lastWorkDate = this.editedItem.lastWorkDate;
+          if (this.editedItem.nama_status == "Active") {
+            this.newEditedItem.status = 1;
+          } else this.newEditedItem.status = 0;
+          //this.resources.push(this.editedItem);
+
+          this.getSkillId();
+          this.getjenjabId();
+          this.getroleId();
+          this.getkelompokId();
+          this.gettipeId();
+          console.log("asa" + a);
         }
         this.createData(this.newEditedItem);
       }
@@ -1278,4 +1368,7 @@ export default {
 .v-progress-circular {
   margin: 1rem;
 }
+.btn-imp.v-btn--outlined {
+    border: thin solid #004483;
+  }
 </style>
