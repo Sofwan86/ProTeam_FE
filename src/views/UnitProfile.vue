@@ -23,6 +23,43 @@
                 dense
               ></v-text-field>
             </div>
+            <div class="pa-1" >
+              <div  class="text-center">
+                <v-menu  offset-y top :close-on-content-click="false">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn outlined class="btn-imp dark-blue--text" v-bind="attrs" v-on="on">
+                      Import Data
+                    </v-btn>
+                  </template>
+                  <v-list>
+                    <input type="file" @change="onChange" />
+                    <xlsx-read :file="file">
+                      <xlsx-json>
+                        <template #default="{ collection }">
+                         <div v-if="collection" class=" text--center">
+                           <v-btn rounded color="green" class="white--text"  @click="upload(collection)">Upload</v-btn>
+                           </div> 
+                        </template>
+                      </xlsx-json>
+                    </xlsx-read>
+                  </v-list>
+                </v-menu>
+              </div>
+            </div>
+            <div class="pa-3">
+               <xlsx-workbook>
+        <xlsx-sheet
+          :collection="sheetss"
+          filename="Report Unit Profile"
+        />
+        <xlsx-download filename="Report Unit Profile.xlsx">
+              <v-btn outlined class="btn-imp">
+                Download Report
+              </v-btn>
+              <!-- <button>Download</button> -->
+        </xlsx-download>
+      </xlsx-workbook>
+            </div>
 
             <v-dialog v-model="dialog" max-width="700px">
               <v-card>
@@ -329,7 +366,12 @@ export default {
       },
     ],
     member: [],
-
+    sheets: [{ name: "Report", data: [{asdfs:1}] }],
+    sheetss:[],
+    r_kelompoknama:[],
+    r_divisinama:[],
+    r_totale:[],
+    r_totalm:[],
     items: [
       {
         text: "Profile",
@@ -372,8 +414,19 @@ export default {
         .catch((err) => err);
       response;
       console.log;
+      this.resources.map((item) => {
+        this.r_kelompoknama.push(item.kelompokName);
+        this.r_divisinama.push(item.divisiName);
+        this.r_totale.push(item.totalEmployee);
+        this.r_totalm.push(item.totalManhour);
+      });
     },
-
+    upload(a) {
+      console.log(a);
+      for (var i = 0; i < a.length; i++) {
+        this.save(a[i]);
+      }
+    },
     editItem(item) {
       this.editedIndex = this.mandays.indexOf(item);
       this.editedItem = Object.assign({}, item);
