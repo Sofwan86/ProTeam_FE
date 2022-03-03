@@ -176,7 +176,7 @@
                           >
                         </v-card-title>
                       </v-card>
-                      <v-row>
+                      <v-row class="pa-3">
                         <v-col>
                           <h3 class="pa-3">
                             Detail Kelompok {{ editedItem.unit }}
