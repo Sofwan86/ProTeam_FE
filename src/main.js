@@ -13,6 +13,7 @@ import 'sweetalert2/dist/sweetalert2.min.css';
 import VueFileAgent from 'vue-file-agent';
 //import VueFileAgentStyles from 'vue-file-agent/dist/vue-file-agent.css';
 
+
 Vue.use(VueFileAgent);
 Vue.use(VueSweetalert2);
 Vue.use(VueDatePicker);

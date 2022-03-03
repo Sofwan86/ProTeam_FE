@@ -120,6 +120,16 @@ export class Axios{
       const data = axios.get(url).then(response => response.data)
       return data
    }
+   async getKelompok(){
+      const url = `${BASE_URL}/Kelompoks`
+      const data = axios.get(url).then(response => response.data)
+      return data
+   }
+   async getJenjab(){
+      const url = `${BASE_URL}/Jenjab`
+      const data = axios.get(url).then(response => response.data)
+      return data
+   }
    async createManmonth(param){
       const url = `${BASE_URL}/Manmonth`
       const data = axios.post(url,param).then(response => response.data)
@@ -135,9 +145,39 @@ export class Axios{
       const data = axios.put(url,datas).then(response => response.data)
       return data
    }
-   async createTypeLookup(param){
+   async createDataLookup(param){
       const url = `${BASE_URL}/Lookups`
       const data = axios.post(url,param).then(response => response.data)
+      return data
+   }
+   async getWla(){
+      const url = `${BASE_URL}/WLA/GetWLAHeader`
+      const data = axios.get(url).then(response => response.data)
+      return data
+   }
+   async createWlaHeader(param){
+      const url = `${BASE_URL}/WLA/WLAHeader`
+      const data = axios.post(url,param).then(response => response.data)
+      return data
+   }
+   async updateWlaHeader(datas,id){
+      const url = `${BASE_URL}/WLA/WLAHeader/`+id
+      const data = axios.put(url,datas).then(response => response.data)
+      return data
+   }
+   async getWla2(id){
+      const url = `${BASE_URL}/WLA/GetWLADetailByHeaderId/`+id
+      const data = axios.get(url).then(response => response.data)
+      return data
+   }
+   async createWlaDetail(param){
+      const url = `${BASE_URL}/WLA/WLADetail`
+      const data = axios.post(url,param).then(response => response.data)
+      return data
+   }
+   async updateWlaDetail(datas,id){
+      const url = `${BASE_URL}/WLA/WLADetail/`+id
+      const data = axios.put(url,datas).then(response => response.data)
       return data
    }
  }

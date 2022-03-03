@@ -2,9 +2,11 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import ProfileResource from '../views/resourceProfile.vue'
 import Profile from '../views/Profile.vue'
+import Report from '../views/Report.vue'
 import MasterAdmin from '../views/MasterAdmin.vue'
 import KelompokProfile from '../views/UnitProfile.vue'
 import UserManagement from '../views/UserManagement.vue'
+import Workload from '../views/Workload.vue'
 import MandaysVendor from '../views/MandaysVendor.vue'
 import Manmonth from '../views/ManMonth.vue'
 import Lookup from '../views/Lookup.vue'
@@ -62,6 +64,11 @@ const routes = [
         component: Manmonth
       },
       {
+        path: '/workload',
+        name: 'workload',
+        component: Workload
+      },
+      {
         path: '/profileresource',
         name: 'profileresource',
         component: ProfileResource
@@ -85,6 +92,11 @@ const routes = [
         path: '/lookup',
         name: 'lookup',
         component: Lookup
+      },
+      {
+        path: '/report',
+        name: 'report',
+        component: Report
       },
     ]
   },

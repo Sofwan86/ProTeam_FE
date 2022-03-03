@@ -1,17 +1,9 @@
 <template>
   <div>
-    <!-- <v-breadcrumbs :items="items" divider="/"></v-breadcrumbs> -->
-
     <v-container>
       <v-row no-gutters>
         <v-col cols="12" sm="13" offset-sm="0.2">
           <v-card class="pa-2" offset-sm="3" outlined tile>
-            <h1>Master Admin</h1>
-            <!-- <v-tabs>
-            <v-tab>User Management</v-tab>
-            <v-tab href="/mandaysvendor">Mandays Vendor</v-tab>
-            <v-tab href="/lookup">Lookup</v-tab>
-          </v-tabs> -->
             <v-row>
               <v-col>
                 <h3>Manage Lookup</h3>
@@ -19,27 +11,19 @@
 
               <v-spacer></v-spacer>
               <v-col>
-                <v-select
+                <v-autocomplete
                   v-model="selected"
                   :items="itemm"
+                  @click="save2"
                   label="Select Type"
                   item-text="name"
                   item-value="item"
                   return-object
                   outlined
                   dense
+                  auto-select-first="true"
                 >
-                </v-select>
-              </v-col>
-              <v-col>
-                <v-btn
-                v-bind="size"
-                  class="white--text"
-                  @click="editItem(1)"
-                  color="#004483"
-                >
-                  + Create New Type
-                </v-btn>
+                </v-autocomplete>
               </v-col>
             </v-row>
 
@@ -57,9 +41,6 @@
                       <v-toolbar-title
                         ><h3 v-if="selected.name">
                           {{ selected.name }}
-                          <v-icon @click="editItem(selected.name)"
-                            >mdi-pencil</v-icon
-                          >
                         </h3></v-toolbar-title
                       >
 
@@ -82,7 +63,7 @@
                         <template v-slot:activator="{ on, attrs }">
                           <v-btn
                             class="mb-2 white--text"
-                            @click="editItem()"
+                            @click="save2(selected.name)"
                             color="#004483"
                             dark
                             v-bind="attrs"
@@ -116,10 +97,20 @@
                                 >
                                   Cancel
                                 </v-btn>
-                                <v-btn v-if="editedIndex == -1" color="#004483" dark @click="save">
+                                <v-btn
+                                  v-if="editedIndex == -1"
+                                  color="#004483"
+                                  dark
+                                  @click="save(selected.name)"
+                                >
                                   Create New Data
                                 </v-btn>
-                                <v-btn v-else color="#004483" dark @click="save">
+                                <v-btn
+                                  v-else
+                                  color="#004483"
+                                  dark
+                                  @click="save"
+                                >
                                   Update Data
                                 </v-btn>
                               </v-card-actions>
@@ -159,8 +150,8 @@
                     </v-icon>
                   </template>
                   <template v-slot:[`item.updateTime`]="{ item }">
-          <h4>{{ item.updateTime | str_limit(10) }}</h4>
-        </template>
+                    <h4>{{ item.updateTime | str_limit(10) }}</h4>
+                  </template>
                 </v-data-table>
               </v-col>
             </v-row>
@@ -184,26 +175,11 @@ export default {
     tab: null,
     menus: ["Resource", "Kelompok"],
     dataMhs: [],
-    headerss: [
-      {
-        text: "Vendor Name",
-        align: "start",
-        sortable: true,
-        value: "nama",
-      },
-      { text: "Contact", value: "contact" },
-      { text: "Total Mandays", value: "sumMandays" },
-      { text: "Usage Mandays", value: "usageMandays" },
-      { text: "Avilable Mandays", value: "avilableMandays" },
-      { text: "Status", value: "status" },
-      { text: "Action", value: "" },
-    ],
     dialog: false,
     dialogDelete: false,
     headers: [
       {
         text: "Type",
-        align: "start",
         sortable: false,
         value: "type",
       },
@@ -214,13 +190,12 @@ export default {
     ],
     mandays: [],
     data: [],
+    value: [],
     editedIndex: -1,
     editedItem: {
       name: "",
-      nomor: 0,
       type: "",
       value: "",
-      time: "",
     },
     defaultItem: {
       name: "",
@@ -237,9 +212,9 @@ export default {
       .substr(0, 10),
   }),
   computed: {
-    size () {
-      const size = {xs:'x-small'}[this.$vuetify.breakpoint.name];
-      return size ? { [size]: true } : {}
+    size() {
+      const size = { xs: "x-small" }[this.$vuetify.breakpoint.name];
+      return size ? { [size]: true } : {};
     },
     formTitle() {
       return this.editedIndex === -1 ? "New Data" : "Edit Data";
@@ -270,11 +245,11 @@ export default {
         .then((response) => {
           response.map((item) => {
             this.dataType.push(item.type);
-            console.log(data);
+            
           });
           let uniqueChars = [...new Set(this.dataType)];
           this.dataType = uniqueChars;
-          console.log("aaa" + arr);
+          
           let data = [];
           for (var i = 0; i < this.dataType.length; i++) {
             response.map((item) => {
@@ -286,9 +261,9 @@ export default {
             dat.value = false;
             data = [];
             arr.push(dat);
-            console.log(arr);
+            
           }
-          console.log("asa" + arr);
+          
           this.itemm = arr;
         })
         .catch((err) => err);
@@ -338,10 +313,11 @@ export default {
       this.dialog = true;
     },
 
-    deleteItem(item) {
-      this.editedIndex = this.mandays.indexOf(item);
+    editItemT(item) {
+      this.editedItem.name = item;
+      this.editedIndex = 1;
       this.editedItem = Object.assign({}, item);
-      this.dialogDelete = true;
+      this.dialog = true;
     },
 
     deleteItemConfirm() {
@@ -400,23 +376,58 @@ export default {
           this.snackbar = true;
           this.getData();
           // this.$router.go();
-           this.showAlert();
+          this.showAlert();
           succ;
         })
         .catch((err) => err);
       response;
     },
-
-    save() {
+    createData(Data) {
+      const response = apiService
+        .createDataLookup(Data)
+        .then((succ) => {
+          // alert(succ);
+          this.snackbar = true;
+          this.getData();
+          // this.$router.go();
+          this.showAlert();
+          succ;
+        })
+        .catch((err) => err);
+      response;
+    },
+    save(tipe) {
       if (this.editedIndex > -1) {
-        console.log("dfga" + this.editedItem);
-        this.editedItem.updateTime = this.nowdate
+        this.editedItem.updateTime = this.nowdate;
         this.updateData(this.editedItem, this.editedItem.lookupId);
-
+      } else {
+        const a = this.value.length;
+        this.editedItem.value = a + 1;
+        this.editedItem.orderNumber = a + 1;
+        this.editedItem.status = 1;
+        this.editedItem.updateTime = this.nowdate;
+        this.editedItem.type = tipe;
+        this.createData(this.editedItem);
       }
-      console.log("dfg" + this.editedItem.name);
-      
       this.close();
+    },
+    save2(tipe) {
+      console.log(tipe);
+      const response = apiService.getLookup().then((response) => {
+        response.map((item) => {
+          this.dataType.push(item.type);
+          if (item.type == tipe) {
+            this.value.push(item.value);
+          }
+        });
+      });
+      console.log(this.value);
+      const a = this.value.length;
+      console.log(a);
+      this.editedItem.value = this.value[a];
+      response;
+      console.log(this.editedItem.value);
+      console.log(this.value.length);
     },
   },
 };

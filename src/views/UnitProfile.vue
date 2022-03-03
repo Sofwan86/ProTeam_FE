@@ -23,7 +23,15 @@
                 dense
               ></v-text-field>
             </div>
-
+            <div class="pa-3">
+              <xlsx-workbook>
+                <xlsx-sheet :collection="sheet" :sheet-name="namaSheet" />
+                <xlsx-download filename="Report Units Profile.xlsx">
+                  <v-btn outlined class="btn-imp"> Download Report </v-btn>
+                  <!-- <button>Download</button> -->
+                </xlsx-download>
+              </xlsx-workbook>
+            </div>
             <v-dialog v-model="dialog" max-width="700px">
               <v-card>
                 <v-card-title>
@@ -220,10 +228,18 @@
 
 <script>
 import { Axios } from "./Axios";
+import XlsxWorkbook from "../components/XlsxWorkbook";
+import XlsxSheet from "../components/XlsxSheet";
+import XlsxDownload from "../components/XlsxDownload";
 const apiService = new Axios();
 
 export default {
-  name: "MandaysVendor",
+  name: "UnitProfile",
+  components: {
+    XlsxWorkbook,
+    XlsxSheet,
+    XlsxDownload,
+  },
   data: () => ({
     snackbar: false,
     text: "Berhasil ditambah.",
@@ -281,7 +297,6 @@ export default {
     tab: null,
     menus: ["Resource", "Kelompok"],
     headers: [
-      
       {
         text: "Kelompok",
         align: "start",
@@ -342,6 +357,13 @@ export default {
         href: "/",
       },
     ],
+    sheet: [],
+    namaSheet: "Report",
+    r_divisi: [],
+    r_unit: [],
+    r_skill: [],
+    r_pegawai: [],
+    r_manhour: [],
   }),
   computed: {
     formTitle() {
@@ -372,6 +394,29 @@ export default {
         .catch((err) => err);
       response;
       console.log;
+      this.units.map((item) => {
+        console.log("Nama:" + item.employeeName);
+        this.r_divisi.push(item.divisiName);
+        this.r_unit.push(item.kelompokName);
+        this.r_pegawai.push(item.totalEmployee);
+        this.r_manhour.push(item.totalManhour);
+        this.r_skill.push(item.skill);
+      });
+      for (var k = 0; k < this.r_divisi.length; k++) {
+        //this.tempskill.push(obj2)
+        let oo = {};
+        oo.Divisi = this.r_divisi[k];
+        oo.Kelompok = this.r_unit[k];
+        var regex = /<br\s*[/]?>/gi;
+        var skill = ""
+        if(this.r_skill[k])skill = this.r_skill[k].replace(regex, " ");
+        oo.Skillset = skill;
+        oo.TotalPegawai = this.r_pegawai[k];
+        oo.TotalManhour = this.r_manhour[k];
+        console.log("aa"+oo)
+        this.sheet.push(oo);
+      }
+
     },
 
     editItem(item) {

@@ -6,7 +6,6 @@ export default {
   props: {
     sheetName: {
       type: String,
-      required: true
     },
     collection: {
       type: Array,

@@ -256,7 +256,7 @@ export default {
         {
           title: "WLA",
           icon: "mdi-chart-line-variant",
-          route: "/wla",
+          route: "/workload",
         },
         {
           title: "Planning",

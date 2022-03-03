@@ -5,7 +5,7 @@
         :headers="headers"
         :items="resources"
         :search="search"
-        :sort-by.sync="updateTime"
+        :sort-by.sync="employeeName"
         :sort-desc.sync="sortDesc"
         class="elevation-1"
       >
@@ -25,11 +25,16 @@
                 dense
               ></v-text-field>
             </div>
-            <div class="pa-1" >
-              <div  class="text-center">
-                <v-menu  offset-y top :close-on-content-click="false">
+            <div class="pa-1">
+              <div class="text-center">
+                <v-menu offset-y top :close-on-content-click="false">
                   <template v-slot:activator="{ on, attrs }">
-                    <v-btn outlined class="btn-imp dark-blue--text" v-bind="attrs" v-on="on">
+                    <v-btn
+                      outlined
+                      class="btn-imp dark-blue--text"
+                      v-bind="attrs"
+                      v-on="on"
+                    >
                       Import Data
                     </v-btn>
                   </template>
@@ -38,29 +43,44 @@
                     <xlsx-read :file="file">
                       <xlsx-json>
                         <template #default="{ collection }">
-                         <div v-if="collection" class=" text--center">
-                           <v-btn rounded color="green" class="white--text"  @click="upload(collection)">Upload</v-btn>
-                           </div> 
+                          <div v-if="collection" class="text--center">
+                            <v-btn
+                              rounded
+                              color="green"
+                              class="white--text"
+                              @click="upload(collection)"
+                              >Upload</v-btn
+                            >
+                          </div>
                         </template>
                       </xlsx-json>
                     </xlsx-read>
+                    <div class="pa-3">
+                      <xlsx-workbook>
+                        <xlsx-sheet
+                          :collection="sheets"
+                          filename="Report Resource Profile"
+                        />
+                        <xlsx-download filename="Report Resource Profile.xlsx">
+                          <a href="">template</a>
+                        </xlsx-download>
+                      </xlsx-workbook>
+                    </div>
                   </v-list>
                 </v-menu>
               </div>
             </div>
             <div class="pa-3">
-               <xlsx-workbook>
-        <xlsx-sheet
-          :collection="sheetss"
-          filename="Report Resource Profile"
-        />
-        <xlsx-download filename="Report Resource Profile.xlsx">
-              <v-btn outlined class="btn-imp">
-                Download Report
-              </v-btn>
-              <!-- <button>Download</button> -->
-        </xlsx-download>
-      </xlsx-workbook>
+              <xlsx-workbook>
+                <xlsx-sheet
+                  :collection="sheetss"
+                  filename="Report Resource Profile"
+                />
+                <xlsx-download filename="Report Resource Profile.xlsx">
+                  <v-btn outlined class="btn-imp"> Download Report </v-btn>
+                  <!-- <button>Download</button> -->
+                </xlsx-download>
+              </xlsx-workbook>
             </div>
             <v-btn
               v-bind="size"
@@ -126,6 +146,7 @@
                         <v-col cols="12" sm="6" md="4">
                           <v-autocomplete
                             v-model="editedItem.divisiId"
+                            v-on:click="filter(editedItem.divisiId)"
                             label="Divisi*"
                             :rules="nameRules"
                             required
@@ -135,12 +156,22 @@
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
                           <v-autocomplete
-                            v-model="editedItem.jenjangJabatan"
+                            @click="filter(editedItem.divisiId)"
+                            v-model="editedItem.kelompokId"
+                            label="Kelompok*"
+                            :rules="nameRules"
+                            outlined
+                            :items="kelompok"
+                          ></v-autocomplete>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-autocomplete
+                            v-model="editedItem.jenjabId"
                             label="Jenjang Jabatan*"
                             :rules="nameRules"
                             required
                             outlined
-                            :items="tempj"
+                            :items="jenjab"
                           ></v-autocomplete>
                         </v-col>
 
@@ -163,15 +194,7 @@
                             outlined
                           ></v-text-field>
                         </v-col>
-                        <v-col cols="12" sm="6" md="4">
-                          <v-autocomplete
-                            v-model="editedItem.kelompok"
-                            label="Kelompok*"
-                            :rules="nameRules"
-                            outlined
-                            :items="tempk"
-                          ></v-autocomplete>
-                        </v-col>
+
                         <v-col cols="12" sm="6" md="4">
                           <v-autocomplete
                             v-model="editedItem.tipe_resource"
@@ -592,14 +615,15 @@ export default {
     XlsxJson,
     XlsxWorkbook,
     XlsxSheet,
-    XlsxDownload
+    XlsxDownload,
   },
   data: (vm) => ({
+    sheetName: "Data",
     fileRecords: "",
     file: null,
     alert: false,
-    updateTime: "updateTime",
-    sortDesc: true,
+    employeeName: "employeeName",
+    sortDesc: false,
     dates: null,
     snackbar1: false,
     snackbar: false,
@@ -749,24 +773,50 @@ export default {
     tempv: [],
     vendorid: [],
     listnpp: [],
-    npp_r:{},
+    npp_r: {},
     ceknpp: false,
-    skillni:false,
-    sheets: [{ name: "Report", data: [{asdfs:1}] }],
-    sheetss:[],
-    r_nama:[],
-    r_npp:[],
-    r_email:[],
-    r_nohp:[],
-    r_adate:[],
-    r_ldate:[],
-    r_unit:[],
-    r_tipe:[],
-    r_role:[],
-    r_jenjab:[],
-    r_manhour:[],
-    r_cost:[],
-    r_skill:[]
+    skillni: false,
+    sheets: [
+      {
+        employeeName: "",
+        npp: "",
+        email: "",
+        phone: "",
+        activeDate: "",
+        lastWorkDate: "",
+        totalManhour: "",
+        resourceType: "",
+        vendorId: "",
+        jenjabId: "",
+        divisiId: "",
+        kelompokId: "",
+        role: "",
+        projectExp: "",
+        status: "",
+      },
+    ],
+    sheetss: [],
+    r_nama: [],
+    r_npp: [],
+    r_email: [],
+    r_nohp: [],
+    r_adate: [],
+    r_ldate: [],
+    r_unit: [],
+    r_tipe: [],
+    r_role: [],
+    r_jenjab: [],
+    r_manhour: [],
+    r_cost: [],
+    r_skill: [],
+    keldiv: {},
+    tempkel: [],
+    tempkelid: [],
+    fkel: [],
+    sumkd: 0,
+    isLoading: false,
+    objkel: {},
+    newdiv: 0,
   }),
   computed: {
     size() {
@@ -799,8 +849,41 @@ export default {
     this.getData();
     this.getData2();
     this.getVendor();
+    this.getKelompok();
+    this.getjenjab()
   },
   methods: {
+    filter(div) {
+      const response = apiService
+        .getKelompokByDivisi(div, 1)
+        .then((response) => {
+          this.keldiv = response.newKelompok;
+        })
+        .catch((err) => err);
+      response;
+      this.newdiv = div;
+      console.log(this.fkel.length);
+      if (this.sumkd > 0) {
+        this.kelompok = [];
+        this.tempkel = [];
+        this.tempkelid = [];
+        this.sumkd = 0;
+      } else {
+        this.keldiv.map((item) => {
+          this.tempkel.push(item.kelompokName);
+          this.tempkelid.push(item.kelompokId);
+        });
+        this.sumkd = 1;
+        for (var m = 0; m < this.tempkel.length; m++) {
+          //this.tempskill.push(obj2)
+          let oo = {};
+          oo.text = this.tempkel[m];
+          oo.value = this.tempkelid[m];
+          this.kelompok.push(oo);
+        }
+      }
+    },
+
     onChange(event) {
       this.file = event.target.files ? event.target.files[0] : null;
     },
@@ -824,6 +907,48 @@ export default {
         this.listVendor.push(oo);
       }
     },
+    async getKelompok() {
+      const response = await apiService
+        .getKelompok()
+        .then((response) => {
+          this.objkel = response.newKelompok;
+        })
+        .catch((err) => err);
+      response;
+      this.objkel.map((item) => {
+        this.tempk.push(item.kelompokName);
+        this.kelompokid.push(item.kelompokId);
+      });
+      for (var k = 0; k < this.tempk.length; k++) {
+        //this.tempskill.push(obj2)
+        let oo = {};
+        oo.text = this.tempk[k];
+        oo.value = this.kelompokid[k];
+        this.kelompok.push(oo);
+      }
+      console.log(this.objkel);
+    },
+    async getjenjab() {
+      const response = await apiService
+        .getJenjab()
+        .then((response) => {
+          console.log("data"+response)
+          response.map((item) => {
+              this.tempj.push(item.jenjangJabatan);
+              this.jenjabid.push(item.jenjabId);
+          })
+        })
+        .catch((err) => err);
+      response;
+      for (var k = 0; k < this.tempj.length; k++) {
+        //this.tempskill.push(obj2)
+        let oo = {};
+        oo.text = this.tempj[k];
+        oo.value = this.jenjabid[k];
+        this.jenjab.push(oo);
+      }
+      console.log(this.jenjab)
+    },
     async getData() {
       const response = await apiService
         .getResourceProfile()
@@ -846,7 +971,6 @@ export default {
         this.r_manhour.push(item.totalManhour);
         this.r_cost.push(item.cost);
         this.r_skill.push(item.skill);
-        
       });
       for (var k = 0; k < this.r_nama.length; k++) {
         //this.tempskill.push(obj2)
@@ -855,29 +979,30 @@ export default {
         oo.NPP = this.r_npp[k];
         oo.Email = this.r_email[k];
         oo.NoHP = this.r_nohp[k];
-        const ad = this.r_adate[k].slice(0,10)
+        let ad = "";
+        if (this.r_adate[k] != null) ad = this.r_adate[k].slice(0, 10);
         oo.ActiveDate = ad;
-        console.log(ad)
-        const ld = this.r_ldate[k].slice(0,10)
+        let ld = "";
+        if (this.r_ldate[k] != null) {
+          ld = this.r_ldate[k].slice(0, 10);
+        }
         oo.LastDate = ld;
         oo.Unit = this.r_unit[k];
         oo.TipeResource = this.r_tipe[k];
         // ('Nama AS').oo = this.r_nama[k];
         var regex = /<br\s*[/]?>/gi;
-        const skill = this.r_skill[k].replace(regex,' ')
+        const skill = this.r_skill[k].replace(regex, " ");
         oo.Role = this.r_role[k];
-        oo.Skillset = skill
+        oo.Skillset = skill;
         oo.JenjangJabatan = this.r_jenjab[k];
         oo.TotalManhour = this.r_manhour[k];
         const format = this.r_cost[k].toString().split("").reverse().join("");
-      const convert = format.match(/\d{1,3}/g);
-      const price =
-        "Rp " + convert.join(".").split("").reverse().join("");
+        const convert = format.match(/\d{1,3}/g);
+        const price = "Rp " + convert.join(".").split("").reverse().join("");
         oo.Pricing = price;
-        console.log(skill)
-        this.sheetss.push(oo)
+        this.sheetss.push(oo);
         // this.sheets.data.push(oo);
-      } 
+      }
     },
     async getData2() {
       //let rt = { text: "", value: 0 };
@@ -894,10 +1019,10 @@ export default {
               this.tempr.push(item.name);
               this.roleid.push(item.value);
             }
-            if (item.type == "Kelompok") {
-              this.tempk.push(item.name);
-              this.kelompokid.push(item.value);
-            }
+            // if (item.type == "Kelompok") {
+            //   this.tempk.push(item.name);
+            //   this.kelompokid.push(item.value);
+            // }
             if (item.type == "Jenjab") {
               this.tempj.push(item.name);
               this.jenjabid.push(item.value);
@@ -922,20 +1047,20 @@ export default {
         oo.value = this.skillid[k];
         this.tempskill.push(oo);
       }
-      for (var l = 0; l < this.tempj.length; l++) {
-        //this.tempskill.push(obj2)
-        let oo = {};
-        oo.text = this.tempj[l];
-        oo.value = this.jenjabid[l];
-        this.jenjab.push(oo);
-      }
-      for (var m = 0; m < this.tempk.length; m++) {
-        //this.tempskill.push(obj2)
-        let oo = {};
-        oo.text = this.tempk[m];
-        oo.value = this.kelompokid[m];
-        this.kelompok.push(oo);
-      }
+      // for (var l = 0; l < this.tempj.length; l++) {
+      //   //this.tempskill.push(obj2)
+      //   let oo = {};
+      //   oo.text = this.tempj[l];
+      //   oo.value = this.jenjabid[l];
+      //   this.jenjab.push(oo);
+      // }
+      // for (var m = 0; m < this.tempk.length; m++) {
+      //   //this.tempskill.push(obj2)
+      //   let oo = {};
+      //   oo.text = this.tempk[m];
+      //   oo.value = this.kelompokid[m];
+      //   this.kelompok.push(oo);
+      // }
       for (var n = 0; n < this.tempr.length; n++) {
         let oo = {};
         oo.text = this.tempr[n];
@@ -965,12 +1090,16 @@ export default {
     },
     upload(a) {
       console.log(a);
+      let oo = {};
+      oo.skillId = 1;
+      this.newEditedItem.listSkill.push(oo);
       for (var i = 0; i < a.length; i++) {
         this.save(a[i]);
       }
     },
     editItem(item, t) {
       console.log("fds");
+      console.log("dfs" + item.npp);
       this.editedIndex = this.resources.indexOf(item);
       this.editedItem = Object.assign({}, item);
       if (t) this.editedItem.totalManhour = t;
@@ -988,7 +1117,6 @@ export default {
         }
       });
       this.editedItem.skills = a;
-      console.log("dfs");
     },
     deleteItem(item) {
       this.editedIndex = this.resources.indexOf(item);
@@ -1006,7 +1134,6 @@ export default {
     close() {
       this.s = [];
       this.dialog = false;
-      this.$refs.form.reset();
       this.$refs.form.resetValidation();
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
@@ -1017,9 +1144,7 @@ export default {
     closeDetail() {
       this.s = [];
       this.dialog = false;
-      this.$refs.form.reset();
       this.$refs.form.resetValidation();
-      this.$refs.form.reset();
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         //this.editedIndex = -1;
@@ -1030,7 +1155,6 @@ export default {
       this.s = [];
 
       this.dialogDelete = false;
-      this.$refs.form.reset();
       this.$refs.form.resetValidation();
       //this.editedItem = null
       this.editedIndex = -1;
@@ -1103,14 +1227,14 @@ export default {
         .createResourceProfile(Data)
         .then((succ) => {
           // alert(succ);
-          this.snackbar1 = true;
+          //this.snackbar1 = true;
           this.getData();
           //this.$router.go();
           this.showAlert();
           succ;
         })
         .catch(() => {
-          //this.showAlertFail()
+          this.showAlertFail()
         });
       response;
     },
@@ -1119,7 +1243,7 @@ export default {
         .updateResourceProfile(Data, id)
         .then((succ) => {
           // alert(succ);
-          this.snackbar = true;
+          //this.snackbar = true;
           this.getData();
           // this.$router.go();
           this.showAlert();
@@ -1259,10 +1383,10 @@ export default {
       console.log("sd" + a.vendorId);
       if (this.editedIndex > -1) {
         this.getSkillId();
-        this.getjenjabId();
         this.getroleId();
-        this.getkelompokId();
         this.gettipeId();
+        this.newEditedItem.jenjabId = this.editedItem.jenjabId;
+        this.newEditedItem.kelompokId = this.editedItem.kelompokId;
         this.newEditedItem.divisiId = this.editedItem.divisiId;
         this.editedItem.tipe_resource === "OS"
           ? (this.newEditedItem.vendorId = this.editedItem.vendorId)
@@ -1285,6 +1409,7 @@ export default {
           this.newEditedItem.status = 1;
           this.editedItem.status = 1;
         } else this.newEditedItem.status = 0;
+
         this.updateData(this.newEditedItem, this.editedItem.employeeId);
       } else {
         if (a.employeeName) {
@@ -1314,9 +1439,10 @@ export default {
           this.getroleId(a.role);
           this.getkelompokId(a.kelompokId);
           this.gettipeId(a.resourceType);
-          this.getSkillId(1);
-          console.log(a);
+
+          console.log("DATANI"+a);
         } else {
+          this.newEditedItem.kelompokId = this.editedItem.kelompok;
           this.newEditedItem.divisiId = this.editedItem.divisiId;
           this.editedItem.tipe_resource === "OS"
             ? (this.newEditedItem.vendorId = this.editedItem.vendorId)
@@ -1346,14 +1472,16 @@ export default {
           this.getSkillId();
           this.getjenjabId();
           this.getroleId();
-          this.getkelompokId();
           this.gettipeId();
           console.log("asa" + a);
         }
-        this.createData(this.newEditedItem);
+        if (this.newEditedItem.npp) this.createData(this.newEditedItem);
+        else alert("Invalid Input");
       }
-      this.close();
-      this.closeDelete();
+      if (!a) {
+        this.close();
+        this.closeDelete();
+      }
     },
     formatDate(date) {
       if (!date) return null;
@@ -1369,6 +1497,6 @@ export default {
   margin: 1rem;
 }
 .btn-imp.v-btn--outlined {
-    border: thin solid #004483;
-  }
+  border: thin solid #004483;
+}
 </style>
