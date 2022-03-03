@@ -344,7 +344,12 @@ export default {
       },
     ],
     member: [],
-
+    sheets: [{ name: "Report", data: [{asdfs:1}] }],
+    sheetss:[],
+    r_kelompoknama:[],
+    r_divisinama:[],
+    r_totale:[],
+    r_totalm:[],
     items: [
       {
         text: "Profile",
@@ -418,7 +423,6 @@ export default {
       }
 
     },
-
     editItem(item) {
       this.editedIndex = this.mandays.indexOf(item);
       this.editedItem = Object.assign({}, item);
