@@ -122,7 +122,6 @@
                     dark
                     dismissible
                   >
-
                   </v-alert>
                   <v-form ref="form" v-model="valid">
                     <v-container>
@@ -269,45 +268,29 @@
                           ></v-combobox>
                         </v-col>
 
-                        <v-col v-if="editedIndex > -1" cols="12" sm="6" md="4">
+                      
+                        <v-col cols="12" sm="6" md="4">
                           Active Date
-                          <v-btn outlined color="grey" width="900" height="35">
-                            <VueDatePicker
-                              placeholder="Active date"
-                              fullscreen-mobile
-                              v-model="editedItem.activeDate"
-                              :rules="nameRules"
-                            />
-                          </v-btn>
+                          <!-- <v-btn outlined color="grey" width="900" height="35"> -->
+                          <VueDatePicker
+                            placeholder="Active Date"
+                            fullscreen-mobile
+                            v-model="editedItem.activeDate"
+                            :rules="nameRules"
+                          />
+                          <!-- </v-btn> -->
                         </v-col>
-                        <v-col v-else cols="12" sm="6" md="4">
-                          <v-btn outlined color="grey" width="900" height="55">
-                            <VueDatePicker
-                              placeholder="Active date"
-                              fullscreen-mobile
-                              v-model="editedItem.activeDate"
-                            />
-                          </v-btn>
-                        </v-col>
-                        <v-col v-if="editedIndex > -1" cols="12" sm="6" md="4">
+
+                        <v-col cols="12" sm="6" md="4">
                           Last Working Date
-                          <v-btn outlined color="grey" width="900" height="35">
-                            <VueDatePicker
-                              placeholder="Last working date"
-                              fullscreen-mobile
-                              v-model="editedItem.lastWorkDate"
-                              :rules="nameRules"
-                            />
-                          </v-btn>
-                        </v-col>
-                        <v-col v-else cols="12" sm="6" md="4">
-                          <v-btn outlined color="grey" width="900" height="55">
-                            <VueDatePicker
-                              placeholder="Last working date"
-                              fullscreen-mobile
-                              v-model="editedItem.lastWorkDate"
-                            />
-                          </v-btn>
+                          <!-- <v-btn outlined color="grey" width="900" height="35"> -->
+                          <VueDatePicker
+                            placeholder="Last Working Date"
+                            fullscreen-mobile
+                            v-model="editedItem.lastWorkDate"
+                            :rules="nameRules"
+                          />
+                          <!-- </v-btn> -->
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
                           <v-select
@@ -594,12 +577,13 @@
 </template>
 
 <script>
-import { Axios } from "./Axios";
+
 import XlsxRead from "../components/XlsxRead";
 import XlsxJson from "../components/XlsxJson";
 import XlsxWorkbook from "../components/XlsxWorkbook";
 import XlsxSheet from "../components/XlsxSheet";
 import XlsxDownload from "../components/XlsxDownload";
+import { Axios } from "./Axios";
 const apiService = new Axios();
 export default {
   name: "resourceProfile",
@@ -843,7 +827,7 @@ export default {
     this.getData2();
     this.getVendor();
     this.getKelompok();
-    this.getjenjab()
+    this.getjenjab();
   },
   methods: {
     filter(div) {
@@ -855,7 +839,6 @@ export default {
         .catch((err) => err);
       response;
       this.newdiv = div;
-      console.log(this.fkel.length);
       if (this.sumkd > 0) {
         this.kelompok = [];
         this.tempkel = [];
@@ -919,17 +902,15 @@ export default {
         oo.value = this.kelompokid[k];
         this.kelompok.push(oo);
       }
-      console.log(this.objkel);
     },
     async getjenjab() {
       const response = await apiService
         .getJenjab()
         .then((response) => {
-          console.log("data"+response)
           response.map((item) => {
-              this.tempj.push(item.jenjangJabatan);
-              this.jenjabid.push(item.jenjabId);
-          })
+            this.tempj.push(item.jenjangJabatan);
+            this.jenjabid.push(item.jenjabId);
+          });
         })
         .catch((err) => err);
       response;
@@ -940,7 +921,6 @@ export default {
         oo.value = this.jenjabid[k];
         this.jenjab.push(oo);
       }
-      console.log(this.jenjab)
     },
     async getData() {
       const response = await apiService
@@ -965,6 +945,7 @@ export default {
         this.r_cost.push(item.cost);
         this.r_skill.push(item.skill);
       });
+      console.log("length:"+this.r_nama.length)
       for (var k = 0; k < this.r_nama.length; k++) {
         //this.tempskill.push(obj2)
         let oo = {};
@@ -984,6 +965,8 @@ export default {
         oo.TipeResource = this.r_tipe[k];
         // ('Nama AS').oo = this.r_nama[k];
         var regex = /<br\s*[/]?>/gi;
+        console.log(this.r_skill[k])
+        if(!this.r_skill[k]){this.r_skill[k]=""}
         const skill = this.r_skill[k].replace(regex, " ");
         oo.Role = this.r_role[k];
         oo.Skillset = skill;
@@ -995,6 +978,7 @@ export default {
         oo.Pricing = price;
         this.sheetss.push(oo);
         // this.sheets.data.push(oo);
+        console.log("ini resource" + oo);
       }
     },
     async getData2() {
@@ -1079,10 +1063,8 @@ export default {
     createItem(item) {
       this.createItem = item;
       this.$router.push("/createNewResource");
-      console.log("fds");
     },
     upload(a) {
-      console.log(a);
       let oo = {};
       oo.skillId = 1;
       this.newEditedItem.listSkill.push(oo);
@@ -1091,8 +1073,6 @@ export default {
       }
     },
     editItem(item, t) {
-      console.log("fds");
-      console.log("dfs" + item.npp);
       this.editedIndex = this.resources.indexOf(item);
       this.editedItem = Object.assign({}, item);
       if (t) this.editedItem.totalManhour = t;
@@ -1227,7 +1207,7 @@ export default {
           succ;
         })
         .catch(() => {
-          this.showAlertFail()
+          this.showAlertFail();
         });
       response;
     },
@@ -1373,7 +1353,6 @@ export default {
     },
 
     save(a) {
-      console.log("sd" + a.vendorId);
       if (this.editedIndex > -1) {
         this.getSkillId();
         this.getroleId();
@@ -1432,8 +1411,6 @@ export default {
           this.getroleId(a.role);
           this.getkelompokId(a.kelompokId);
           this.gettipeId(a.resourceType);
-
-          console.log("DATANI"+a);
         } else {
           this.newEditedItem.kelompokId = this.editedItem.kelompok;
           this.newEditedItem.divisiId = this.editedItem.divisiId;
@@ -1466,7 +1443,6 @@ export default {
           this.getjenjabId();
           this.getroleId();
           this.gettipeId();
-          console.log("asa" + a);
         }
         if (this.newEditedItem.npp) this.createData(this.newEditedItem);
         else alert("Invalid Input");

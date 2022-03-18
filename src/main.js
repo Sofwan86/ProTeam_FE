@@ -12,11 +12,24 @@ import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import VueFileAgent from 'vue-file-agent';
 //import VueFileAgentStyles from 'vue-file-agent/dist/vue-file-agent.css';
+import { extend } from "vee-validate";
+import * as rules from "vee-validate/dist/rules";
+import { messages } from "vee-validate/dist/locale/en.json";
+import { createPinia, PiniaVuePlugin } from 'pinia'
 
+Object.keys(rules).forEach(rule => {
+  extend(rule, {
+    ...rules[rule],
+    message: messages[rule]
+  });
+});
 
 Vue.use(VueFileAgent);
 Vue.use(VueSweetalert2);
 Vue.use(VueDatePicker);
+
+Vue.use(PiniaVuePlugin)
+const pinia = createPinia()
 
 Vue.component("downloadExcel", JsonExcel);
 Vue.use(VueGoogleCharts)
@@ -33,5 +46,6 @@ Vue.filter('str_limit', function (value, size) {
 new Vue({
   router,
   vuetify,
+  pinia,
   render: h => h(App)
 }).$mount('#app')

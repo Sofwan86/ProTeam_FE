@@ -72,48 +72,6 @@
                             outlined
                           ></v-text-field>
                         </v-col>
-
-                        <v-col v-if="editedIndex > -1" cols="12" sm="6" md="4">
-                          Start Contract Date
-                          <v-btn outlined color="grey" width="900" height="35">
-                            <VueDatePicker
-                              placeholder="Start Contract Date"
-                              fullscreen-mobile
-                              v-model="editedItem.startContract"
-                              :rules="nameRules"
-                            />
-                          </v-btn>
-                        </v-col>
-                        <v-col v-else cols="12" sm="6" md="4">
-                          <v-btn outlined color="grey" width="900" height="55">
-                            <VueDatePicker
-                              placeholder="Start Contract Date"
-                              fullscreen-mobile
-                              v-model="editedItem.startContract"
-                            />
-                          </v-btn>
-                        </v-col>
-                        <v-col v-if="editedIndex > -1" cols="12" sm="6" md="4">
-                          Last Contract Date
-                          <v-btn outlined color="grey" width="900" height="35">
-                            <VueDatePicker
-                              placeholder="Last Contract Date"
-                              fullscreen-mobile
-                              v-model="editedItem.lastContract"
-                              :rules="nameRules"
-                            />
-                          </v-btn>
-                        </v-col>
-                        <v-col v-else cols="12" sm="6" md="4">
-                          <v-btn outlined color="grey" width="900" height="55">
-                            <VueDatePicker
-                              placeholder="Last Contract Date"
-                              fullscreen-mobile
-                              v-model="editedItem.lastContract"
-                            />
-                          </v-btn>
-                        </v-col>
-
                         <v-col cols="12" sm="6" md="4">
                           <v-select
                             v-model="editedItem.nama_status"
@@ -123,11 +81,37 @@
                           ></v-select>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
+                          Start Contract Date
+                          <!-- <v-btn outlined color="grey" width="900" height="35"> -->
+                          <VueDatePicker
+                            placeholder="Start Contract Date"
+                            fullscreen-mobile
+                            v-model="editedItem.startContract"
+                            :rules="nameRules"
+                          />
+                          <!-- </v-btn> -->
+                        </v-col>
+
+                        <v-col cols="12" sm="6" md="4">
+                          Last Contract Date
+                          <!-- <v-btn outlined color="grey" width="900" height="35"> -->
+                          <VueDatePicker
+                            placeholder="Last Contract Date"
+                            fullscreen-mobile
+                            v-model="editedItem.lastContract"
+                            :rules="nameRules"
+                          />
+                          <!-- </v-btn> -->
+                        </v-col>
+
+                        
+                        <v-col cols="12" sm="6" md="4">
                           <v-textarea
                             v-model="editedItem.notes"
                             label="Notes"
                             required
                             outlined
+                            rows="1"
                           ></v-textarea>
                         </v-col>
                       </v-row>

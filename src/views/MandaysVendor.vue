@@ -25,15 +25,15 @@
                 dense
               ></v-text-field>
             </div>
-            <v-btn v-bind="size" class="white--text" @click="editItem()" color="#004483">
+            <v-btn
+              v-bind="size"
+              class="white--text"
+              @click="editItem()"
+              color="#004483"
+            >
               + Create New Mandays
             </v-btn>
             <v-dialog v-model="dialog" max-width="1000px">
-              <!-- <template v-slot:activator="{ on, attrs }">
-                <v-btn color="#004483" dark v-bind="attrs" v-on="on">
-                  + Create New Mandays
-                </v-btn>
-              </template> -->
               <v-card>
                 <v-card color="#004483">
                   <v-card-title class="white--text">
@@ -74,62 +74,47 @@
                             outlined
                           ></v-text-field>
                         </v-col>
-
-                        <v-col v-if="editedIndex > -1" cols="12" sm="6" md="4">
-                          Start Contract Date
-                          <v-btn outlined color="grey" width="900" height="35">
-                            <VueDatePicker
-                              placeholder="Start Contract Date"
-                              fullscreen-mobile
-                              v-model="editedItem.startContract"
-                              :rules="nameRules"
-                            />
-                          </v-btn>
-                        </v-col>
-                        <v-col v-else cols="12" sm="6" md="4">
-                          <v-btn outlined color="grey" width="900" height="55">
-                            <VueDatePicker
-                              placeholder="Start Contract Date"
-                              fullscreen-mobile
-                              v-model="editedItem.startContract"
-                            />
-                          </v-btn>
-                        </v-col>
-                        <v-col v-if="editedIndex > -1" cols="12" sm="6" md="4">
-                          Last Contract Date
-                          <v-btn outlined color="grey" width="900" height="35">
-                            <VueDatePicker
-                              placeholder="Last Contract Date"
-                              fullscreen-mobile
-                              v-model="editedItem.lastContract"
-                              :rules="nameRules"
-                            />
-                          </v-btn>
-                        </v-col>
-                        <v-col v-else cols="12" sm="6" md="4">
-                          <v-btn outlined color="grey" width="900" height="55">
-                            <VueDatePicker
-                              placeholder="Last Contract Date"
-                              fullscreen-mobile
-                              v-model="editedItem.lastContract"
-                            />
-                          </v-btn>
-                        </v-col>
-
                         <v-col cols="12" sm="6" md="4">
                           <v-select
                             v-model="editedItem.nama_status"
                             label="Status"
                             :items="status"
+                            required
                             outlined
                           ></v-select>
                         </v-col>
+
+                        <v-col cols="12" sm="6" md="4">
+                          Start Contract Date
+                          <!-- <v-btn outlined color="grey" width="900" height="35"> -->
+                          <VueDatePicker
+                            placeholder="Start Contract Date"
+                            fullscreen-mobile
+                            v-model="editedItem.startContract"
+                            :rules="nameRules"
+                          />
+                          <!-- </v-btn> -->
+                        </v-col>
+
+                        <v-col cols="12" sm="6" md="4">
+                          Last Contract Date
+                          <!-- <v-btn outlined color="grey" width="900" height="35"> -->
+                          <VueDatePicker
+                            placeholder="Last Contract Date"
+                            fullscreen-mobile
+                            v-model="editedItem.lastContract"
+                            :rules="nameRules"
+                          />
+                          <!-- </v-btn> -->
+                        </v-col>
+
                         <v-col cols="12" sm="6" md="4">
                           <v-textarea
                             v-model="editedItem.notes"
                             label="Notes"
                             required
                             outlined
+                            rows="1"
                           ></v-textarea>
                         </v-col>
                       </v-row>
@@ -145,13 +130,269 @@
                     Save
                   </v-btn>
                 </v-card-actions>
+                <!-- <v-expansion-panels v-if="editedIndex != -1">
+                  <v-expansion-panel>
+                    <v-expansion-panel-header disable-icon>
+                      <h3>Add Usage <v-icon>mdi-menu-down</v-icon></h3>
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                      <v-card-text>
+                        <v-form ref="form" v-model="validUsage">
+                          <v-container>
+                            <v-row>
+                              <v-col cols="12" sm="6" md="4">
+                                <v-text-field
+                                  v-model="editedItemUsage.noCR"
+                                  label="No CR*"
+                                  :rules="nameRulesUsage"
+                                  required
+                                  outlined
+                                ></v-text-field>
+                              </v-col>
+                              <v-col cols="12" sm="6" md="4">
+                                <v-text-field
+                                  v-model="editedItemUsage.project"
+                                  label="Project*"
+                                  :rules="nameRulesUsage"
+                                  required
+                                  outlined
+                                ></v-text-field>
+                              </v-col>
+                              <v-col cols="12" sm="6" md="4">
+                                <v-text-field
+                                  v-model="editedItemUsage.request"
+                                  label="Requestor"
+                                  required
+                                  outlined
+                                ></v-text-field>
+                              </v-col>
+
+                              <v-col cols="12" sm="6" md="4">
+                                <v-text-field
+                                  v-model="editedItemUsage.totalMandays"
+                                  label="Jumlah Mandays"
+                                  required
+                                  outlined
+                                ></v-text-field>
+                              </v-col>
+                              <v-col cols="12" sm="6" md="4">
+                                <v-select
+                                  v-model="editedItemUsage.kelompok"
+                                  label="Kelompok"
+                                  :items="status"
+                                  required
+                                  outlined
+                                ></v-select>
+                              </v-col>
+                              <v-col cols="12" sm="6" md="4">
+                                <v-textarea
+                                  v-model="editedItemUsage.notes"
+                                  label="Notes"
+                                  required
+                                  class="mx-2"
+                                  rows="1"
+                                  outlined
+                                ></v-textarea>
+                              </v-col>
+
+                              <v-col cols="12" sm="6" md="4">
+                                Request Date
+                          
+                                <VueDatePicker
+                                  placeholder="Request Date"
+                                  fullscreen-mobile
+                                  v-model="editedItemUsage.requestDate"
+                                  :rules="nameRules"
+                                />
+                                
+                              </v-col>
+
+                              <v-col cols="12" sm="6" md="4">
+                                Start Project
+                               
+                                <VueDatePicker
+                                  placeholder="Start Project"
+                                  fullscreen-mobile
+                                  v-model="editedItemUsage.startProject"
+                                  :rules="nameRules"
+                                />
+                              </v-col>
+
+                              <v-col cols="12" sm="6" md="4">
+                                End Project
+                                <VueDatePicker
+                                  placeholder="Project"
+                                  fullscreen-mobile
+                                  v-model="editedItemUsage.lastProject"
+                                  :rules="nameRules"
+                                />
+                              </v-col>
+                            </v-row>
+                          </v-container>
+                        </v-form>
+                      </v-card-text>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                          outlined
+                          color="blue darken-1"
+                          text
+                          @click="close"
+                        >
+                          Cancel
+                        </v-btn>
+                        <v-btn
+                          color="#004483"
+                          dark
+                          v-if="validUsage"
+                          @click="save"
+                        >
+                          Save
+                        </v-btn>
+                      </v-card-actions>
+                    </v-expansion-panel-content>
+                  </v-expansion-panel>
+                </v-expansion-panels> -->
               </v-card>
             </v-dialog>
-            <v-dialog v-model="dialogDelete" max-width="1100px">
+            <v-dialog v-model="dialogUsage" max-width="1000px">
               <v-card>
+                <v-card color="#004483">
+                  <v-card-title class="white--text">
+                    <span class="text-h5"
+                      ><h3>{{ formTitleUsage }}</h3></span
+                    >
+                    <v-spacer></v-spacer>
+                    <v-icon @click="closeUsage" color="white">mdi-close</v-icon>
+                  </v-card-title>
+                </v-card>
+                <v-card-text>
+                  <v-form ref="formUsage" v-model="validUsage">
+                    <v-container>
+                      <v-row>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-text-field
+                            v-model="editedItemUsage.noCr"
+                            label="No CR*"
+                            :rules="nameRulesUsage"
+                            required
+                            outlined
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-text-field
+                            v-model="editedItemUsage.project"
+                            label="Project*"
+                            :rules="nameRulesUsage"
+                            required
+                            outlined
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-text-field
+                            v-model="editedItemUsage.requestor"
+                            label="Requestor"
+                            required
+                            outlined
+                          ></v-text-field>
+                        </v-col>
+
+                        <v-col cols="12" sm="6" md="4">
+                          <v-text-field
+                            v-model="editedItemUsage.jumlahMandays"
+                            label="Jumlah Mandays"
+                            required
+                            outlined
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-select
+                            v-model="editedItemUsage.kelompok"
+                            label="Kelompok Pengguna  "
+                            :items="kelompok"
+                            required
+                            outlined
+                          ></v-select>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-textarea
+                            v-model="editedItemUsage.note"
+                            label="Notes"
+                            required
+                            class="mx-2"
+                            rows="1"
+                            outlined
+                          ></v-textarea>
+                        </v-col>
+
+                        <v-col cols="12" sm="6" md="4">
+                          Request Date
+                          <!-- <v-btn outlined color="grey" width="900" height="35"> -->
+                          <VueDatePicker
+                            placeholder="Request Date"
+                            fullscreen-mobile
+                            v-model="editedItemUsage.tglRequest"
+                            :rules="nameRules"
+                          />
+                          <!-- </v-btn> -->
+                        </v-col>
+
+                        <v-col cols="12" sm="6" md="4">
+                          Start Project
+                          <!-- <v-btn outlined color="grey" width="900" height="35"> -->
+                          <VueDatePicker
+                            placeholder="Start Project"
+                            fullscreen-mobile
+                            v-model="editedItemUsage.startProject"
+                            :rules="nameRules"
+                          />
+                          <!-- </v-btn> -->
+                        </v-col>
+
+                        <v-col cols="12" sm="6" md="4">
+                          End Project
+                          <!-- <v-btn outlined color="grey" width="900" height="35"> -->
+                          <VueDatePicker
+                            placeholder="Project"
+                            fullscreen-mobile
+                            v-model="editedItemUsage.lastProject"
+                            :rules="nameRules"
+                          />
+                          <!-- </v-btn> -->
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                  </v-form>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn outlined color="blue darken-1" text @click="close">
+                    Cancel
+                  </v-btn>
+                  <v-btn color="#004483" dark v-if="validUsage" @click="save">
+                    Save
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+            <v-dialog v-model="dialogDelete" max-width="1500px">
+              <v-card>
+                <v-card color="#004483">
+                  <v-card-title class="white--text">
+                    <span class="text-h5"><h4>Detail Mandays</h4></span>
+                    <v-spacer></v-spacer>
+                    <v-icon @click="closeDelete" color="white"
+                      >mdi-close</v-icon
+                    >
+                  </v-card-title>
+                </v-card>
+
                 <v-row no-gutters>
                   <v-col cols="12" sm="13" offset-sm="0.2">
                     <v-card class="pa-2" offset-sm="3" outlined tile>
+                      <p></p>
+                      <v-spacer></v-spacer>
+
                       <v-row>
                         <v-col cols="12" md="6">
                           <v-list-item two-line>
@@ -285,6 +526,46 @@
                     </v-card>
                   </v-col>
                 </v-row>
+
+                <v-card-actions class="pa-5">
+                  <v-btn
+                    v-bind="size"
+                    class="white--text pr-9"
+                    @click="editItemUsage()"
+                    color="#004483"
+                  >
+                    + Add Usage
+                  </v-btn>
+                  <v-spacer></v-spacer>
+                  <div class="pa-2" max-width:100>
+                    <v-text-field
+                      class="shrink"
+                      outlined
+                      v-bind="size"
+                      v-model="search_usage"
+                      append-icon="mdi-magnify"
+                      label="Search"
+                      single-line
+                      hide-details
+                      dense
+                    ></v-text-field>
+                  </div>
+                </v-card-actions>
+                <v-card>
+                  <v-data-table
+                    :headers="headers_usage"
+                    :items="usage"
+                    :search="search_usage"
+                    :loading="loadingPlaylist"
+                    class="elevation-1 pa-6"
+                  >
+                   <template v-slot:[`item.actions`]="{ item }">
+      
+                <button class="edit" @click="editItemUsage(item)">Edit</button>
+              </template>
+                  </v-data-table>
+                </v-card>
+
                 <v-card-actions>
                   <v-spacer></v-spacer>
                   <v-btn color="blue darken-1" text @click="closeDelete">
@@ -328,7 +609,9 @@ export default {
   name: "MandaysVendor",
   data: (vm) => ({
     valid: false,
+    validUsage: false,
     nameRules: [(v) => !!v || "Required"],
+    nameRulesUsage: [(v) => !!v || "Required"],
     ss: [],
     sss: "",
     snackbar: false,
@@ -351,8 +634,10 @@ export default {
     ],
     dialog: false,
     editedIndex: -1,
+    editedIndexUsage: -1,
     dialogDetail: false,
     dialogDelete: false,
+    dialogUsage: false,
     headers: [
       {
         text: "Vendor Name",
@@ -367,6 +652,26 @@ export default {
       { text: "Status", value: "status" },
       { text: "Action", value: "actions" },
     ],
+    search_usage: "",
+    headers_usage: [
+      {
+        text: "No CR",
+        align: "start",
+        sortable: true,
+        value: "noCr",
+      },
+      { text: "Project", value: "project" },
+      { text: "Requestor", value: "requestor" },
+      { text: "Kelompok Pengguna", value: "kelompok" },
+      { text: "Tgl Request", value: "tglRequest" },
+      { text: "Tgl Start Project", value: "tglStart" },
+      { text: "Tgl End Project", value: "tglEnd" },
+      { text: "Jumlah Mandays", value: "jumlahMandays" },
+      { text: "Create By", value: "createBy" },
+      { text: "Create Date", value: "createDate" },
+      { text: "Note", value: "note" },
+      { text: "Action", value: "actions" },
+    ],
     status: [],
     skills: [],
     skillid: [],
@@ -376,6 +681,7 @@ export default {
     temptipe: [],
     tempj: [],
     tempskill: [],
+    objkel:{},
     kelompok: [],
     kelompokid: [],
     tipeid: [],
@@ -385,6 +691,47 @@ export default {
     jenjab: [],
     jenjabid: [],
     resources: [],
+    usage: [
+      {
+        noCr: "30001",
+        project: "Enhancement PSAK",
+        requestor: "Julia Astani",
+        kelompok: "ACR",
+        tglRequest: "15/02/2022",
+        tglStart: "15/02/2022",
+        tglEnd: "15/02/2022",
+        jumlahMandays: "200",
+        createBy: "Aditya Julianto",
+        createDate: "15/02/2022",
+        note: "-",
+      },
+      {
+        noCr: "30002",
+        project: "Enhancement F1",
+        requestor: "Julia Astani",
+        kelompok: "ACR",
+        tglRequest: "15/02/2022",
+        tglStart: "15/02/2022",
+        tglEnd: "15/02/2022",
+        jumlahMandays: "300",
+        createBy: "Aditya Julianto",
+        createDate: "15/02/2022",
+        note: "-",
+      },
+    ],
+    editedItemUsage: {
+      noCr: "",
+      project: "",
+      requestor: "",
+      kelompok: "",
+      tglRequest: "",
+      tglStart: "",
+      tglEnd: "",
+      jumlahMandays: "",
+      createBy: "",
+      createDate: "",
+      note: "-",
+    },
     editedItem: {
       vendorName: "",
       contractNumber: "",
@@ -466,12 +813,15 @@ export default {
     mandaysvendor: [],
   }),
   computed: {
-    size () {
-      const size = {xs:'x-small'}[this.$vuetify.breakpoint.name];
-      return size ? { [size]: true } : {}
+    size() {
+      const size = { xs: "x-small" }[this.$vuetify.breakpoint.name];
+      return size ? { [size]: true } : {};
     },
     formTitle() {
       return this.editedIndex === -1 ? "Create New Mandays" : "Edit Mandays";
+    },
+    formTitleUsage() {
+      return this.editedIndexUsage === -1 ? "Create Usage" : "Edit Usage";
     },
     dateActive() {
       return this.formatDate(this.date);
@@ -490,13 +840,37 @@ export default {
     dialogDelete(val) {
       val || this.closeDelete();
     },
+    dialogUsage(val) {
+      val || this.closeUsage();
+    },
   },
   created() {
     this.initialize();
     this.getData();
     this.getData2();
+    this.getKelompok()
   },
   methods: {
+    async getKelompok() {
+      const response = await apiService
+        .getKelompok()
+        .then((response) => {
+          this.objkel = response.newKelompok;
+        })
+        .catch((err) => err);
+      response;
+      this.objkel.map((item) => {
+        this.tempk.push(item.kelompokName);
+        this.kelompokid.push(item.kelompokId);
+      });
+      for (var k = 0; k < this.tempk.length; k++) {
+        //this.tempskill.push(obj2)
+        let oo = {};
+        oo.text = this.tempk[k];
+        oo.value = this.kelompokid[k];
+        this.kelompok.push(oo);
+      }
+    },
     async getData() {
       const response = await apiService
         .getManday()
@@ -545,6 +919,11 @@ export default {
       }
       console.log(this.editedItem.nama_status);
     },
+    editItemUsage(item) {
+      this.editedIndexUsage = this.usage.indexOf(item);
+      this.editedItemUsage = Object.assign({}, item);
+      this.dialogUsage = true;
+    },
     detailItem(item) {
       this.editedIndex = this.mandaysvendor.indexOf(item);
       this.detailItem = Object.assign({}, item);
@@ -586,11 +965,21 @@ export default {
     },
     closeDelete() {
       this.dialogDelete = false;
+      this.dialogUsage = false;
       this.$refs.form.reset();
       this.$refs.form.resetValidation();
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
+      });
+    },
+    closeUsage() {
+      this.dialogUsage = false;
+      this.$refs.formUsage.reset();
+      this.$refs.formUsage.resetValidation();
+      this.$nextTick(() => {
+        this.editedItemUsage = Object.assign({}, this.defaultItem);
+        this.editedIndexUsage = -1;
       });
     },
     createData(Data) {
@@ -672,7 +1061,7 @@ export default {
           // alert("Sukses Update");
           err;
           console.log("dsffd" + err);
-         this.showAlertFail()
+          this.showAlertFail();
         });
       // if(response.status == 200){
       //   this.showAlert()
@@ -725,5 +1114,12 @@ export default {
 <style lang="scss" scoped>
 .v-progress-circular {
   margin: 1rem;
+}
+button.edit {
+  padding: 5px 10px;
+  font-size: inherit;
+  background: transparent;
+  border: 2px solid #ccc;
+  transition: 0.4s;
 }
 </style>

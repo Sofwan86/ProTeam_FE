@@ -109,8 +109,6 @@
                             v-model="editedItem.password"
                             label="Password"
                             filled
-                            disabled
-                            type="password"
                             value="Proteam@12345"
                             required
                             outlined
@@ -328,6 +326,7 @@ export default {
     skills: [],
     skillid: [],
     obj: {},
+    objkel:{},
     tempk: [],
     tempr: [],
     temptipe: [],
@@ -409,6 +408,7 @@ export default {
     this.initialize();
     this.getData();
     this.getData2();
+    this.getKelompok()
   },
   methods: {
     async getData() {
@@ -439,23 +439,23 @@ export default {
               this.tempr.push(item.name);
               this.roleid.push(item.value);
             }
-            if (item.type == "Kelompok") {
-              this.tempk.push(item.name);
-              this.kelompokid.push(item.value);
-            }
+            // if (item.type == "Kelompok") {
+            //   this.tempk.push(item.name);
+            //   this.kelompokid.push(item.value);
+            // }
           });
         })
         .catch((err) => err);
       response;
       console.log("aa", this.tstatus);
       console.log("aa", this.statusId);
-      for (var m = 0; m < this.tempk.length; m++) {
-        //this.tempskill.push(obj2)
-        let oo = {};
-        oo.text = this.tempk[m];
-        oo.value = this.kelompokid[m];
-        this.kelompok.push(oo);
-      }
+      // for (var m = 0; m < this.tempk.length; m++) {
+      //   //this.tempskill.push(obj2)
+      //   let oo = {};
+      //   oo.text = this.tempk[m];
+      //   oo.value = this.kelompokid[m];
+      //   this.kelompok.push(oo);
+      // }
       console.log("kel", this.status);
       for (var n = 0; n < this.tempr.length; n++) {
         //this.tempskill.push(obj2)
@@ -464,6 +464,29 @@ export default {
         oo.value = this.roleid[n];
         this.role.push(oo);
       }
+    },
+    async getKelompok() {
+      const response = await apiService
+        .getKelompok()
+        .then((response) => {
+          this.objkel = response.newKelompok;
+        })
+        .catch((err) => err);
+      response;
+      console.log("OBJKEL:"+this.objkel)
+      this.objkel.map((item) => {
+        this.tempk.push(item.kelompokName);
+        this.kelompokid.push(item.kelompokId);
+      });
+      console.log("length:"+this.tempk.length)
+      for (var k = 0; k < this.tempk.length; k++) {
+        //this.tempskill.push(obj2)
+        let oo = {};
+        oo.text = this.tempk[k];
+        oo.value = this.kelompokid[k];
+        this.kelompok.push(oo);
+      }
+      console.log("ini kelompok"+this.kelompok)
     },
     initialize() {
       this.users = [];
