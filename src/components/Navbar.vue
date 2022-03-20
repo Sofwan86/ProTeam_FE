@@ -258,11 +258,11 @@ export default {
           icon: "mdi-chart-line-variant",
           route: "/workload",
         },
-        {
-          title: "Planning",
-          icon: "mdi-notebook-outline",
-          route: "/planning",
-        },
+        // {
+        //   title: "Planning",
+        //   icon: "mdi-notebook-outline",
+        //   route: "/planning",
+        // },
         {
           title: "Report",
           icon: "mdi-file-chart-outline",

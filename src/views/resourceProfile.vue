@@ -556,7 +556,7 @@
           <p v-else class="green--text">Active</p>
         </template>
         <template v-slot:[`item.updateTime`]="{ item }">
-          <h4>{{ item.updateTime | str_limit(10) }}</h4>
+          {{ item.updateTime | str_limit(10) }}
         </template>
         <template v-slot:[`item.no`]="{ item }">
           <td>
@@ -945,7 +945,6 @@ export default {
         this.r_cost.push(item.cost);
         this.r_skill.push(item.skill);
       });
-      console.log("length:"+this.r_nama.length)
       for (var k = 0; k < this.r_nama.length; k++) {
         //this.tempskill.push(obj2)
         let oo = {};
@@ -965,7 +964,6 @@ export default {
         oo.TipeResource = this.r_tipe[k];
         // ('Nama AS').oo = this.r_nama[k];
         var regex = /<br\s*[/]?>/gi;
-        console.log(this.r_skill[k])
         if(!this.r_skill[k]){this.r_skill[k]=""}
         const skill = this.r_skill[k].replace(regex, " ");
         oo.Role = this.r_role[k];
@@ -978,7 +976,6 @@ export default {
         oo.Pricing = price;
         this.sheetss.push(oo);
         // this.sheets.data.push(oo);
-        console.log("ini resource" + oo);
       }
     },
     async getData2() {
@@ -1440,10 +1437,11 @@ export default {
           //this.resources.push(this.editedItem);
 
           this.getSkillId();
-          this.getjenjabId();
+          // this.getjenjabId();
           this.getroleId();
           this.gettipeId();
         }
+        console.log("iniitem"+this.newEditedItem)
         if (this.newEditedItem.npp) this.createData(this.newEditedItem);
         else alert("Invalid Input");
       }

@@ -21,7 +21,7 @@
         <v-card class="pa-2" offset-sm="3" outlined tile>
           <v-card>
             <v-card-title>
-              Detail Project
+              Detail Project {{dataCr.nama}}
               <v-spacer></v-spacer>
               <v-text-field
                 v-model="search"
@@ -81,7 +81,7 @@
                   >
                     <v-spacer></v-spacer>
                     <v-btn text color="primary" @click="dates = []">
-                      Cancel
+                      Reset
                     </v-btn>
                     <v-btn text color="primary" @click="$refs.menu.save(dates)">
                       OK
@@ -97,7 +97,7 @@
                   >
                     <v-spacer></v-spacer>
                     <v-btn text color="primary" @click="dates = []">
-                      Cancel
+                      Reset
                     </v-btn>
                     <v-btn text color="primary" @click="$refs.menu.save(dates)">
                       OK
@@ -108,14 +108,14 @@
             </v-col>
             <v-col cols="10" sm="5" md="3">
               <v-autocomplete
-                v-model="kelompok"
+                v-model="idkelompok"
                 label="Fiter Kelompok"
                 :items="kelompok"
               ></v-autocomplete
             ></v-col>
             <v-col cols="10" sm="5" md="3">
               <v-autocomplete
-                v-model="role"
+                v-model="idrole"
                 label="Fiter Role"
                 :items="role"
               ></v-autocomplete>
@@ -123,12 +123,13 @@
             <v-col cols="5" sm="3" md="2">
               <v-btn
                 type="submit"
-                v-if="dates[0]"
-                @click="filterDate"
+                v-if="dates[1]"
+                @click="filterDate(dates[0], dates[1], idkelompok, idrole)"
                 color="info"
-                >Filter</v-btn
-              >
-              <v-btn type="submit" v-else color="info">Filter</v-btn>
+                >Filter<Spinner v-if="!cek"></Spinner>
+              </v-btn>
+
+              <v-btn type="submit" v-else color="info">Filter </v-btn>
             </v-col>
           </v-row>
         </v-form>
@@ -225,14 +226,20 @@
 </template>
 
 <script>
+// import { useUtilizationStore } from "../store/Utilization";
 import { ValidationObserver, ValidationProvider } from "vee-validate";
 import { DayPilot, DayPilotScheduler } from "daypilot-pro-vue";
+import Spinner from "vue-simple-spinner";
 import { Axios } from "./Axios";
 const apiService = new Axios();
+// const utilizationStore = useUtilizationStore();
 export default {
   name: "Scheduler",
   data: function () {
     return {
+      cek: true,
+      idkelompok: "",
+      idrole: "",
       wc_expiry_date: "",
       ppl_number: "",
       wc_menu: false,
@@ -244,15 +251,13 @@ export default {
           text: "CR",
           align: "start",
           sortable: false,
-          value: "cr",
+          value: "cR_Track_No",
         },
-        { text: "CR Status", value: "cr_status" },
-        { text: "Project Name", value: "project_name" },
-        { text: "Description", value: "desc" },
-        { text: "Assign to Group", value: "assign_g" },
-        { text: "Assign to Current", value: "assign_c" },
-        { text: "Start Date", value: "start_date" },
-        { text: "Finish Date", value: "finish_date" },
+        { text: "CR Status", value: "cR_PROC_Status" },
+        { text: "Project Name", value: "project_Name" },
+        { text: "Description", value: "short_Description" },
+        { text: "Assign to Group", value: "assign_to_Group" },
+        { text: "Assign to Current", value: "assign_to_Current" },
       ],
       dataCr: [
         {
@@ -309,6 +314,8 @@ export default {
       divisiid: [],
       role: [],
       divisi: [],
+      utilization: {},
+      utilGroup: {},
       resource: ["Resource 1", "Resource 2", "Resource 3", "Resource 4"],
       menu: false,
       config: {
@@ -321,42 +328,7 @@ export default {
         days: 30,
         startDate: DayPilot.Date.today(),
         // days: DayPilot.Date.today().daysInMonth(),
-        resources: [
-          {
-            name: "RST",
-            id: "G1",
-            expanded: true,
-            children: [
-              {
-                name: "Resource 1",
-                id: "R1",
-                html: "<h4>Resource 1</h4><h5>STI</h5>",
-              },
-              {
-                name: "Resource 4",
-                id: "R4",
-                html: "<h4>Resource 4</h4><h5>STI</h5>",
-              },
-            ],
-          },
-          {
-            name: "ISP",
-            id: "G1",
-            expanded: true,
-            children: [
-              {
-                name: "Resource 2",
-                id: "R2",
-                html: "<h4>Resource 2</h4><h5>STI</h5>",
-              },
-              {
-                name: "Resource 3",
-                id: "R3",
-                html: "<h4>Resource 3</h4><h5>STI</h5>",
-              },
-            ],
-          },
-        ],
+        resources: [],
         // onTimeRangeSelected: function (args) {
         //   var dp = this;
         //   DayPilot.Modal.prompt("Create a new event:", "Event 1").then(
@@ -389,10 +361,14 @@ export default {
             args.visible = false;
           }
         },
-        onEventClicked: (item) => {
+       onEventClicked: (item) => {
           this.dialog = true;
-          console.log("ini item" + item);
-        },
+          console.log("ini item" + item.e.text());
+          var show = item.e.text();
+          var id= show.substring(4);
+          console.log(id);
+          this.getDetail(id)
+         },
         onBeforeEventRender: function (args) {
           args.e.bubbleHtml =
             "<div><b>" +
@@ -404,55 +380,55 @@ export default {
             "</div>";
         },
         events: [
-          {
-            id: 1,
-            text: "",
-            start: DayPilot.Date.today().addDays(1),
-            end: DayPilot.Date.today().addDays(2),
-            resource: "R1",
-            barColor: "#FFFF00",
-          },
-          {
-            id: 2,
-            text: "",
-            start: "2022-03-03",
-            end: "2022-03-04",
-            resource: "R4",
-            barColor: "#9a0",
-          },
-          {
-            id: 3,
-            text: "",
-            start: "2022-03-09",
-            end: "2022-03-18",
-            resource: "R1",
-            barColor: "#FFFF00",
-            color: "#FFFF00",
-          },
-          {
-            id: 4,
-            text: "",
-            start: "2022-03-15",
-            end: "2022-03-24",
-            resource: "R1",
-            barColor: "#000",
-          },
-          {
-            id: 5,
-            text: "",
-            start: "2022-03-24",
-            end: "2022-03-28",
-            resource: "R1",
-            barColor: "green",
-          },
-          {
-            id: 6,
-            text: "",
-            start: "2022-03-28",
-            end: "2022-04-01",
-            resource: "R1",
-            barColor: "green",
-          },
+          // {
+          //   id: 1,
+          //   text: "",
+          //   start: DayPilot.Date.today().addDays(1),
+          //   end: DayPilot.Date.today().addDays(2),
+          //   resource: "57",
+          //   barColor: "#FFFF00",
+          // },
+          // {
+          //   id: 2,
+          //   text: "",
+          //   start: "2022-03-03",
+          //   end: "2022-03-04",
+          //   resource: "R4",
+          //   barColor: "#9a0",
+          // },
+          // {
+          //   id: 3,
+          //   text: "",
+          //   start: "2022-03-09",
+          //   end: "2022-03-18",
+          //   resource: "R1",
+          //   barColor: "#FFFF00",
+          //   color: "#FFFF00",
+          // },
+          // {
+          //   id: 41,
+          //   text: "",
+          //   start: "2022-03-15",
+          //   end: "2022-03-24",
+          //   resource: "R1",
+          //   barColor: "#000",
+          // },
+          // {
+          //   id: 5,
+          //   text: "",
+          //   start: "2022-03-24",
+          //   end: "2022-03-28",
+          //   resource: "R7",
+          //   barColor: "green",
+          // },
+          // {
+          //   id: 6,
+          //   text: "",
+          //   start: "2022-03-28",
+          //   end: "2022-04-01",
+          //   resource: "R1",
+          //   barColor: "green",
+          // },
         ],
       },
     };
@@ -463,8 +439,12 @@ export default {
     DayPilotScheduler,
     ValidationObserver,
     ValidationProvider,
+    Spinner,
   },
   computed: {
+    getUtilization() {
+      return JSON.parse(this.utilGroup);
+    },
     getEndDate() {
       var date1 = new Date(this.dates[0]);
       var endDate = new Date(date1.getTime() + 30 * 24 * 60 * 60 * 1000);
@@ -482,12 +462,15 @@ export default {
     },
   },
   created() {
-    this.getKelompok();
+    // this.getKelompok();
     this.getData2();
     this.getWarna();
   },
 
   methods: {
+    // fetchUtilization(start, finish, kelompok, role) {
+    //   utilizationStore.getUtilizationDetails(start, finish, kelompok, role);
+    // },
     save() {},
     getWarna() {
       var data = this.config.events;
@@ -514,25 +497,37 @@ export default {
         item.barColor = warna[item.id - 1];
       });
     },
-    async getKelompok() {
-      const response = await apiService
-        .getKelompok()
-        .then((response) => {
-          this.objkel = response.newKelompok;
-        })
-        .catch((err) => err);
-      response;
-      this.objkel.map((item) => {
-        this.tempk.push(item.kelompokName);
-        this.kelompokid.push(item.kelompokId);
-      });
-      for (var k = 0; k < this.tempk.length; k++) {
-        //this.tempskill.push(obj2)
-        let oo = {};
-        oo.text = this.tempk[k];
-        oo.value = this.kelompokid[k];
-        this.kelompok.push(oo);
-      }
+    // async getKelompok() {
+    //   const response = await apiService
+    //     .getKelompok()
+    //     .then((response) => {
+    //       this.objkel = response.newKelompok;
+    //     })
+    //     .catch((err) => err);
+    //   response;
+    //   this.objkel.map((item) => {
+    //     this.tempk.push(item.kelompokName);
+    //     this.kelompokid.push(item.kelompokId);
+    //   });
+    //   for (var k = 0; k < this.tempk.length; k++) {
+    //     //this.tempskill.push(obj2)
+    //     let oo = {};
+    //     oo.text = this.tempk[k];
+    //     oo.value = this.kelompokid[k];
+    //     this.kelompok.push(oo);
+    //   }
+    // },
+    async getDetail(id){
+          const response = await apiService
+            .getUtilizationDetail(id)
+            .then((response) => {
+              // console.log(response.data)
+              this.dataCr = response.data
+            })
+            .catch((err) => err);
+          response;
+          console.log("inidatacr"+this.dataCr)
+
     },
 
     async getData2() {
@@ -544,9 +539,9 @@ export default {
               this.tempr.push(item.name);
               this.roleid.push(item.value);
             }
-            if (item.type == "Divisi") {
-              this.tempd.push(item.name);
-              this.divisiid.push(item.value);
+            if (item.type == "Kelompok") {
+              this.tempk.push(item.name);
+              this.kelompokid.push(item.value);
             }
           });
         })
@@ -558,18 +553,26 @@ export default {
         oo.value = this.roleid[n];
         this.role.push(oo);
       }
-      for (var p = 0; p < this.tempd.length; p++) {
+      for (var p = 0; p < this.tempk.length; p++) {
         let oo = {};
-        oo.text = this.tempd[p];
-        oo.value = this.divisiid[p];
-        this.divisi.push(oo);
+        oo.text = this.tempk[p];
+        oo.value = this.kelompokid[p];
+        this.kelompok.push(oo);
       }
     },
 
     filteredResource(item) {
       return item.tempr.toLowerCase().includes(this.kelompok.toLowerCase());
     },
-    filterDate() {
+    resetFilter() {
+      this.config.resources = [];
+    },
+    async filterDate(start, finish, kelompok, role) {
+      this.config.resources = [];
+      this.config.events = [];
+      this.cek = false;
+      // utilizationStore.getUtilizationDetails(start, finish, kelompok, role);
+      // console.log("abc"+this.getUtilization)
       console.log(DayPilot.Date.today().daysInMonth());
       if (this.dates[0] < this.dates[1]) {
         this.config.startDate = this.dates[0];
@@ -593,6 +596,117 @@ export default {
       // this.config.days = Math.abs(this.dates[0]-this.dates[1])/86400000
       this.config.days = Difference_In_Days + 1;
       this.menu = false;
+      if (!kelompok) {
+        kelompok = 0;
+      }
+      if (!role) {
+        role = 0;
+      }
+      const response = await apiService
+        .getUtilization(start, finish, kelompok, role)
+        .then((response) => {
+          this.utilization = response.data;
+        })
+        .catch((err) => err);
+      response;
+      console.log("uti" + response);
+
+      var dataR = this.config.resources;
+      var dataE = this.config.events;
+      // var chil = [];
+
+      // var resource = {};
+      var arrKel = [];
+      this.utilization.map((item) => {
+        if (!item.kelompok_Name) {
+          arrKel.push(item.kelompok_Name);
+        }
+      });
+      var groupBy = (key) => (array) =>
+        array.reduce((objectsByKeyValue, obj) => {
+          const value = obj[key];
+          objectsByKeyValue[value] = (objectsByKeyValue[value] || []).concat(
+            obj
+          );
+          return objectsByKeyValue;
+        }, {});
+      var groupByKel = groupBy("kelompok_Name");
+
+      this.utilGroup = JSON.stringify(groupByKel(this.utilization), null, 2);
+      console.log("len" + this.utilGroup);
+      this.utilGroup = JSON.parse(this.utilGroup);
+
+      console.log("len" + this.utilGroup.HCS);
+      var key = Object.keys(this.utilGroup);
+      console.log(key);
+      console.log(this.utilGroup.length);
+      var sum = 1;
+      this.utilization.map((item) => {
+        var objchil = {};
+
+        objchil.mapViewHeader_Id = item.mapViewHeader_Id;
+        objchil.name = item.employee_Name;
+        objchil.id = `R${sum}`;
+        objchil.html = `<h4>${item.employee_Name}</h4><h5>${item.divisi_Name}|${item.kelompok_Name}`;
+        dataR.push(objchil);
+        console.log("chil" + objchil.name);
+
+        var objtime = {};
+        objtime.id = sum;
+        if (item.start_Date < item.finish_Date) {
+          objtime.start = item.start_Date;
+          objtime.end = item.finish_Date;
+        } else {
+          objtime.end = item.start_Date;
+          objtime.start = item.finish_Date;
+        }
+        objtime.resource = `R${sum}`;
+        objtime.barColor = "";
+        objtime.nama = item.employee_Name
+        objtime.text = `${item.kelompok_Name} ${item.mapViewHeader_Id}`;
+        objtime.mapViewHeader_Id = item.mapViewHeader_Id;
+        dataE.push(objtime);
+        sum++;
+        // this.config.resources.push(resource);
+      });
+      // {
+      //     id: 2,
+      //     text: "",
+      //     start: "2022-03-03",
+      //     end: "2022-03-04",
+      //     resource: "R4",
+      //     barColor: "#9a0",
+      //   },
+      if (dataR.length > 0) {
+        this.cek = true;
+      }
+
+      console.log(this.config.resources);
+      console.log(this.config.events);
+      var data = this.config.events;
+      var warna = [];
+      var colors = [
+        "red",
+        "orange",
+        "green",
+        "blue",
+        "yellow",
+        "indigo",
+        "violet",
+        "purple",
+      ];
+      var j = 0;
+      for (var i = 0; i < data.length; i++) {
+        warna.push(colors[j]);
+        j++;
+        if (j == 8) j = 0;
+      }
+      console.log("warna" + warna);
+      data.map((item) => {
+        console.log(item.id);
+        item.barColor = warna[item.id - 1];
+      });
+      this.getWarna;
     },
   },
   mounted: function () {},

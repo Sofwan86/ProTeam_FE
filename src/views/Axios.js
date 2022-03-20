@@ -1,5 +1,5 @@
 import axios from 'axios'
-const BASE_URL = 'http://35.219.8.90:81/api'
+const BASE_URL = 'http://server.ofadev.id:9091/api'
 const options = {
     headers: {
         'Content-Type': 'application/json',
@@ -180,4 +180,29 @@ export class Axios{
       const data = axios.put(url,datas).then(response => response.data)
       return data
    }
+   async getUtilization(startdate,finishdate,kelompokid,roleid){
+      const url = `${BASE_URL}/Utilization/GetViewUtilizationByID/${startdate}/${finishdate}/${kelompokid}/${roleid}`
+      const data = axios.get(url).then(response => response.data)
+      return data
+   }
+   async getUtilizationDetail(id){
+      const url = `${BASE_URL}/Utilization/GetViewProjectByID/${id}`
+      const data = axios.get(url).then(response => response.data)
+      return data
+   }
+   async createMandaysUsage(param){
+      const url = `${BASE_URL}/MandaysUsage`
+      const data = axios.post(url,param).then(response => response.data)
+      return data
+   }
+   async updateMandaysUsage(datas,id){
+      const url = `${BASE_URL}/MandaysUsage/${id}`
+      const data = axios.put(url,datas).then(response => response.data)
+      return data
+   }
+   // async getMandayId(id){
+   //    const url = `${BASE_URL}/Manday/${id}`
+   //    const data = axios.get(url).then(response => response.data)
+   //    return data
+   // }
  }

@@ -76,9 +76,9 @@
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
                           <v-select
-                            v-model="editedItem.nama_status"
+                            v-model="editedItem.status"
                             label="Status"
-                            :items="status"
+                            :items="statusItem"
                             required
                             outlined
                           ></v-select>
@@ -272,7 +272,7 @@
                       <v-row>
                         <v-col cols="12" sm="6" md="4">
                           <v-text-field
-                            v-model="editedItemUsage.noCr"
+                            v-model="editedItemUsage.crtrackNo"
                             label="No CR*"
                             :rules="nameRulesUsage"
                             required
@@ -281,7 +281,7 @@
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
                           <v-text-field
-                            v-model="editedItemUsage.project"
+                            v-model="editedItemUsage.projectName"
                             label="Project*"
                             :rules="nameRulesUsage"
                             required
@@ -307,7 +307,7 @@
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
                           <v-select
-                            v-model="editedItemUsage.kelompok"
+                            v-model="editedItemUsage.kelompokId"
                             label="Kelompok Pengguna  "
                             :items="kelompok"
                             required
@@ -316,7 +316,7 @@
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
                           <v-textarea
-                            v-model="editedItemUsage.note"
+                            v-model="editedItemUsage.notes"
                             label="Notes"
                             required
                             class="mx-2"
@@ -343,7 +343,7 @@
                           <VueDatePicker
                             placeholder="Start Project"
                             fullscreen-mobile
-                            v-model="editedItemUsage.startProject"
+                            v-model="editedItemUsage.tglStart"
                             :rules="nameRules"
                           />
                           <!-- </v-btn> -->
@@ -355,7 +355,7 @@
                           <VueDatePicker
                             placeholder="Project"
                             fullscreen-mobile
-                            v-model="editedItemUsage.lastProject"
+                            v-model="editedItemUsage.tglEnd"
                             :rules="nameRules"
                           />
                           <!-- </v-btn> -->
@@ -369,7 +369,7 @@
                   <v-btn outlined color="blue darken-1" text @click="close">
                     Cancel
                   </v-btn>
-                  <v-btn color="#004483" dark v-if="validUsage" @click="save">
+                  <v-btn color="#004483" dark v-if="validUsage" @click="save2">
                     Save
                   </v-btn>
                 </v-card-actions>
@@ -449,14 +449,12 @@
                                           editedItem.nama_status
                                         }} -->
                                 <p
-                                  v-if="editedItem.nama_status == 'Inactive'"
+                                  v-if="editedItem.status == 0"
                                   class="red--text"
                                 >
-                                  {{ editedItem.nama_status }}
+                                  Inactive
                                 </p>
-                                <p v-else class="green--text">
-                                  {{ editedItem.nama_status }}
-                                </p>
+                                <p v-else class="green--text">Active</p>
                               </v-list-item-title>
                             </v-list-item-content>
                           </v-list-item>
@@ -559,10 +557,24 @@
                     :loading="loadingPlaylist"
                     class="elevation-1 pa-6"
                   >
-                   <template v-slot:[`item.actions`]="{ item }">
-      
-                <button class="edit" @click="editItemUsage(item)">Edit</button>
-              </template>
+                    <template v-slot:[`item.actions`]="{ item }">
+                      <button class="edit" @click="editItemUsage(item)">
+                        Edit
+                      </button>
+                    </template>
+                    <template v-slot:[`item.tglRequest`]="{ item }">
+                      {{ item.tglRequest | str_limit(10) }}
+                    </template>
+                    <template v-slot:[`item.tglStart`]="{ item }">
+                      {{ item.tglStart | str_limit(10) }}
+                    </template>
+                    <template v-slot:[`item.tglEnd`]="{ item }">
+                      {{ item.tglEnd | str_limit(10) }}
+                    </template>
+                    <template v-slot:[`item.createdTime`]="{ item }">
+                      {{ item.createdTime | str_limit(10) }}
+                    </template>
+
                   </v-data-table>
                 </v-card>
 
@@ -658,21 +670,30 @@ export default {
         text: "No CR",
         align: "start",
         sortable: true,
-        value: "noCr",
+        value: "crtrackNo",
       },
-      { text: "Project", value: "project" },
+      { text: "Project", value: "projectName" },
       { text: "Requestor", value: "requestor" },
       { text: "Kelompok Pengguna", value: "kelompok" },
       { text: "Tgl Request", value: "tglRequest" },
       { text: "Tgl Start Project", value: "tglStart" },
       { text: "Tgl End Project", value: "tglEnd" },
       { text: "Jumlah Mandays", value: "jumlahMandays" },
-      { text: "Create By", value: "createBy" },
-      { text: "Create Date", value: "createDate" },
-      { text: "Note", value: "note" },
+      { text: "Create By", value: "createdBy" },
+      { text: "Create Date", value: "createdTime" },
+      { text: "Note", value: "notes" },
       { text: "Action", value: "actions" },
     ],
-    status: [],
+    statusItem: [
+      {
+        text: "Active",
+        value: 1,
+      },
+      {
+        text: "Inactive",
+        value: 0,
+      },
+    ],
     skills: [],
     skillid: [],
     obj: {},
@@ -681,7 +702,7 @@ export default {
     temptipe: [],
     tempj: [],
     tempskill: [],
-    objkel:{},
+    objkel: {},
     kelompok: [],
     kelompokid: [],
     tipeid: [],
@@ -691,6 +712,8 @@ export default {
     jenjab: [],
     jenjabid: [],
     resources: [],
+    mandaysID: 0,
+
     usage: [
       {
         noCr: "30001",
@@ -719,19 +742,7 @@ export default {
         note: "-",
       },
     ],
-    editedItemUsage: {
-      noCr: "",
-      project: "",
-      requestor: "",
-      kelompok: "",
-      tglRequest: "",
-      tglStart: "",
-      tglEnd: "",
-      jumlahMandays: "",
-      createBy: "",
-      createDate: "",
-      note: "-",
-    },
+    editedItemUsage: {},
     editedItem: {
       vendorName: "",
       contractNumber: "",
@@ -811,6 +822,7 @@ export default {
     menu2: false,
     rt: {},
     mandaysvendor: [],
+    mandaysvendordetail: [],
   }),
   computed: {
     size() {
@@ -848,7 +860,7 @@ export default {
     this.initialize();
     this.getData();
     this.getData2();
-    this.getKelompok()
+    this.getKelompok();
   },
   methods: {
     async getKelompok() {
@@ -875,23 +887,25 @@ export default {
       const response = await apiService
         .getManday()
         .then((response) => {
-          this.mandaysvendor = response.data;
+          this.mandaysvendor = response.results;
         })
         .catch((err) => err);
       response;
+      console.log("ini mandays" + this.mandaysvendor);
     },
     async getData2() {
       //let rt = { text: "", value: 0 };
       //const obj = {}
-      const response = await apiService
-        .getLookup()
-        .then((response) => {
-          response.map((item) => {
-            if (item.type == "StatusActive") this.status.push(item.name);
-          });
-        })
-        .catch((err) => err);
-      response;
+      // const response = await apiService
+      //   .getLookup()
+      //   .then((response) => {
+      //     response.map((item) => {
+      //       if (item.type == "StatusActive") this.status.push(item.name);
+      //     });
+      //   })
+      //   .catch((err) => err);
+      // response;
+      // console.log("inistatus" + this.status);
     },
     initialize() {
       this.mandays = [
@@ -929,7 +943,9 @@ export default {
       this.detailItem = Object.assign({}, item);
       this.dialogDetail = true;
     },
-    deleteItem(item) {
+    async deleteItem(item) {
+      console.log("mandayid" + item.mandaysId);
+      this.mandaysID = item.mandaysId;
       this.editedIndex = this.mandaysvendor.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialogDelete = true;
@@ -938,7 +954,38 @@ export default {
           this.sss = this.mandaysvendor.nama_status;
         }
       }
-      console.log(this.sss);
+      const response = await apiService
+        .getMandayId(item.mandaysId)
+        .then((response) => {
+          this.mandaysvendordetail = response.results;
+        })
+        .catch((err) => err);
+      response;
+      this.usage = this.mandaysvendordetail.mandayUsages;
+      let arrkelval = [];
+      let arrkeltex = [];
+      this.usage.map((item) => {
+        arrkelval.push(item.kelompokId);
+      });
+
+      for (let i = 0; i < arrkelval.length; i++) {
+        this.kelompok.map((item) => {
+          if (item.value == arrkelval[i]) {
+            arrkeltex.push(item.text);
+          }
+        });
+      }
+      console.log("arrtex:" + arrkeltex);
+      let j = 0;
+      this.usage.map((item) => {
+        item.kelompok = arrkeltex[j];
+        j++;
+      });
+
+      // mandaysUsage.map((item) => {
+
+      //   console.log("ini manday v u" + item.crtrackNo);
+      // });
     },
     deleteItemConfirm() {
       this.mandaysvendor.splice(this.editedIndex, 1);
@@ -992,6 +1039,17 @@ export default {
         .catch(() => this.showAlertFail());
       response;
     },
+    createData2(Data) {
+      const response = apiService
+        .createMandaysUsage(Data)
+        .then((succ) => {
+          this.showAlert2();
+          succ;
+        })
+        .catch(() => this.showAlertFail2());
+      response;
+      console.log("iniData" + Data);
+    },
     showAlert() {
       const Toast = this.$swal.mixin({
         toast: true,
@@ -1012,6 +1070,34 @@ export default {
         icon: "success",
         title: "Success",
         text: "Mandays successfully changed.",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.$router.go();
+        }
+      });
+      //this.$router.go()
+    },
+    showAlert2() {
+      const Toast = this.$swal.mixin({
+        toast: true,
+        position: "top-end",
+        confirmButtonText: "go",
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", this.$swal.stopTimer);
+          toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+        },
+        willClose: () => {
+          this.$router.go();
+        },
+      });
+
+      Toast.fire({
+        icon: "success",
+        title: "Success",
+        text: "Mandays usage successfully changed.",
         confirmButtonText: "OK",
       }).then((result) => {
         if (result.isConfirmed) {
@@ -1049,6 +1135,36 @@ export default {
       });
       //this.$router.go()
     },
+
+    showAlertFail2() {
+      const Toast = this.$swal.mixin({
+        toast: true,
+        position: "top-end",
+
+        confirmButtonText: "go",
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", this.$swal.stopTimer);
+          toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+        },
+        willClose: () => {
+          this.$router.go();
+        },
+      });
+
+      Toast.fire({
+        icon: "error",
+        title: "Fail",
+        text: "Mandays usage fail changed.",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.$router.go();
+        }
+      });
+      //this.$router.go()
+    },
     async updateData(Data, id) {
       const response = await apiService
         .updateManday(Data, id)
@@ -1068,6 +1184,20 @@ export default {
       // }else this.showAlertFail()
       response;
     },
+    async updateData2(Data, id) {
+      const response = await apiService
+        .updateMandaysUsage(Data, id)
+        .then((succ) => {
+          succ;
+          this.showAlert2();
+        })
+        .catch((err) => {
+          err;
+          console.log("dsffd" + err);
+          this.showAlertFail2();
+        });
+      response;
+    },
 
     save() {
       if (this.editedIndex > -1) {
@@ -1080,9 +1210,7 @@ export default {
         this.newEditedItem.notes = this.editedItem.notes;
         this.newEditedItem.startContract = this.editedItem.startContract;
         this.newEditedItem.lastContract = this.editedItem.lastContract;
-        if (this.editedItem.nama_status == "Active") {
-          this.newEditedItem.status = 1;
-        } else this.newEditedItem.status = 0;
+        this.newEditedItem.status = this.editedItem.status;
         this.updateData(this.newEditedItem, this.editedItem.mandaysId);
       } else {
         this.newEditedItem.vendorName = this.editedItem.vendorName;
@@ -1094,13 +1222,35 @@ export default {
         this.newEditedItem.notes = this.editedItem.notes;
         this.newEditedItem.startContract = this.editedItem.startContract;
         this.newEditedItem.lastContract = this.editedItem.lastContract;
-        if (this.editedItem.nama_status == "Active") {
-          this.newEditedItem.status = 1;
-        } else this.newEditedItem.status = 0;
+        this.newEditedItem.status = this.editedItem.status;
         //this.resources.push(this.editedItem);
         if (this.valid) this.createData(this.newEditedItem);
       }
       this.close();
+    },
+    save2() {
+      if (this.editedIndexUsage > -1) {
+        console.log("inidataupdate" + this.editedItemUsage);
+        // this.newEditedItem.status = this.editedItem.status;
+        this.editedItemUsage.mandaysId = this.mandaysID;
+        this.editedItemUsage.updateTime = this.nowdate;
+        this.editedItemUsage.updatedBy = localStorage.getItem("name,");
+        delete this.editedItemUsage.kelompok;
+        this.updateData2(
+          this.editedItemUsage,
+          this.editedItemUsage.mandaysUsageId
+        );
+        console.log("iniedit");
+      } else {
+        this.editedItemUsage.mandaysId = this.mandaysID;
+        this.editedItemUsage.createdTime = this.nowdate;
+
+        this.editedItemUsage.createdBy = localStorage.getItem("name,");
+        //this.resources.push(this.editedItem);
+        this.createData2(this.editedItemUsage);
+        console.log("inicreate");
+        this.close();
+      }
     },
     formatDate(date) {
       if (!date) return null;
