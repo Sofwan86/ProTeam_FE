@@ -1,5 +1,5 @@
 import axios from 'axios'
-const BASE_URL = 'http://server.ofadev.id:9091/api'
+const BASE_URL = 'http://192.168.131.124:85/api'
 const options = {
     headers: {
         'Content-Type': 'application/json',
