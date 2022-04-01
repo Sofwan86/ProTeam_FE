@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 
-export const useUltilizationStore = defineStore({
+export const useUtilizationStore = defineStore({
     id: "utilization",
     state: ()=>({
         utilizationDetails: {}
@@ -14,4 +14,5 @@ export const useUltilizationStore = defineStore({
             this.utilizationDetails = result
         }
     }
+
 })

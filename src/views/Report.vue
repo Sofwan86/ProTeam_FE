@@ -364,9 +364,13 @@ export default {
        onEventClicked: (item) => {
           this.dialog = true;
           console.log("ini item" + item.e.text());
-          var show = item.e.text();
-          var id= show.substring(4);
-          console.log(id);
+          var id = item.e.data.text2;
+
+          // var id= show.substring(4);
+          
+          console.log(`>>>>>>>>>${item.e.data.mapViewHeader_Id}`);
+
+          console.log(`${id}`);
           this.getDetail(id)
          },
         onBeforeEventRender: function (args) {
@@ -525,8 +529,10 @@ export default {
               this.dataCr = response.data
             })
             .catch((err) => err);
+            
+          console.log(response)
           response;
-          console.log("inidatacr"+this.dataCr)
+          console.log("inidatacr>>>>"+this.dataCr)
 
     },
 
@@ -647,7 +653,7 @@ export default {
         objchil.mapViewHeader_Id = item.mapViewHeader_Id;
         objchil.name = item.employee_Name;
         objchil.id = `R${sum}`;
-        objchil.html = `<h4>${item.employee_Name}</h4><h5>${item.divisi_Name}|${item.kelompok_Name}`;
+        objchil.html = `<h4>${item.employee_Name}</h4><h5>${item.divisi_Name}|${item.kelompok_Name}|${item.jenjab_Name}`;
         dataR.push(objchil);
         console.log("chil" + objchil.name);
 
@@ -663,8 +669,14 @@ export default {
         objtime.resource = `R${sum}`;
         objtime.barColor = "";
         objtime.nama = item.employee_Name
-        objtime.text = `${item.kelompok_Name} ${item.mapViewHeader_Id}`;
+        objtime.text = `${item.kelompok_Name}`;
+        
+        objtime.text2 = `${item.mapViewHeader_Id}`;
+        
+        
         objtime.mapViewHeader_Id = item.mapViewHeader_Id;
+        
+      console.log(`>>>>>>>>>>>${item.mapViewHeader_Id}`);
         dataE.push(objtime);
         sum++;
         // this.config.resources.push(resource);

@@ -112,6 +112,8 @@
                             value="Proteam@12345"
                             required
                             outlined
+                            disabled
+                            type="password"
                           ></v-text-field>
                           <v-text-field
                             v-else
@@ -121,6 +123,7 @@
                             value="Proteam@12345"
                             required
                             outlined
+                            
                           ></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
