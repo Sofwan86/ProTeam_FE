@@ -132,6 +132,11 @@
               <v-btn type="submit" v-else color="info">Filter </v-btn>
             </v-col>
           </v-row>
+          <v-row>
+            <v-col v-if="processDT!=0">
+              Process Date Time: {{ processDT}}
+            </v-col>
+          </v-row>
         </v-form>
       </validation-observer>
 
@@ -237,6 +242,7 @@ export default {
   name: "Scheduler",
   data: function () {
     return {
+      processDT:0,
       cek: true,
       idkelompok: "",
       idrole: "",
@@ -532,6 +538,7 @@ export default {
             
           console.log(response)
           response;
+          
           console.log("inidatacr>>>>"+this.dataCr)
 
     },
@@ -615,6 +622,11 @@ export default {
         })
         .catch((err) => err);
       response;
+      this.utilization = null
+      if(this.utilization==null){
+            alert("Data Kosong")
+            this.cek = true;
+          }
       console.log("uti" + response);
 
       var dataR = this.config.resources;
@@ -626,6 +638,7 @@ export default {
       this.utilization.map((item) => {
         if (!item.kelompok_Name) {
           arrKel.push(item.kelompok_Name);
+          this.processDT = item.processDT
         }
       });
       var groupBy = (key) => (array) =>
