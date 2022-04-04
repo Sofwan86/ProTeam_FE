@@ -622,7 +622,6 @@ export default {
         })
         .catch((err) => err);
       response;
-      this.utilization = null
       if(this.utilization==null){
             alert("Data Kosong")
             this.cek = true;
