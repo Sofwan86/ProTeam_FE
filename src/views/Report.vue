@@ -635,9 +635,10 @@ export default {
       // var resource = {};
       var arrKel = [];
       this.utilization.map((item) => {
+        this.processDT = item.processDT
         if (!item.kelompok_Name) {
           arrKel.push(item.kelompok_Name);
-          this.processDT = item.processDT
+          
         }
       });
       var groupBy = (key) => (array) =>
