@@ -607,7 +607,9 @@ export default {
       // tampilkan jml akhir hari (hasil)
 
       // this.config.days = Math.abs(this.dates[0]-this.dates[1])/86400000
-      this.config.days = Difference_In_Days + 1;
+      if(Difference_In_Days ==0)this.config.days = Difference_In_Days + 1;
+      else this.config.days = Difference_In_Days + 2;
+      
       this.menu = false;
       if (!kelompok) {
         kelompok = 0;
