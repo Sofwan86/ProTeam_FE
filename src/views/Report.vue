@@ -676,8 +676,8 @@ export default {
           objtime.start = item.start_Date;
           objtime.end = new Date(new Date(item.finish_Date)+(1*24*60*60*1000));
         } else {
-          objtime.end = new Date(new Date(item.finish_Date)+(1*24*60*60*1000));
-          objtime.start = item.finish_Date;
+          objtime.end = item.start_Date
+          objtime.start = new Date(new Date(item.finish_Date)+(1*24*60*60*1000));
         }
         objtime.resource = `R${sum}`;
         objtime.barColor = "";
