@@ -379,16 +379,16 @@ export default {
           console.log(`${id}`);
           this.getDetail(id)
          },
-        onBeforeEventRender: function (args) {
-          args.e.bubbleHtml =
-            "<div><b>" +
-            args.e.text +
-            "</b></div><div>Start: " +
-            args.e.start.toString("M/d/yyyy") +
-            "|</div><div>End: " +
-            args.e.end.toString("M/d/yyyy") +
-            "</div>";
-        },
+        // onBeforeEventRender: function (args) {
+        //   args.e.bubbleHtml =
+        //     "<div><b>" +
+        //     args.e.text +
+        //     "</b></div><div>Start: " +
+        //     args.e.start.toString("M/d/yyyy") +
+        //     "|</div><div>End: " +
+        //     args.e.end.toString("M/d/yyyy") +
+        //     "</div>";
+        // },
         events: [
           // {
           //   id: 1,
@@ -674,9 +674,9 @@ export default {
         objtime.id = sum;
         if (item.start_Date < item.finish_Date) {
           objtime.start = item.start_Date;
-          objtime.end = item.finish_Date;
+          objtime.end = new Date(new Date(item.finish_Date)+(1*24*60*60*1000));
         } else {
-          objtime.end = item.start_Date;
+          objtime.end = new Date(new Date(item.finish_Date)+(1*24*60*60*1000));
           objtime.start = item.finish_Date;
         }
         objtime.resource = `R${sum}`;
