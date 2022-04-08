@@ -379,16 +379,16 @@ export default {
           console.log(`${id}`);
           this.getDetail(id)
          },
-        // onBeforeEventRender: function (args) {
-        //   args.e.bubbleHtml =
-        //     "<div><b>" +
-        //     args.e.text +
-        //     "</b></div><div>Start: " +
-        //     args.e.start.toString("M/d/yyyy") +
-        //     "|</div><div>End: " +
-        //     args.e.end.toString("M/d/yyyy") +
-        //     "</div>";
-        // },
+        onBeforeEventRender: function (args) {
+          args.e.bubbleHtml =
+            "<div><b>" +
+            args.e.text +
+            "</b></div><div>Start: " +
+            args.e.start.toString("M/d/yyyy") +
+            "|</div><div>End: " +
+            args.e.end.toString("M/d/yyyy") +
+            "</div>";
+        },
         events: [
           // {
           //   id: 1,
@@ -666,7 +666,7 @@ export default {
         objchil.mapViewHeader_Id = item.mapViewHeader_Id;
         objchil.name = item.employee_Name;
         objchil.id = `R${sum}`;
-        objchil.html = `<h4>${item.employee_Name}</h4><h5>${item.divisi_Name}|${item.kelompok_Name}|${item.jenjab_Name}|${item.npp}`;
+        objchil.html = `<h4>${item.employee_Name}</h4><h5>${item.divisi_Name}|${item.kelompok_Name}|${item.jenjab_Name}|${item.npp}|${item.userLoginPVCS}`;
         dataR.push(objchil);
         console.log("chil" + objchil.name);
 
@@ -676,8 +676,8 @@ export default {
           objtime.start = item.start_Date;
           objtime.end = new Date(new Date(item.finish_Date)+(1*24*60*60*1000));
         } else {
-          objtime.end = item.start_Date
-          objtime.start = new Date(new Date(item.finish_Date)+(1*24*60*60*1000));
+          objtime.end = new Date(new Date(item.start_Date)+(1*24*60*60*1000)) 
+          objtime.start = item.finish_Date
         }
         objtime.resource = `R${sum}`;
         objtime.barColor = "";
