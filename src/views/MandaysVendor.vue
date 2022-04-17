@@ -86,25 +86,27 @@
                         <v-col cols="12" sm="6" md="4">
                           Start Contract Date
                           <!-- <v-btn outlined color="grey" width="900" height="35"> -->
-                          <VueDatePicker
+                           <br> 
+                          <date-picker
                             placeholder="Start Contract Date"
                             fullscreen-mobile
                             v-model="editedItem.startContract"
-                            :rules="nameRules"
-                          />
-                          <!-- </v-btn> -->
+                            valueType="format"
+                             
+                          ></date-picker>
                         </v-col>
 
                         <v-col cols="12" sm="6" md="4">
                           Last Contract Date
                           <!-- <v-btn outlined color="grey" width="900" height="35"> -->
-                          <VueDatePicker
+                            <br> 
+                          <date-picker
                             placeholder="Last Contract Date"
                             fullscreen-mobile
                             v-model="editedItem.lastContract"
-                            :rules="nameRules"
-                          />
-                          <!-- </v-btn> -->
+                            valueType="format"
+                             
+                          ></date-picker>
                         </v-col>
 
                         <v-col cols="12" sm="6" md="4">
@@ -324,38 +326,38 @@
                         </v-col>
 
                         <v-col cols="12" sm="6" md="4">
-                          Request Date
-                          <!-- <v-btn outlined color="grey" width="900" height="35"> -->
-                          <VueDatePicker
-                            placeholder="Request Date"
-                            fullscreen-mobile
+                          
+                          Request Date <br> 
+                          <date-picker
                             v-model="editedItemUsage.tglRequest"
-                            :rules="nameRules"
-                          />
-                          <!-- </v-btn> -->
+                            valueType="format"
+                             placeholder="Request Date"
+                          ></date-picker>
                         </v-col>
 
                         <v-col cols="12" sm="6" md="4">
                           Start Project
                           <!-- <v-btn outlined color="grey" width="900" height="35"> -->
-                          <VueDatePicker
+                           <br> 
+                          <date-picker
                             placeholder="Start Project"
-                            fullscreen-mobile
                             v-model="editedItemUsage.tglStart"
-                            :rules="nameRules"
-                          />
+                            valueType="format"
+                            
+                          ></date-picker>
                           <!-- </v-btn> -->
                         </v-col>
 
                         <v-col cols="12" sm="6" md="4">
                           End Project
                           <!-- <v-btn outlined color="grey" width="900" height="35"> -->
-                          <VueDatePicker
-                            placeholder="Project"
+                           <br> 
+                          <date-picker
+                            placeholder="End Project"
                             fullscreen-mobile
                             v-model="editedItemUsage.tglEnd"
-                            :rules="nameRules"
-                          />
+                            valueType="format"
+                          ></date-picker>
                           <!-- </v-btn> -->
                         </v-col>
                       </v-row>
@@ -612,10 +614,15 @@
 </template>
 
 <script>
+import DatePicker from "vue2-datepicker";
+import "vue2-datepicker/index.css";
 import { Axios } from "./Axios";
 const apiService = new Axios();
 export default {
   name: "MandaysVendor",
+  components: {
+    DatePicker
+  },
   data: (vm) => ({
     valid: false,
     validUsage: false,
@@ -1052,7 +1059,7 @@ export default {
         toast: true,
         position: "top-end",
         confirmButtonText: "go",
-        timer: 2000,
+        timer: 1000,
         timerProgressBar: true,
         didOpen: (toast) => {
           toast.addEventListener("mouseenter", this.$swal.stopTimer);
@@ -1080,7 +1087,7 @@ export default {
         toast: true,
         position: "top-end",
         confirmButtonText: "go",
-        timer: 2000,
+        timer: 1000,
         timerProgressBar: true,
         didOpen: (toast) => {
           toast.addEventListener("mouseenter", this.$swal.stopTimer);

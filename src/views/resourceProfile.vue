@@ -265,32 +265,25 @@
                             multiple
                             outlined
                             small-chips
+                          
                           ></v-combobox>
                         </v-col>
 
-                      
                         <v-col cols="12" sm="6" md="4">
-                          Active Date
-                          <!-- <v-btn outlined color="grey" width="900" height="35"> -->
-                          <VueDatePicker
-                            placeholder="Active Date"
-                            fullscreen-mobile
+                          Active Date <br> 
+                          <date-picker
                             v-model="editedItem.activeDate"
-                            :rules="nameRules"
-                          />
-                          <!-- </v-btn> -->
+                            valueType="format"
+                            placeholder="Active Date"
+                          ></date-picker>
                         </v-col>
-
                         <v-col cols="12" sm="6" md="4">
                           Last Working Date
-                          <!-- <v-btn outlined color="grey" width="900" height="35"> -->
-                          <VueDatePicker
+                          <date-picker
                             placeholder="Last Working Date"
-                            fullscreen-mobile
+                            valueType="format"
                             v-model="editedItem.lastWorkDate"
-                            :rules="nameRules"
-                          />
-                          <!-- </v-btn> -->
+                          ></date-picker>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
                           <v-select
@@ -319,9 +312,9 @@
             <v-dialog v-model="dialogDelete" max-width="1100px">
               <v-card>
                 <v-card color="#004483">
-                <v-card-title>
-                  <span class="white--text">Detail Resource</span>
-                </v-card-title>
+                  <v-card-title>
+                    <span class="white--text">Detail Resource</span>
+                  </v-card-title>
                 </v-card>
                 <v-row no-gutters>
                   <v-col cols="12" sm="13" offset-sm="0.2">
@@ -554,7 +547,9 @@
         </template>
         <template v-slot:[`item.action`]="{ item }">
           <button class="sa-2" @click="deleteItem(item)">Detail</button>
-                <button v-if="roleApp == 'Resource Manager'" @click="editItem(item)">Edit</button>
+          <button v-if="roleApp == 'Resource Manager'" @click="editItem(item)">
+            Edit
+          </button>
         </template>
         <template v-slot:[`item.status`]="{ item }">
           <p v-if="item.status == 0" class="red--text">Inactive</p>
@@ -582,7 +577,8 @@
 </template>
 
 <script>
-
+import DatePicker from "vue2-datepicker";
+import "vue2-datepicker/index.css";
 import XlsxRead from "../components/XlsxRead";
 import XlsxJson from "../components/XlsxJson";
 import XlsxWorkbook from "../components/XlsxWorkbook";
@@ -598,6 +594,7 @@ export default {
     XlsxWorkbook,
     XlsxSheet,
     XlsxDownload,
+    DatePicker,
   },
   data: (vm) => ({
     sheetName: "Data",
@@ -768,10 +765,10 @@ export default {
         lastWorkDate: "",
         totalManhour: "",
         resourceType: "",
-        vendorId: "",
-        jenjabId: "",
-        divisiId: "",
-        kelompokId: "",
+        vendor: "",
+        jenjab: "",
+        divisi: "",
+        kelompok: "",
         role: "",
         projectExp: "",
         status: "",
@@ -970,7 +967,9 @@ export default {
         oo.TipeResource = this.r_tipe[k];
         // ('Nama AS').oo = this.r_nama[k];
         var regex = /<br\s*[/]?>/gi;
-        if(!this.r_skill[k]){this.r_skill[k]=""}
+        if (!this.r_skill[k]) {
+          this.r_skill[k] = "";
+        }
         const skill = this.r_skill[k].replace(regex, " ");
         oo.Role = this.r_role[k];
         oo.Skillset = skill;
@@ -1388,8 +1387,8 @@ export default {
         this.updateData(this.newEditedItem, this.editedItem.employeeId);
       } else {
         if (a.employeeName) {
-          if (a.vendorId) {
-            this.getvendorId(a.vendorId);
+          if (a.vendor) {
+            this.getvendorId(a.vendor);
           } else {
             this.newEditedItem.vendorid = null;
           }
@@ -1409,10 +1408,10 @@ export default {
           if (a.status == "Active") {
             this.newEditedItem.status = 1;
           } else this.newEditedItem.status = 0;
-          this.getdivisiId(a.divisiId);
-          this.getjenjabId(a.jenjabId);
+          this.getdivisiId(a.divisi);
+          this.getjenjabId(a.jenjab);
           this.getroleId(a.role);
-          this.getkelompokId(a.kelompokId);
+          this.getkelompokId(a.kelompok);
           this.gettipeId(a.resourceType);
         } else {
           this.newEditedItem.kelompokId = this.editedItem.kelompok;
@@ -1447,7 +1446,7 @@ export default {
           this.getroleId();
           this.gettipeId();
         }
-        console.log("iniitem"+this.newEditedItem)
+        console.log("iniitem" + this.newEditedItem);
         if (this.newEditedItem.npp) this.createData(this.newEditedItem);
         else alert("Invalid Input");
       }

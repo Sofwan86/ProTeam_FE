@@ -79,28 +79,30 @@
                             outlined
                           ></v-select>
                         </v-col>
-                        <v-col cols="12" sm="6" md="4">
+                       <v-col cols="12" sm="6" md="4">
                           Start Contract Date
                           <!-- <v-btn outlined color="grey" width="900" height="35"> -->
-                          <VueDatePicker
+                           <br> 
+                          <date-picker
                             placeholder="Start Contract Date"
                             fullscreen-mobile
                             v-model="editedItem.startContract"
-                            :rules="nameRules"
-                          />
-                          <!-- </v-btn> -->
+                            valueType="format"
+                             
+                          ></date-picker>
                         </v-col>
 
                         <v-col cols="12" sm="6" md="4">
                           Last Contract Date
                           <!-- <v-btn outlined color="grey" width="900" height="35"> -->
-                          <VueDatePicker
+                            <br> 
+                          <date-picker
                             placeholder="Last Contract Date"
                             fullscreen-mobile
                             v-model="editedItem.lastContract"
-                            :rules="nameRules"
-                          />
-                          <!-- </v-btn> -->
+                            valueType="format"
+                             
+                          ></date-picker>
                         </v-col>
 
                         
@@ -310,10 +312,15 @@
 </template>
 
 <script>
+import DatePicker from "vue2-datepicker";
+import "vue2-datepicker/index.css";
 import { Axios } from "./Axios";
 const apiService = new Axios();
 export default {
   name: "Manmonth",
+  components: {
+    DatePicker
+  },
   data: (vm) => ({
     valid: false,
     nameRules: [(v) => !!v || "Required"],

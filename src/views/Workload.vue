@@ -40,7 +40,7 @@
                   >
                     + Create New Data
                   </v-btn>
-                  <v-dialog v-model="dialog" max-width="400px">
+                  <v-dialog v-model="dialog" max-width="480px">
                     <v-card>
                       <v-card color="#004483">
                         <v-card-title class="white--text">
@@ -57,28 +57,27 @@
                         <v-form ref="form" v-model="valid">
                           <v-container>
                             <v-row>
-                              <v-col cols="12" sm="7" md="5">
-                                Active Date
-
-                                <VueDatePicker
-                                  placeholder="Start date"
-                                  fullscreen-mobile
+                              <v-col cols="5" sm="8" md="6">
+                                Active Date <br />
+                                <date-picker
                                   v-model="editedItem.startDate"
-                                  :rules="nameRules"
-                                />
+                                  valueType="format"
+                                  placeholder="Active Date"
+                                ></date-picker>
                               </v-col>
-                              <v-col cols="12" sm="7" md="7">
+                              <v-col cols="12" sm="8" md="6">
                                 Last Working Date
 
-                                <VueDatePicker
-                                  placeholder="End date"
-                                  fullscreen-mobile
+                                <br />
+                                <date-picker
                                   v-model="editedItem.endDate"
-                                  :rules="nameRules"
-                                />
+                                  valueType="format"
+                                  placeholder="Last Working Date"
+                                ></date-picker>
                               </v-col>
                             </v-row>
-
+                            <v-row>
+                              <v-col cols="12" sm="8" md="6">
                             <v-autocomplete
                               v-model="editedItem.divisiId"
                               v-on:click="filter(editedItem.divisiId)"
@@ -86,16 +85,22 @@
                               :rules="nameRules"
                               required
                               outlined
+                              dense
                               :items="divisi"
                             ></v-autocomplete>
+                            </v-col>
+                            <v-col cols="12" sm="8" md="6">
                             <v-autocomplete
                               @click="filter(editedItem.divisiId)"
                               v-model="editedItem.unit"
                               label="Kelompok*"
                               :rules="nameRules"
                               outlined
+                              dense
                               :items="tempkel"
                             ></v-autocomplete>
+                            </v-col>
+                            </v-row>
                           </v-container>
                         </v-form>
                       </v-card-text>
@@ -140,11 +145,11 @@
                               :items="tempj"
                             ></v-autocomplete>
                             <v-text-field
-                            v-model="editedItem.jumlah"
-                            label="Jumlah"
-                            required
-                            outlined
-                          ></v-text-field>
+                              v-model="editedItem.jumlah"
+                              label="Jumlah"
+                              required
+                              outlined
+                            ></v-text-field>
                           </v-container>
                         </v-form>
                       </v-card-text>
@@ -262,10 +267,15 @@
 </template>
 
 <script>
+import DatePicker from "vue2-datepicker";
+import "vue2-datepicker/index.css";
 import { Axios } from "./Axios";
 const apiService = new Axios();
 export default {
   name: "Workload",
+  components: {
+    DatePicker,
+  },
   data: (vm) => ({
     snackbar1: false,
     snackbar: false,
@@ -379,9 +389,9 @@ export default {
     tempkel: [],
     sumkd: "",
     search2: "",
-    wlaHeaderId:0,
-    divisiId:0,
-    unitid:0
+    wlaHeaderId: 0,
+    divisiId: 0,
+    unitid: 0,
   }),
   computed: {
     size() {
@@ -416,7 +426,7 @@ export default {
     this.initialize();
     this.getData();
     this.getData2();
-    this.getjenjab()
+    this.getjenjab();
   },
   methods: {
     filter(div) {
@@ -451,11 +461,11 @@ export default {
       const response = await apiService
         .getJenjab()
         .then((response) => {
-          console.log("data"+response)
+          console.log("data" + response);
           response.map((item) => {
-              this.tempj.push(item.jenjangJabatan);
-              this.jenjabid.push(item.jenjabId);
-          })
+            this.tempj.push(item.jenjangJabatan);
+            this.jenjabid.push(item.jenjabId);
+          });
         })
         .catch((err) => err);
       response;
@@ -466,7 +476,7 @@ export default {
         oo.value = this.jenjabid[k];
         this.jenjab.push(oo);
       }
-      console.log(this.jenjab)
+      console.log(this.jenjab);
     },
     async getData2() {
       //let rt = { text: "", value: 0 };
@@ -548,9 +558,9 @@ export default {
       this.editedIndex = this.workload.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialogDelete = true;
-      this.wlaHeaderId = item.wlaHeaderId
-      this.divisiId = item.divisiId
-      this.unitid = item.unitId
+      this.wlaHeaderId = item.wlaHeaderId;
+      this.divisiId = item.divisiId;
+      this.unitid = item.unitId;
       //       const format = item.cost.toString().split('').reverse().join('');
       // const convert = format.match(/\d{1,3}/g);
       // this.editedItem.cost = 'Rp ' + convert.join('.').split('').reverse().join('')
@@ -635,7 +645,7 @@ export default {
         position: "top-end",
 
         confirmButtonText: "go",
-        timer: 3000,
+        timer: 2000,
         timerProgressBar: true,
         didOpen: (toast) => {
           toast.addEventListener("mouseenter", this.$swal.stopTimer);
@@ -716,13 +726,11 @@ export default {
       }
     },
     getjenjabId() {
-       
-        for (var i = 0; i < this.tempj.length; i++) {
-          if (this.editedItem.jenjangJabatan == this.jenjab[i].text) {
-            this.newEditedItem.jenjabId = this.jenjab[i].value;
-          }
+      for (var i = 0; i < this.tempj.length; i++) {
+        if (this.editedItem.jenjangJabatan == this.jenjab[i].text) {
+          this.newEditedItem.jenjabId = this.jenjab[i].value;
         }
-      
+      }
     },
 
     save() {
@@ -746,19 +754,19 @@ export default {
     save2() {
       if (this.editedIndex > -1) {
         this.newEditedItem.updatedBy = localStorage.getItem("name,");
-        this.getjenjabId()
-        this.newEditedItem.wlaHeaderId=this.editedItem.wlaHeaderId
+        this.getjenjabId();
+        this.newEditedItem.wlaHeaderId = this.editedItem.wlaHeaderId;
         this.newEditedItem.jumlah = this.editedItem.jumlah;
-        this.newEditedItem.divisiId = this.divisiId
-        this.newEditedItem.unitId = this.unitid
+        this.newEditedItem.divisiId = this.divisiId;
+        this.newEditedItem.unitId = this.unitid;
         this.updateData2(this.newEditedItem, this.editedItem.wlaDetailId);
       } else {
-        this.newEditedItem.wlA_header_id = this.wlaHeaderId
+        this.newEditedItem.wlA_header_id = this.wlaHeaderId;
         this.newEditedItem.createdBy = localStorage.getItem("name,");
-        this.getjenjabId()
+        this.getjenjabId();
         this.newEditedItem.jumlah = this.editedItem.jumlah;
-        this.newEditedItem.divisiId = this.divisiId
-        this.newEditedItem.unitId = this.unitid
+        this.newEditedItem.divisiId = this.divisiId;
+        this.newEditedItem.unitId = this.unitid;
         this.createData2(this.newEditedItem);
       }
       this.close();
