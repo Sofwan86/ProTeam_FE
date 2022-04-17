@@ -49,7 +49,6 @@
                     ><h3>{{ formTitle }}</h3></span
                   >
                   <v-spacer></v-spacer>
-                <v-icon @click="close" color="white">mdi-close</v-icon>
                 </v-card-title>
                  </v-card>
                 <v-card-text>
@@ -112,8 +111,13 @@
                             value="Proteam@12345"
                             required
                             outlined
-                            disabled
-                            type="password"
+                            
+
+                            :type="show1 ? 'text' : 'password'"
+                              
+                              :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                              @click:append="show1 = !show1"
+                              color="indigo darken-4"
                           ></v-text-field>
                           <v-text-field
                             v-else
@@ -162,9 +166,11 @@
             </v-dialog>
             <v-dialog v-model="dialogDelete" max-width="700">
               <v-card>
-                <v-row no-gutters>
-                  <v-col cols="12" sm="13" offset-sm="0.2">
-                    <v-card class="pa-2" offset-sm="3" outlined tile>
+                <v-card color="#004483">
+                <v-card-title>
+                  <span class="white--text">Detail User</span>
+                </v-card-title>
+                </v-card>
                       <v-row>
                         <v-col cols="12" md="6">
                           <v-list-item two-line>
@@ -249,16 +255,16 @@
                           </v-list-item>
                         </v-col>
                       </v-row>
-                    </v-card>
-                  </v-col>
-                </v-row>
+                  
               </v-card>
             </v-dialog>
           </v-toolbar>
         </template>
         <template v-slot:[`item.action`]="{ item }">
-          <v-btn v-bind="size" @click="deleteItem(item)">Detail</v-btn>
-          <v-btn v-bind="size" class="mx-3" @click="editItem(item)">Edit</v-btn>
+          <!-- <v-btn v-bind="size" @click="deleteItem(item)">Detail</v-btn>
+          <v-btn v-bind="size" class="mx-3" @click="editItem(item)">Edit</v-btn> -->
+          <button class="sa-2" @click="deleteItem(item)">Detail</button>
+                <button @click="editItem(item)">Edit</button>
         </template>
         <template v-slot:[`item.statusName`]="{ item }">
           <p v-if="item.status == 0" class="red--text">Inactive</p>
@@ -288,6 +294,7 @@ const apiService = new Axios();
 export default {
   name: "userManagement",
   data: (vm) => ({
+    show1 : false,
     snackbar1: false,
     snackbar: false,
     text: `Hello, I'm a snackbar`,
@@ -415,7 +422,7 @@ export default {
   },
   methods: {
     async getData() {
-      this.editedItem.password='Proteam@123'
+      this.editedItem.password='Proteam@12345'
       const response = await apiService
         .getUsers()
         .then((response) => {
@@ -708,5 +715,12 @@ export default {
 <style lang="scss" scoped>
 .v-progress-circular {
   margin: 1rem;
+}
+button {
+  padding: 5px 10px;
+  font-size: inherit;
+  background: transparent;
+  border: 2px solid #ccc;
+  transition: 0.4s;
 }
 </style>

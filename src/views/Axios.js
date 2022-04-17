@@ -1,5 +1,5 @@
 import axios from 'axios'
-const BASE_URL = 'http://192.168.131.124:85/api'
+const BASE_URL = 'http://localhost:898/api'
 const options = {
     headers: {
         'Content-Type': 'application/json',

@@ -30,6 +30,7 @@
                 <v-menu offset-y top :close-on-content-click="false">
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
+                      v-if="roleApp == 'Resource Manager'"
                       outlined
                       class="btn-imp dark-blue--text"
                       v-bind="attrs"
@@ -70,7 +71,7 @@
                 </v-menu>
               </div>
             </div>
-            <div class="pa-3">
+            <div v-if="roleApp == 'Resource Manager'" class="pa-3">
               <xlsx-workbook>
                 <xlsx-sheet
                   :collection="sheetss"
@@ -83,6 +84,7 @@
               </xlsx-workbook>
             </div>
             <v-btn
+              v-if="roleApp == 'Resource Manager'"
               v-bind="size"
               class="white--text"
               @click="editItem(7, 7)"
@@ -103,8 +105,6 @@
                       ><h3>{{ formTitle }}</h3></span
                     >
                     <v-spacer></v-spacer>
-
-                    <v-icon @click="close" color="white">mdi-close</v-icon>
                   </v-card-title>
                 </v-card>
                 <v-card-text>
@@ -318,6 +318,11 @@
             </v-dialog>
             <v-dialog v-model="dialogDelete" max-width="1100px">
               <v-card>
+                <v-card color="#004483">
+                <v-card-title>
+                  <span class="white--text">Detail Resource</span>
+                </v-card-title>
+                </v-card>
                 <v-row no-gutters>
                   <v-col cols="12" sm="13" offset-sm="0.2">
                     <v-card class="pa-2" offset-sm="3" outlined tile>
@@ -548,8 +553,8 @@
           </v-toolbar>
         </template>
         <template v-slot:[`item.action`]="{ item }">
-          <v-btn v-bind="size" @click="deleteItem(item)">Detail</v-btn>
-          <v-btn v-bind="size" class="mx-3" @click="editItem(item)">Edit</v-btn>
+          <button class="sa-2" @click="deleteItem(item)">Detail</button>
+                <button v-if="roleApp == 'Resource Manager'" @click="editItem(item)">Edit</button>
         </template>
         <template v-slot:[`item.status`]="{ item }">
           <p v-if="item.status == 0" class="red--text">Inactive</p>
@@ -794,6 +799,7 @@ export default {
     isLoading: false,
     objkel: {},
     newdiv: 0,
+    roleApp: localStorage.getItem("role"),
   }),
   computed: {
     size() {
@@ -1465,5 +1471,13 @@ export default {
 }
 .btn-imp.v-btn--outlined {
   border: thin solid #004483;
+}
+
+button {
+  padding: 5px 10px;
+  font-size: inherit;
+  background: transparent;
+  border: 2px solid #ccc;
+  transition: 0.4s;
 }
 </style>

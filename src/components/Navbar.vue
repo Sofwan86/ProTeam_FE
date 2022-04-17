@@ -165,6 +165,7 @@
             </v-list-item-content>
           </v-list-item>
           <v-list-group
+          v-if="role == 'Resource Manager'"
             color="#FFF"
             no-action
             :value="false"
@@ -191,6 +192,7 @@
               </v-list-item-icon>
             </v-list-item>
           </v-list-group>
+          
         </v-list>
       </v-navigation-drawer>
       <div class="pa-5">
@@ -269,6 +271,19 @@ export default {
           route: "/report",
         },
       ],
+      items2V: [
+      
+        // {
+        //   title: "Planning",
+        //   icon: "mdi-notebook-outline",
+        //   route: "/planning",
+        // },
+        {
+          title: "Report",
+          icon: "mdi-file-chart-outline",
+          route: "/report",
+        },
+      ],
       itemProfile: [
         {
           title: "Resource",
@@ -311,8 +326,14 @@ export default {
   },
   created() {
     this.getData();
+    this.getMenu()
   },
   methods: {
+    getMenu(){
+      if(this.role == 'Viewer'){
+        this.items2 = this.items2V
+      }
+    },
     menuItems () {
       return this.menu
     },

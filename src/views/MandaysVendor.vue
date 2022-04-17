@@ -41,7 +41,6 @@
                       ><h3>{{ formTitle }}</h3></span
                     >
                     <v-spacer></v-spacer>
-                    <v-icon @click="close" color="white">mdi-close</v-icon>
                   </v-card-title>
                 </v-card>
                 <v-card-text>
@@ -263,7 +262,6 @@
                       ><h3>{{ formTitleUsage }}</h3></span
                     >
                     <v-spacer></v-spacer>
-                    <v-icon @click="closeUsage" color="white">mdi-close</v-icon>
                   </v-card-title>
                 </v-card>
                 <v-card-text>
@@ -366,7 +364,7 @@
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn outlined color="blue darken-1" text @click="close">
+                  <v-btn outlined color="blue darken-1" text @click="closeUsage">
                     Cancel
                   </v-btn>
                   <v-btn color="#004483" dark v-if="validUsage" @click="save2">
@@ -381,9 +379,6 @@
                   <v-card-title class="white--text">
                     <span class="text-h5"><h4>Detail Mandays</h4></span>
                     <v-spacer></v-spacer>
-                    <v-icon @click="closeDelete" color="white"
-                      >mdi-close</v-icon
-                    >
                   </v-card-title>
                 </v-card>
 
@@ -589,8 +584,10 @@
           </v-toolbar>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn v-bind="size" @click="deleteItem(item)">Detail</v-btn>
-          <v-btn v-bind="size" class="mx-3" @click="editItem(item)">Edit</v-btn>
+          <!-- <v-btn v-bind="size" @click="deleteItem(item)">Detail</v-btn>
+          <v-btn v-bind="size" class="mx-3" @click="editItem(item)">Edit</v-btn> -->
+          <button class="sa-2" @click="deleteItem(item)">Detail</button>
+                <button @click="editItem(item)">Edit</button>
         </template>
         <template v-slot:[`item.status`]="{ item }">
           <p v-if="item.status == 0" class="red--text">Inactive</p>
@@ -1266,6 +1263,13 @@ export default {
   margin: 1rem;
 }
 button.edit {
+  padding: 5px 10px;
+  font-size: inherit;
+  background: transparent;
+  border: 2px solid #ccc;
+  transition: 0.4s;
+}
+button {
   padding: 5px 10px;
   font-size: inherit;
   background: transparent;

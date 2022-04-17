@@ -23,7 +23,7 @@
                 dense
               ></v-text-field>
             </div>
-            <div class="pa-3">
+            <div v-if="roleApp == 'Resource Manager'" class="pa-3">
               <xlsx-workbook>
                 <xlsx-sheet :collection="sheet" :sheet-name="namaSheet" />
                 <xlsx-download filename="Report Units Profile.xlsx">
@@ -33,14 +33,16 @@
               </xlsx-workbook>
             </div>
             <v-dialog v-model="dialog" max-width="700px">
+              
               <v-card>
+                <v-card color="#004483">
                 <v-card-title>
-                  <span class="text-h5">{{ formTitle }}</span>
+                  <span class="white--text">{{ formTitle }}</span>
                 </v-card-title>
+                </v-card>
 
                 <v-card-text>
                   <v-container>
-                    <v-row>
                       <v-data-table
                         :headers="headers1"
                         :items="member"
@@ -91,13 +93,18 @@
                           </v-toolbar>
                         </template>
                       </v-data-table>
-                    </v-row>
+          
                   </v-container>
                 </v-card-text>
               </v-card>
             </v-dialog>
             <v-dialog v-model="dialogDelete" max-width="500">
               <v-card>
+                <v-card color="#004483">
+                <v-card-title>
+                  <span class="white--text">Detail Kelompok</span>
+                </v-card-title>
+                </v-card>
                 <v-row no-gutters>
                   <v-col cols="12" sm="13" offset-sm="0.2">
                     <v-card class="pa-2" offset-sm="3" outlined tile>
@@ -212,15 +219,19 @@
           <p v-else class="green--text">Active</p>
         </template>
         <template v-slot:[`item.action`]="{ item }">
-          <v-icon small @click="deleteItem(item)">
+          <!-- <v-icon small @click="deleteItem(item)">
             mdi-account-details-outline
-          </v-icon>
+          </v-icon> -->
+          <button class="sa-2" @click="deleteItem(item)">Detail</button>
+          <button @click="editItem(item)">Member</button>
+                
         </template>
-        <template v-slot:[`item.member`]="{ item }">
+        <!-- <template v-slot:[`item.member`]="{ item }">
           <v-icon small @click="editItem(item)">
             mdi-account-group-outline
           </v-icon>
-        </template>
+          
+        </template> -->
       </v-data-table>
     </v-col>
   </v-row>
@@ -308,8 +319,8 @@ export default {
       { text: "Total Pegawai", value: "totalEmployee" },
       { text: "TotalManHour", value: "totalManhour" },
       { text: "Status", value: "statusName" },
-      { text: "Details  ", value: "action", sortable: false },
-      { text: "Member", value: "member", sortable: false },
+      { text: "Action", value: "action", sortable: false },
+      // { text: "Member", value: "member", sortable: false },
     ],
     headers1: [
       {
@@ -369,6 +380,7 @@ export default {
     r_skill: [],
     r_pegawai: [],
     r_manhour: [],
+    roleApp: localStorage.getItem("role"),
   }),
   computed: {
     formTitle() {
@@ -507,4 +519,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+button {
+  padding: 5px 10px;
+  font-size: inherit;
+  background: transparent;
+  border: 2px solid #ccc;
+  transition: 0.4s;
+}
 </style>

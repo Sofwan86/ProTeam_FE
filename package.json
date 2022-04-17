@@ -17,6 +17,8 @@
     "chart.js": "^3.5.0",
     "core-js": "^3.4.3",
     "daypilot-pro-vue": "https://npm.daypilot.org/daypilot-pro-vue/trial/2020.4.4788.tar.gz",
+    "gantt-elastic": "^1.0.12",
+    "gantt-elastic-header": "^0.1.11",
     "pinia": "^2.0.12",
     "vee-validate": "^3.4.11",
     "vue": "^2.6.10",
@@ -29,6 +31,7 @@
     "vue-simple-spinner": "^1.2.10",
     "vue-sweetalert2": "^5.0.2",
     "vue-xlsx": "^0.2.1",
+    "vue2-datepicker": "^3.10.4",
     "vuetify": "^2.6.3"
   },
   "devDependencies": {

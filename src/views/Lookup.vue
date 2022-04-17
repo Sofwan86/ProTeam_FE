@@ -6,7 +6,7 @@
           <v-card class="pa-2" offset-sm="3" outlined tile>
             <v-row>
               <v-col>
-                <h3>Manage Lookup</h3>
+                <h2>Manage Lookup</h2>
               </v-col>
 
               <v-spacer></v-spacer>
@@ -26,6 +26,7 @@
                 </v-autocomplete>
               </v-col>
             </v-row>
+            <v-divider></v-divider>  
 
             <v-row>
               <v-col>
@@ -145,9 +146,11 @@
                     </v-toolbar>
                   </template>
                   <template v-slot:[`item.actions`]="{ item }">
-                    <v-icon small class="mr-2" @click="editItem(item)">
+                    <!-- <button class="sa-2" @click="deleteItem(item)">Detail</button> -->
+                <button @click="editItem(item)">Edit</button>
+                    <!-- <v-icon small class="mr-2" @click="editItem(item)">
                       mdi-pencil
-                    </v-icon>
+                    </v-icon> -->
                   </template>
                   <template v-slot:[`item.updateTime`]="{ item }">
                     <h4>{{ item.updateTime | str_limit(10) }}</h4>
@@ -434,4 +437,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+button {
+  padding: 5px 10px;
+  font-size: inherit;
+  background: transparent;
+  border: 2px solid #ccc;
+  transition: 0.4s;
+}
+
 </style>
