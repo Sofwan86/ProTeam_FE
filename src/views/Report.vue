@@ -222,7 +222,7 @@ export default {
             },
 
             {
-              id: 3,
+              id: 2,
               label: "Nama Pegawai",
               value: "user",
               width: 150,
@@ -230,31 +230,31 @@ export default {
             },
             {
               id: 3,
-              label: "NPP",
-              value: "npp",
-              width: 80,
-              html: true,
-            },
-            {
-              id: 3,
-              label: "Divisi",
-              value: "divisi",
-              width: 80,
-            },
-            {
-              id: 3,
               label: "Kelompok",
               value: "kelompok",
-              width: 80,
+              width: 70,
             },
             {
               id: 4,
-              label: "Jenjang Jabatan",
-              value: "jenjab",
-              width: 80,
+              label: "Divisi",
+              value: "divisi",
+              width: 70,
             },
             {
-              id: 2,
+              id: 5,
+              label: "Jenjang Jabatan",
+              value: "jenjab",
+              width: 70,
+            },
+            {
+              id: 6,
+              label: "NPP",
+              value: "npp",
+              width: 70,
+              html: true,
+            },
+            {
+              id: 7,
               label: "Project CR",
               value: "project",
               width: 80,
