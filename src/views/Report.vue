@@ -230,16 +230,17 @@ export default {
             },
             {
               id: 3,
-              label: "Kelompok",
-              value: "kelompok",
-              width: 70,
-            },
-            {
-              id: 4,
               label: "Divisi",
               value: "divisi",
               width: 70,
             },
+            {
+              id: 4,
+              label: "Kelompok",
+              value: "kelompok",
+              width: 70,
+            },
+            
             {
               id: 5,
               label: "Jenjang Jabatan",
