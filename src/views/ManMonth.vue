@@ -314,7 +314,7 @@
 <script>
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
-import { Axios } from "./Axios";
+import { Axios } from "../Axios";
 const apiService = new Axios();
 export default {
   name: "Manmonth",
@@ -408,20 +408,6 @@ export default {
       status: "",
       price: "",
     },
-    detailItem: {
-      nama: "",
-      npp: "",
-      email: "",
-      phone: "",
-      skills: [],
-      dateActive: "",
-      dateLast: "",
-      jenjab: "",
-      kelompok: "",
-      tipe: "",
-      role: "",
-      status: "",
-    },
     newEditedItem: {},
     detailID: {},
     editID: "",
@@ -507,11 +493,6 @@ export default {
       this.editedIndex = this.manmonth.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
-    },
-    detailItem(item) {
-      this.editedIndex = this.manmonth.indexOf(item);
-      this.detailItem = Object.assign({}, item);
-      this.dialogDetail = true;
     },
     deleteItem(item) {
       this.editedIndex = this.manmonth.indexOf(item);

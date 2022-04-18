@@ -5,7 +5,6 @@
         :headers="headers"
         :items="users"
         :search="search"
-        :loading="loadingPlaylist"
         sort-by="nama"
         class="elevation-1"
         v-bind="size"
@@ -27,7 +26,12 @@
                 dense
               ></v-text-field>
             </div>
-            <v-btn v-bind="size"  class="white--text" @click="editItem(7,'dfsf')" color="#004483">
+            <v-btn
+              v-bind="size"
+              class="white--text"
+              @click="editItem(7, 'dfsf')"
+              color="#004483"
+            >
               + Create New User
             </v-btn>
             <v-dialog v-model="dialog" max-width="800px">
@@ -43,14 +47,14 @@
                 <v-alert dense text type="success" v-model="snackbar1">
                   <strong>Data sukses ditambah</strong>
                 </v-alert>
-                 <v-card color="#004483" >
-                <v-card-title class="white--text" >
-                  <span class="text-h5"
-                    ><h3>{{ formTitle }}</h3></span
-                  >
-                  <v-spacer></v-spacer>
-                </v-card-title>
-                 </v-card>
+                <v-card color="#004483">
+                  <v-card-title class="white--text">
+                    <span class="text-h5"
+                      ><h3>{{ formTitle }}</h3></span
+                    >
+                    <v-spacer></v-spacer>
+                  </v-card-title>
+                </v-card>
                 <v-card-text>
                   <v-form ref="form" v-model="valid">
                     <v-container>
@@ -111,13 +115,10 @@
                             value="Proteam@12345"
                             required
                             outlined
-                            
-
                             :type="show1 ? 'text' : 'password'"
-                              
-                              :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                              @click:append="show1 = !show1"
-                              color="indigo darken-4"
+                            :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                            @click:append="show1 = !show1"
+                            color="indigo darken-4"
                           ></v-text-field>
                           <v-text-field
                             v-else
@@ -127,7 +128,6 @@
                             value="Proteam@12345"
                             required
                             outlined
-                            
                           ></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
@@ -167,104 +167,99 @@
             <v-dialog v-model="dialogDelete" max-width="700">
               <v-card>
                 <v-card color="#004483">
-                <v-card-title>
-                  <span class="white--text">Detail User</span>
-                </v-card-title>
+                  <v-card-title>
+                    <span class="white--text">Detail User</span>
+                  </v-card-title>
                 </v-card>
-                      <v-row>
-                        <v-col cols="12" md="6">
-                          <v-list-item two-line>
-                            <v-list-item-content>
-                              <v-list-item-title
-                                ><h2>
-                                  {{ editedItem.fullName }}
-                                </h2></v-list-item-title
-                              >
-                              <h3>
-                                {{ editedItem.npp }}
-                              </h3>
-                              <v-list-item-subtitle
-                                >Added
-                                {{ editedItem.createdTime | str_limit(10) }}
-                              </v-list-item-subtitle>
-                            </v-list-item-content>
-                          </v-list-item>
-                        </v-col>
-                      </v-row>
-                      <h2 class="mx-4">Information</h2>
-                      <v-row>
-                        <v-col cols="7" md="6">
-                          <v-list-item two-line>
-                            <v-list-item-content>
-                              <v-list-item-subtitle>Name</v-list-item-subtitle>
-                              <v-list-item-title>
-                                {{ editedItem.fullName }}
-                              </v-list-item-title>
-                            </v-list-item-content>
-                          </v-list-item>
-                          <v-list-item two-line>
-                            <v-list-item-content>
-                              <v-list-item-subtitle>NPP</v-list-item-subtitle>
-                              <v-list-item-title>{{
-                                editedItem.npp
-                              }}</v-list-item-title>
-                            </v-list-item-content>
-                          </v-list-item>
-                          <v-list-item two-line>
-                            <v-list-item-content>
-                              <v-list-item-subtitle>Unit</v-list-item-subtitle>
-                              <v-list-item-title>
-                                {{ editedItem.kelompok }}
-                              </v-list-item-title>
-                            </v-list-item-content>
-                          </v-list-item>
-                        </v-col>
-                        <v-divider vertical></v-divider>
-                        <v-col cols="5" md="4">
-                          <v-list-item two-line>
-                            <v-list-item-content>
-                              <v-list-item-subtitle>Role</v-list-item-subtitle>
-                              <v-list-item-title>
-                                {{ editedItem.roleName }}
-                              </v-list-item-title>
-                            </v-list-item-content>
-                          </v-list-item>
-                          <v-list-item two-line>
-                            <v-list-item-content>
-                              <v-list-item-subtitle>Email</v-list-item-subtitle>
-                              <v-list-item-title>
-                                {{ editedItem.email }}
-                              </v-list-item-title>
-                            </v-list-item-content>
-                          </v-list-item>
-                          <v-list-item two-line>
-                            <v-list-item-content>
-                              <v-list-item-subtitle
-                                >Status</v-list-item-subtitle
-                              >
-                              <v-list-item-title>
-                                <p
-                                  v-if="editedItem.statusName == 'Active'"
-                                  class="green--text"
-                                >
-                                  Active
-                                </p>
-                                <p v-else class="red--text">Inactive</p>
-                              </v-list-item-title>
-                            </v-list-item-content>
-                          </v-list-item>
-                        </v-col>
-                      </v-row>
-                  
+                <v-row>
+                  <v-col cols="12" md="6">
+                    <v-list-item two-line>
+                      <v-list-item-content>
+                        <v-list-item-title
+                          ><h2>
+                            {{ editedItem.fullName }}
+                          </h2></v-list-item-title
+                        >
+                        <h3>
+                          {{ editedItem.npp }}
+                        </h3>
+                        <v-list-item-subtitle
+                          >Added
+                          {{ editedItem.createdTime | str_limit(10) }}
+                        </v-list-item-subtitle>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </v-col>
+                </v-row>
+                <h2 class="mx-4">Information</h2>
+                <v-row>
+                  <v-col cols="7" md="6">
+                    <v-list-item two-line>
+                      <v-list-item-content>
+                        <v-list-item-subtitle>Name</v-list-item-subtitle>
+                        <v-list-item-title>
+                          {{ editedItem.fullName }}
+                        </v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item two-line>
+                      <v-list-item-content>
+                        <v-list-item-subtitle>NPP</v-list-item-subtitle>
+                        <v-list-item-title>{{
+                          editedItem.npp
+                        }}</v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item two-line>
+                      <v-list-item-content>
+                        <v-list-item-subtitle>Unit</v-list-item-subtitle>
+                        <v-list-item-title>
+                          {{ editedItem.kelompok }}
+                        </v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </v-col>
+                  <v-divider vertical></v-divider>
+                  <v-col cols="5" md="4">
+                    <v-list-item two-line>
+                      <v-list-item-content>
+                        <v-list-item-subtitle>Role</v-list-item-subtitle>
+                        <v-list-item-title>
+                          {{ editedItem.roleName }}
+                        </v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item two-line>
+                      <v-list-item-content>
+                        <v-list-item-subtitle>Email</v-list-item-subtitle>
+                        <v-list-item-title>
+                          {{ editedItem.email }}
+                        </v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item two-line>
+                      <v-list-item-content>
+                        <v-list-item-subtitle>Status</v-list-item-subtitle>
+                        <v-list-item-title>
+                          <p
+                            v-if="editedItem.statusName == 'Active'"
+                            class="green--text"
+                          >
+                            Active
+                          </p>
+                          <p v-else class="red--text">Inactive</p>
+                        </v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </v-col>
+                </v-row>
               </v-card>
             </v-dialog>
           </v-toolbar>
         </template>
         <template v-slot:[`item.action`]="{ item }">
-          <!-- <v-btn v-bind="size" @click="deleteItem(item)">Detail</v-btn>
-          <v-btn v-bind="size" class="mx-3" @click="editItem(item)">Edit</v-btn> -->
           <button class="sa-2" @click="deleteItem(item)">Detail</button>
-                <button @click="editItem(item)">Edit</button>
+          <button @click="editItem(item)">Edit</button>
         </template>
         <template v-slot:[`item.statusName`]="{ item }">
           <p v-if="item.status == 0" class="red--text">Inactive</p>
@@ -289,12 +284,12 @@
 </template>
 
 <script>
-import { Axios } from "./Axios";
+import { Axios } from "../Axios";
 const apiService = new Axios();
 export default {
   name: "userManagement",
   data: (vm) => ({
-    show1 : false,
+    show1: false,
     snackbar1: false,
     snackbar: false,
     text: `Hello, I'm a snackbar`,
@@ -336,7 +331,7 @@ export default {
     skills: [],
     skillid: [],
     obj: {},
-    objkel:{},
+    objkel: {},
     tempk: [],
     tempr: [],
     temptipe: [],
@@ -359,11 +354,7 @@ export default {
     editedItem: {
       password: "Proteam@12345",
     },
-    defaultItem: {
-
-    },
-    detailItem: {
-    },
+    defaultItem: {},
     newEditedItem: {},
     detailID: {},
     editID: "",
@@ -389,9 +380,9 @@ export default {
     no: [],
   }),
   computed: {
-    size () {
-      const size = {xs:'x-small'}[this.$vuetify.breakpoint.name];
-      return size ? { [size]: true } : {}
+    size() {
+      const size = { xs: "x-small" }[this.$vuetify.breakpoint.name];
+      return size ? { [size]: true } : {};
     },
     formTitle() {
       return this.editedIndex === -1 ? "Create New User" : "Edit User";
@@ -418,11 +409,11 @@ export default {
     this.initialize();
     this.getData();
     this.getData2();
-    this.getKelompok()
+    this.getKelompok();
   },
   methods: {
     async getData() {
-      this.editedItem.password='Proteam@12345'
+      this.editedItem.password = "Proteam@12345";
       const response = await apiService
         .getUsers()
         .then((response) => {
@@ -434,9 +425,6 @@ export default {
         this.resources.no.push(i);
       }
       this.resources.no = this.no;
-      console.log(this.resources);
-      this.editedItem.tempAD = response.employee.activeDate;
-      this.editedItem.tempLD = response.employee.lastWorkDate;
     },
     async getData2() {
       //let rt = { text: "", value: 0 };
@@ -449,24 +437,10 @@ export default {
               this.tempr.push(item.name);
               this.roleid.push(item.value);
             }
-            // if (item.type == "Kelompok") {
-            //   this.tempk.push(item.name);
-            //   this.kelompokid.push(item.value);
-            // }
           });
         })
         .catch((err) => err);
       response;
-      console.log("aa", this.tstatus);
-      console.log("aa", this.statusId);
-      // for (var m = 0; m < this.tempk.length; m++) {
-      //   //this.tempskill.push(obj2)
-      //   let oo = {};
-      //   oo.text = this.tempk[m];
-      //   oo.value = this.kelompokid[m];
-      //   this.kelompok.push(oo);
-      // }
-      console.log("kel", this.status);
       for (var n = 0; n < this.tempr.length; n++) {
         //this.tempskill.push(obj2)
         let oo = {};
@@ -483,12 +457,10 @@ export default {
         })
         .catch((err) => err);
       response;
-      console.log("OBJKEL:"+this.objkel)
       this.objkel.map((item) => {
         this.tempk.push(item.kelompokName);
         this.kelompokid.push(item.kelompokId);
       });
-      console.log("length:"+this.tempk.length)
       for (var k = 0; k < this.tempk.length; k++) {
         //this.tempskill.push(obj2)
         let oo = {};
@@ -496,7 +468,7 @@ export default {
         oo.value = this.kelompokid[k];
         this.kelompok.push(oo);
       }
-      console.log("ini kelompok"+this.kelompok)
+     
     },
     initialize() {
       this.users = [];
@@ -505,38 +477,18 @@ export default {
       this.createItem = item;
       this.$router.push("/createNewResource");
     },
-    editItem(item,pw) {
-      if(pw) this.editedItem.password = pw
-      this.editedItem.email = "fdss"
+    editItem(item, pw) {
+      if (pw) this.editedItem.password = pw;
+      this.editedItem.email = "fdss";
       this.editedIndex = this.users.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
       this.getData();
-      //const a = [];
-      // item.listSkill.map((item) => {
-      //   a.push(item.skillset);
-      //   let oo = {};
-      //   oo.text = item.skillset;
-      //   oo.value = item.skillset_id;
-      //   // this.s.push(item.skillset)
-      //   if (item.skillset) {
-      //     this.s.push(oo);
-      //   }
-      // });
-      // this.editedItem.skills = a;
-    },
-    detailItem(item) {
-      this.editedIndex = this.users.indexOf(item);
-      this.detailItem = Object.assign({}, item);
-      this.dialogDetail = true;
     },
     deleteItem(item) {
       this.editedIndex = this.users.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialogDelete = true;
-      //       const format = item.cost.toString().split('').reverse().join('');
-      // const convert = format.match(/\d{1,3}/g);
-      // this.editedItem.cost = 'Rp ' + convert.join('.').split('').reverse().join('')
     },
     deleteItemConfirm() {
       this.resources.splice(this.editedIndex, 1);
@@ -557,7 +509,7 @@ export default {
     closeDetail() {
       this.s = [];
       this.dialog = false;
-           this.$refs.form.reset();
+      this.$refs.form.reset();
       this.$refs.form.resetValidation();
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
@@ -568,7 +520,7 @@ export default {
     closeDelete() {
       this.s = [];
       this.dialogDelete = false;
-           this.$refs.form.reset();
+      this.$refs.form.reset();
       this.$refs.form.resetValidation();
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
@@ -576,7 +528,7 @@ export default {
         //this.$router.go();
       });
     },
-      showAlert() {
+    showAlert() {
       const Toast = this.$swal.mixin({
         toast: true,
         position: "top-end",
@@ -645,7 +597,7 @@ export default {
           succ;
         })
         .catch(() => {
-          this.showAlertFail()
+          this.showAlertFail();
         });
       response;
       if (response) {
@@ -664,7 +616,7 @@ export default {
           succ;
         })
         .catch((err) => {
-          this.showAlertFail()
+          this.showAlertFail();
           err;
         });
       response;
@@ -684,7 +636,6 @@ export default {
           this.newEditedItem.status = 1;
         } else this.newEditedItem.status = 0;
         this.updateData(this.newEditedItem, this.editedItem.id);
-        console.log("fd" + this.editedItem.skills);
       } else {
         this.newEditedItem.password = "Proteam@12345";
         this.newEditedItem.createdBy = localStorage.getItem("name,");
@@ -698,8 +649,6 @@ export default {
           ? (this.newEditedItem.status = 1)
           : (this.newEditedItem.status = 0);
         this.createData(this.newEditedItem);
-        console.log(this.newEditedItem);
-        console.log("fd" + this.editedItem.skills);
       }
       this.close();
     },

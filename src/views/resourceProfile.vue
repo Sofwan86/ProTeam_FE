@@ -79,7 +79,6 @@
                 />
                 <xlsx-download filename="Report Resource Profile.xlsx">
                   <v-btn outlined class="btn-imp"> Download Report </v-btn>
-                  <!-- <button>Download</button> -->
                 </xlsx-download>
               </xlsx-workbook>
             </div>
@@ -93,11 +92,6 @@
               + Create New Resource
             </v-btn>
             <v-dialog v-model="dialog" max-width="1000px">
-              <!-- <template v-slot:activator="{ on, attrs }">
-                <v-btn color="#004483" dark v-bind="attrs" v-on="on">
-                  + Create New Resource
-                </v-btn>
-              </template> -->
               <v-card>
                 <v-card color="#004483">
                   <v-card-title class="white--text">
@@ -265,12 +259,11 @@
                             multiple
                             outlined
                             small-chips
-                          
                           ></v-combobox>
                         </v-col>
 
                         <v-col cols="12" sm="6" md="4">
-                          Active Date <br> 
+                          Active Date <br />
                           <date-picker
                             v-model="editedItem.activeDate"
                             valueType="format"
@@ -491,9 +484,6 @@
                                   Inactive
                                 </p>
                                 <p v-else class="green--text">Active</p>
-                                <!-- {{
-                                          editedItem.nama_status
-                                        }} -->
                               </v-list-item-title>
                             </v-list-item-content>
                           </v-list-item>
@@ -584,7 +574,7 @@ import XlsxJson from "../components/XlsxJson";
 import XlsxWorkbook from "../components/XlsxWorkbook";
 import XlsxSheet from "../components/XlsxSheet";
 import XlsxDownload from "../components/XlsxDownload";
-import { Axios } from "./Axios";
+import { Axios } from "../Axios";
 const apiService = new Axios();
 export default {
   name: "resourceProfile",
@@ -998,10 +988,6 @@ export default {
               this.tempr.push(item.name);
               this.roleid.push(item.value);
             }
-            // if (item.type == "Kelompok") {
-            //   this.tempk.push(item.name);
-            //   this.kelompokid.push(item.value);
-            // }
             if (item.type == "Jenjab") {
               this.tempj.push(item.name);
               this.jenjabid.push(item.value);
@@ -1020,26 +1006,11 @@ export default {
         .catch((err) => err);
       response;
       for (var k = 0; k < this.skills.length; k++) {
-        //this.tempskill.push(obj2)
         let oo = {};
         oo.text = this.skills[k];
         oo.value = this.skillid[k];
         this.tempskill.push(oo);
       }
-      // for (var l = 0; l < this.tempj.length; l++) {
-      //   //this.tempskill.push(obj2)
-      //   let oo = {};
-      //   oo.text = this.tempj[l];
-      //   oo.value = this.jenjabid[l];
-      //   this.jenjab.push(oo);
-      // }
-      // for (var m = 0; m < this.tempk.length; m++) {
-      //   //this.tempskill.push(obj2)
-      //   let oo = {};
-      //   oo.text = this.tempk[m];
-      //   oo.value = this.kelompokid[m];
-      //   this.kelompok.push(oo);
-      // }
       for (var n = 0; n < this.tempr.length; n++) {
         let oo = {};
         oo.text = this.tempr[n];

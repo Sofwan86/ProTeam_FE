@@ -2,23 +2,8 @@
   <div>
     <div>
       <h1 class="pa-3">Utilization Report</h1>
-      <!-- <v-btn @click="filter">Submit</v-btn> -->
-      <!-- <v-row>
-      <v-col cols="12" sm="6">
-        <v-date-picker v-model="dates" range @click="filter"></v-date-picker>
-      </v-col>
-      <v-col cols="12" sm="6">
-        <v-text-field
-          v-model="dateRangeText"
-          label="Date range"
-          prepend-icon="mdi-calendar"
-          readonly
-        ></v-text-field>
-        model: {{ dates }}
-      </v-col>
-    </v-row> -->
       <v-dialog v-model="dialog" max-width="1100px">
-        <v-card >
+        <v-card>
           <v-card color="#004483">
             <v-card-title class="white--text">
               <span class="text-h6"><h4>Detail Project</h4></span>
@@ -36,9 +21,6 @@
 
               {{ endCr | str_limit(10) }}
             </p>
-            <!-- <h2> Detail Project</h2> <br>
-                <h3> {{pegawai}} </h3> <br>
-                <p> {{startCr}} - {{endCr}}</p> -->
 
             <v-spacer></v-spacer>
             <v-text-field
@@ -160,97 +142,9 @@
                 </v-btn>
               </v-col>
             </v-row>
-            
           </v-form>
         </validation-observer>
-
-        <!-- <v-col cols="10" sm="4" md="2">
-        <v-autocomplete
-          v-model="filter"
-          label="Fiter resource"
-          :items="resource"
-        ></v-autocomplete>
-      </v-col> -->
-        <!-- <v-col> -->
-        <!-- <validation-observer ref="obs" v-slot="{ passes }" slim>
-          <v-form @submit.prevent="passes(save)">
-            <validation-provider
-              name="date"
-              :rules="'required'"
-              v-slot="{ errors }"
-              slim
-            >
-              <v-menu
-                ref="wc_menu"
-                v-model="menu"
-                :close-on-content-click="false"
-                :return-value.sync="dates"
-                transition="scale-transition"
-                min-width="290px"
-              >
-                <template v-slot:activator="{ on }">
-                  <v-text-field
-                    label="Date Filter"
-                    name="wc_expiry_date"
-                    v-model="dates"
-                    readonly
-                    :error-messages="errors[0]"
-                    v-on="on"
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                  :min="getMinDate"
-                  v-if="dates[0]"
-                  :max="getEndDate"
-                  v-model="dates"
-                  range
-                  no-title
-                  scrollable
-                >
-                  <v-spacer></v-spacer>
-                  <v-btn text color="primary" @click="menu = false"
-                    >Cancel</v-btn
-                  >
-                  <v-btn text color="primary" @click="filterDate">OK</v-btn>
-                </v-date-picker>
-                <v-date-picker
-                  :min="getMinDate"
-                  v-else
-                  v-model="dates"
-                  range
-                  no-title
-                  scrollable
-                >
-                  <v-spacer></v-spacer>
-                  <v-btn text color="primary" @click="menu = false"
-                    >Cancel</v-btn
-                  >
-                  <v-btn text color="primary" @click="filterDate">OK</v-btn>
-                </v-date-picker>
-              </v-menu>
-            </validation-provider>
-            <v-btn type="submit" color="info">Filter</v-btn>
-          </v-form>
-        </validation-observer> -->
-        <!-- </v-col> -->
-
-        <!-- <v-col cols="10" sm="4" md="2">
-        <v-autocomplete
-          v-model="divisi"
-          label="Fiter Divisi"
-          :items="divisi"
-        ></v-autocomplete>
-      </v-col> -->
       </v-row>
-      <!-- <v-toolbar> </v-toolbar> -->
-      <!-- <v-spacer></v-spacer> -->
-
-      <!-- <DayPilotScheduler
-      search="search"
-      id="dp"
-      :config="config"
-      ref="scheduler"
-    /> -->
 
       <gantt-elastic
         :tasks="tasks"
@@ -258,14 +152,11 @@
         :dynamic-style="dynamicStyle"
       ></gantt-elastic>
 
-      <!-- <div height="100%" class="width:100% embed-responsive embed-responsive-16by9 z-depth-1">
-    <iframe  src="http://localhost:3000/" style="width:100%;height: 500px" ></iframe>
-</div> -->
-<v-row>
-              <v-col v-if="processDT != 0">
-                Process Date Time: {{ processDT }}
-              </v-col>
-            </v-row>
+      <v-row>
+        <v-col v-if="processDT != 0">
+          Process Date Time: {{ processDT }}
+        </v-col>
+      </v-row>
     </div>
   </div>
 </template>
@@ -275,7 +166,7 @@ import GanttElastic from "gantt-elastic";
 import { ValidationObserver, ValidationProvider } from "vee-validate";
 import { DayPilot } from "daypilot-pro-vue";
 import Spinner from "vue-simple-spinner";
-import { Axios } from "./Axios";
+import { Axios } from "../Axios";
 
 const apiService = new Axios();
 var dataDetail = [];
@@ -339,8 +230,21 @@ export default {
             },
             {
               id: 3,
+              label: "NPP",
+              value: "npp",
+              width: 80,
+              html: true,
+            },
+            {
+              id: 3,
               label: "Divisi",
               value: "divisi",
+              width: 80,
+            },
+            {
+              id: 3,
+              label: "Kelompok",
+              value: "kelompok",
               width: 80,
             },
             {
@@ -349,21 +253,6 @@ export default {
               value: "jenjab",
               width: 80,
             },
-            // {
-            //   id: 5,
-            //   label: "%",
-            //   value: "progress",
-            //   width: 35,
-            //   style: {
-            //     "task-list-header-label": {
-            //       "text-align": "center",
-            //       width: "100%",
-            //     },
-            //     "task-list-item-value-container": {
-            //       "text-align": "center",
-            //     },
-            //   },
-            // },
             {
               id: 2,
               label: "Project CR",
@@ -389,7 +278,6 @@ export default {
         },
       },
       dynamicStyle: {},
-      site: "https://google.com",
       processDT: 0,
       cek: true,
       idkelompok: "",
@@ -592,7 +480,6 @@ export default {
 
   props: {},
   components: {
-    // DayPilotScheduler,
     ValidationObserver,
     ValidationProvider,
     Spinner,
@@ -613,21 +500,15 @@ export default {
     dateRangeText() {
       return this.dates.join(" ~ ");
     },
-    // DayPilot.Scheduler object - https://api.daypilot.org/daypilot-scheduler-class/
     scheduler: function () {
       return this.$refs.scheduler.control;
     },
   },
   created() {
-    // this.getKelompok();
     this.getData2();
-    this.getWarna();
   },
 
   methods: {
-    // fetchUtilization(start, finish, kelompok, role) {
-    //   utilizationStore.getUtilizationDetails(start, finish, kelompok, role);
-    // },
     getDate(hours) {
       const currentDate = new Date();
       const currentYear = currentDate.getFullYear();
@@ -639,51 +520,6 @@ export default {
       return new Date(timeStamp + hours * 60 * 60 * 1000).getTime();
     },
     save() {},
-    // getWarna() {
-    //   var data = this.config.events;
-    //   var warna = [];
-    //   var colors = [
-    //     "red",
-    //     "orange",
-    //     "green",
-    //     "blue",
-    //     "yellow",
-    //     "indigo",
-    //     "violet",
-    //     "purple",
-    //   ];
-    //   var j = 0;
-    //   for (var i = 0; i < data.length; i++) {
-    //     warna.push(colors[j]);
-    //     j++;
-    //     if (j == 8) j = 0;
-    //   }
-    //   console.log("warna" + warna);
-    //   data.map((item) => {
-    //     console.log(item.id);
-    //     item.barColor = warna[item.id - 1];
-    //   });
-    // },
-    // async getKelompok() {
-    //   const response = await apiService
-    //     .getKelompok()
-    //     .then((response) => {
-    //       this.objkel = response.newKelompok;
-    //     })
-    //     .catch((err) => err);
-    //   response;
-    //   this.objkel.map((item) => {
-    //     this.tempk.push(item.kelompokName);
-    //     this.kelompokid.push(item.kelompokId);
-    //   });
-    //   for (var k = 0; k < this.tempk.length; k++) {
-    //     //this.tempskill.push(obj2)
-    //     let oo = {};
-    //     oo.text = this.tempk[k];
-    //     oo.value = this.kelompokid[k];
-    //     this.kelompok.push(oo);
-    //   }
-    // },
     async getDetail(id, user, start, end) {
       this.dialog = true;
       this.pegawai = user;
@@ -692,16 +528,13 @@ export default {
       const response = await apiService
         .getUtilizationDetail(id)
         .then((response) => {
-          // console.log(response.data)
           this.dataCr = response.data;
         })
         .catch((err) => err);
 
-      console.log(response);
       this.progress.push(this.dataCr.length);
       response;
 
-      // console.log("inidatacr>>>>" + this.dataCr);
     },
 
     async getData2() {
@@ -749,30 +582,6 @@ export default {
       this.utilization = [];
       this.tasks = [];
       this.cek = false;
-      // utilizationStore.getUtilizationDetails(start, finish, kelompok, role);
-      // console.log("abc"+this.getUtilization)
-      // console.log(DayPilot.Date.today().daysInMonth());
-      // if (this.dates[0] < this.dates[1]) {
-      //   this.config.startDate = this.dates[0];
-      // } else this.config.startDate = this.dates[1];
-
-      //alert(this.startDate)
-      // var date1 = new Date(this.dates[0]);
-      // var date2 = new Date(this.dates[1]);
-
-      // hitung perbedaan waktu dari dua tanggal
-      // if (this.dates[0] < this.dates[1]) {
-      //   var Difference_In_Time = date2.getTime() - date1.getTime();
-      // } else {
-      //   Difference_In_Time = date1.getTime() - date2.getTime();
-      // }
-      // hitung jml hari antara dua tanggal
-      // var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
-
-      // tampilkan jml akhir hari (hasil)
-
-      // this.config.days = Math.abs(this.dates[0]-this.dates[1])/86400000
-      // this.config.days = Difference_In_Days + 1;
       this.menu = false;
       if (!kelompok) {
         kelompok = 0;
@@ -794,38 +603,24 @@ export default {
         this.tasks = this.default;
       }
 
-      //var dataR = this.config.resources;
-      //  var dataE = this.config.events;
-      // var chil = [];
-
-      // var resource = {};
-      // var arrKel = [];
       this.utilization.map((item) => {
         this.processDT = item.processDT;
       });
 
       var sum = 1;
-      console.log(this.utilization);
 
       this.utilization.map((item) => {
         // var objchil = {};
         var objekResource = {};
 
         objekResource.id = sum;
-
-        // if (item.mapViewHeader_Id > 0) {
-        //   objekResource.project = '<button style="color:blue">Detail</>';
-        // } else {
-        //   objekResource.project = "";
-        // }
-
         objekResource.user = item.employee_Name;
         objekResource.divisi = item.divisi_Name;
         objekResource.jenjab = item.jenjab_Name;
-        objekResource.detailId = item.mapViewHeader_Id;
-        //objekResource.start = this.getDate(-24 * 5);
-        // objekResource.progress = 100
+        objekResource.npp = item.npp;
+        objekResource.kelompok = item.kelompok_Name;
 
+        objekResource.detailId = item.mapViewHeader_Id;
         if (item.mapViewHeader_Id > 0) {
           let currentDate = new Date(item.start_Date);
           let currentYear = currentDate.getFullYear();
@@ -846,7 +641,6 @@ export default {
           }
 
           var load = objekResource.duration / 86400000;
-          console.log("ini load"+load);
 
           if (load <= 5 && load > 0) {
             objekResource.project = '<button style="color:green">Detail</>';
@@ -875,66 +669,27 @@ export default {
           }
         } else {
           objekResource.duration = 0;
-          objekResource.project = '';
+          objekResource.project = "";
           objekResource.style = {
-              base: {
-                fill: "red",
-                stroke: "red",
-              },
-            };
+            base: {
+              fill: "red",
+              stroke: "red",
+            },
+          };
         }
 
-        console.log("INIDATACRe" + this.dataCr.length);
         objekResource.progress = 100;
-        console.log("DATAPROG" + objekResource.progress);
-
-        console.log("DATABASE" + objekResource.style.base);
         objekResource.type = "project";
 
         this.tasks.push(objekResource);
-
-        console.log("DATA" + objekResource);
         this.dataCr = [];
 
         sum++;
-        // this.config.resources.push(resource);
       });
 
       if (this.tasks.length > 0) {
         this.cek = true;
       }
-
-      // {
-      //     id: 2,
-      //     text: "",
-      //     start: "2022-03-03",
-      //     end: "2022-03-04",
-      //     resource: "R4",
-      //     barColor: "#9a0",
-      //   },
-
-      // var data = this.config.events;
-      // var warna = [];
-      // var colors = [
-      //   "red",
-      //   "orange",
-      //   "green",
-      //   "blue",
-      //   "yellow",
-      //   "indigo",
-      //   "violet",
-      //   "purple",
-      // ];
-      // var j = 0;
-      // for (var i = 0; i < data.length; i++) {
-      //   warna.push(colors[j]);
-      //   j++;
-      //   if (j == 8) j = 0;
-      // }
-      // data.map((item) => {
-      //   item.barColor = warna[item.id - 1];
-      // });
-      // this.getWarna;
     },
   },
   mounted: function () {

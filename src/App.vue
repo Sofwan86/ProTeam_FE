@@ -1,25 +1,16 @@
 <template>
   <v-app>
-    <!-- <login/> -->
-    <v-content>
+    <v-main>
       <router-view></router-view>
-    </v-content>
+    </v-main>
   </v-app>
 </template>
 
 <script>
-//  import Navbar from './components/Navbar.vue'
-  // import Login from './components/Login.vue'
  
 
 export default {
   name: 'App',
-
-  components: {
-    // Navbar,
-    // Login
-  },
-
   data: () => ({
     //
   }),

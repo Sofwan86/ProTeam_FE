@@ -1,31 +1,6 @@
 <template>
   <v-app>
     <v-breadcrumbs :items="items" divider="/"></v-breadcrumbs>
-    <!-- <div>
-    <div>
-      <input v-model="sheetName" placeholder="type a new sheet name" />
-      <button v-if="sheetName" @click="addSheet">Add Sheet</button>
-    </div>
-
-    <div>Sheets: {{ sheets }}</div>
-
-    <xlsx-workbook>
-      <xlsx-sheet
-        :collection="sheet.data"
-        v-for="sheet in sheets"
-        :key="sheet.name"
-        :sheet-name="sheet.name"
-      />
-      <xlsx-download>
-        <button>Download</button>
-      </xlsx-download>
-      <xlsx-download disable-wrapper-click>
-        <template #default="{download}">
-          <button  @click="download">Download with slot scope</button>
-        </template>
-      </xlsx-download>
-    </xlsx-workbook>
-  </div> -->
     <v-row>
       <v-col>
         <v-card class="mx-auto" color="#17A2B8" dark max-width="500">
@@ -67,31 +42,31 @@
     </v-row>
     <v-row>
       <v-col>
-        <v-card max-width="500" class="mx-auto" >
-        <v-card  class="mx-auto" dark>
-          <h3 class="text-center">Resource by Role</h3>
-        </v-card>
-        <v-card class="mx-auto">
-          <GChart
-            type="ColumnChart"
-            :data="chartDataRbR"
-            :options="chartOptions"
-          />
-        </v-card>
+        <v-card max-width="500" class="mx-auto">
+          <v-card class="mx-auto" dark>
+            <h3 class="text-center">Resource by Role</h3>
+          </v-card>
+          <v-card class="mx-auto">
+            <GChart
+              type="ColumnChart"
+              :data="chartDataRbR"
+              :options="chartOptions"
+            />
+          </v-card>
         </v-card>
       </v-col>
       <v-col>
         <v-card max-width="500" class="mx-auto">
-        <v-card class="mx-auto" dark>
-          <h3 class="text-center">Resource by Group</h3>
-        </v-card>
-        <v-card class="mx-auto">
-          <GChart
-            type="ColumnChart"
-            :data="chartDataRbG"
-            :options="chartOptions"
-          />
-        </v-card>
+          <v-card class="mx-auto" dark>
+            <h3 class="text-center">Resource by Group</h3>
+          </v-card>
+          <v-card class="mx-auto">
+            <GChart
+              type="ColumnChart"
+              :data="chartDataRbG"
+              :options="chartOptions"
+            />
+          </v-card>
         </v-card>
       </v-col>
     </v-row>
@@ -122,30 +97,12 @@
 
 <script>
 import { Axios } from "../Axios";
-// import XlsxWorkbook from "../../components/XlsxWorkbook";
-// import XlsxSheet from "../../components/XlsxSheet";
-// import XlsxDownload from "../../components/XlsxDownload";
 
 const apiService = new Axios();
 export default {
-  // components: {
-  //   XlsxWorkbook,
-  //   XlsxSheet,
-  //   XlsxDownload
-  // },
   name: "",
   data() {
     return {
-      // sheetName: null,
-      // sheets: [{ name: "SheetOne", data: [ {
-      //     empSkillId: 0,
-      //     employeeId: 0,
-      //     skillsetId: 0,
-      //     skillset: {
-      //       skillsetId: 0,
-      //     },
-      //   }, ] }],
-      // collection: [{ a: 1, b: 2 }],
       chartDataRbR: [["name", "totalResourceRole"]],
       chartDataRbG: [["kelompok", "totalResourceKelompok"]],
       chartDataRT: [["name", "totalResourceType"]],
@@ -176,18 +133,14 @@ export default {
   },
 
   methods: {
-    // addSheet() {
-    //   this.sheets.push({ name: this.sheetName, data: [...this.collection] });
-    //   this.sheetName = null;
-    // },
     async getData() {
       const response = await apiService
         .getDashboardVendor()
         .then((response) => {
           const listVendor = response.dashboardvendor.listVendors;
           this.totalVendor = listVendor.length;
-          this.totalMandays = response.dashboardvendor.totalMandays
-          this.totalVendor = response.dashboardvendor.totalVendor
+          this.totalMandays = response.dashboardvendor.totalMandays;
+          this.totalVendor = response.dashboardvendor.totalVendor;
           for (var i = 0; i < listVendor.length; i++) {
             const a = [];
             a.push(listVendor[i].vendorName);
@@ -213,7 +166,6 @@ export default {
         })
         .catch((err) => err);
       response;
-      this.sumtotalResource(this.totalResourceType);
     },
     async getData3() {
       const response = await apiService
@@ -230,7 +182,6 @@ export default {
         })
         .catch((err) => err);
       response;
-      this.sumtotalResource(this.totalResourceRole);
     },
     async getData4() {
       const response = await apiService
@@ -238,7 +189,7 @@ export default {
         .then((response) => {
           const listResourceKelompok =
             response.dashboardresources.listResourceKelompok;
-          this.totalResource = response.dashboardresources.totalResource
+          this.totalResource = response.dashboardresources.totalResource;
           for (var i = 0; i < listResourceKelompok.length; i++) {
             const a = [];
             a.push(listResourceKelompok[i].kelompok);
@@ -248,7 +199,6 @@ export default {
         })
         .catch((err) => err);
       response;
-      this.sumtotalResource(this.totalResourceKelompok);
     },
   },
 };

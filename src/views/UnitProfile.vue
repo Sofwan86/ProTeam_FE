@@ -33,67 +33,65 @@
               </xlsx-workbook>
             </div>
             <v-dialog v-model="dialog" max-width="700px">
-              
               <v-card>
                 <v-card color="#004483">
-                <v-card-title>
-                  <span class="white--text">{{ formTitle }}</span>
-                </v-card-title>
+                  <v-card-title>
+                    <span class="white--text">{{ formTitle }}</span>
+                  </v-card-title>
                 </v-card>
 
                 <v-card-text>
                   <v-container>
-                      <v-data-table
-                        :headers="headers1"
-                        :items="member"
-                        :search="search1"
-                        :items-per-page="5"
-                        class="elevation-1"
-                        :footer-props="{
-                          showFirstLastPage: true,
-                          firstIcon: 'mdi-arrow-collapse-left',
-                          lastIcon: 'mdi-arrow-collapse-right',
-                          prevIcon: 'mdi-minus',
-                          nextIcon: 'mdi-plus',
-                        }"
-                      >
-                        <template v-slot:top>
-                          <v-toolbar flat>
-                            <v-toolbar-title>Data Member </v-toolbar-title>
-                            <v-divider class="mx-4" inset vertical></v-divider>
-                            <v-spacer></v-spacer>
-                            <div max-width:100>
-                              <v-text-field
-                                outlined
-                                v-model="search1"
-                                append-icon="mdi-magnify"
-                                label="Search"
-                                single-line
-                                hide-details
-                                dense
-                              ></v-text-field>
-                            </div>
-                            <template v-slot:[`item.skill`]="{ item }">
-                              <p v-html="item.skill"></p>
-                            </template>
-                            <template v-slot:[`item.nama_status`]="{ item }">
-                              <p
-                                v-if="item.nama_status == 'Inactive'"
-                                class="red--text"
-                              >
-                                Inactive
-                              </p>
-                              <p v-else class="green--text">Active</p>
-                            </template>
-                            <template v-slot:[`item.actions`]="{ item }">
-                              <v-icon small @click="deleteItem(item)">
-                                mdi-account-details-outline
-                              </v-icon>
-                            </template>
-                          </v-toolbar>
-                        </template>
-                      </v-data-table>
-          
+                    <v-data-table
+                      :headers="headers1"
+                      :items="member"
+                      :search="search1"
+                      :items-per-page="5"
+                      class="elevation-1"
+                      :footer-props="{
+                        showFirstLastPage: true,
+                        firstIcon: 'mdi-arrow-collapse-left',
+                        lastIcon: 'mdi-arrow-collapse-right',
+                        prevIcon: 'mdi-minus',
+                        nextIcon: 'mdi-plus',
+                      }"
+                    >
+                      <template v-slot:top>
+                        <v-toolbar flat>
+                          <v-toolbar-title>Data Member </v-toolbar-title>
+                          <v-divider class="mx-4" inset vertical></v-divider>
+                          <v-spacer></v-spacer>
+                          <div max-width:100>
+                            <v-text-field
+                              outlined
+                              v-model="search1"
+                              append-icon="mdi-magnify"
+                              label="Search"
+                              single-line
+                              hide-details
+                              dense
+                            ></v-text-field>
+                          </div>
+                          <template v-slot:[`item.skill`]="{ item }">
+                            <p v-html="item.skill"></p>
+                          </template>
+                          <template v-slot:[`item.nama_status`]="{ item }">
+                            <p
+                              v-if="item.nama_status == 'Inactive'"
+                              class="red--text"
+                            >
+                              Inactive
+                            </p>
+                            <p v-else class="green--text">Active</p>
+                          </template>
+                          <template v-slot:[`item.actions`]="{ item }">
+                            <v-icon small @click="deleteItem(item)">
+                              mdi-account-details-outline
+                            </v-icon>
+                          </template>
+                        </v-toolbar>
+                      </template>
+                    </v-data-table>
                   </v-container>
                 </v-card-text>
               </v-card>
@@ -101,9 +99,9 @@
             <v-dialog v-model="dialogDelete" max-width="500">
               <v-card>
                 <v-card color="#004483">
-                <v-card-title>
-                  <span class="white--text">Detail Kelompok</span>
-                </v-card-title>
+                  <v-card-title>
+                    <span class="white--text">Detail Kelompok</span>
+                  </v-card-title>
                 </v-card>
                 <v-row no-gutters>
                   <v-col cols="12" sm="13" offset-sm="0.2">
@@ -211,34 +209,21 @@
         <template v-slot:no-data>
           <v-btn color="red" @click="initialize"> No Data </v-btn>
         </template>
-        <!-- <template v-slot:[`item.skill`]="{ item }">
-          <p v-html="item.skill">inactive</p>
-        </template> -->
         <template v-slot:[`item.statusName`]="{ item }">
           <p v-if="item.statusName == 'Inactive'" class="red--text">Inactive</p>
           <p v-else class="green--text">Active</p>
         </template>
         <template v-slot:[`item.action`]="{ item }">
-          <!-- <v-icon small @click="deleteItem(item)">
-            mdi-account-details-outline
-          </v-icon> -->
           <button class="sa-2" @click="deleteItem(item)">Detail</button>
           <button @click="editItem(item)">Member</button>
-                
         </template>
-        <!-- <template v-slot:[`item.member`]="{ item }">
-          <v-icon small @click="editItem(item)">
-            mdi-account-group-outline
-          </v-icon>
-          
-        </template> -->
       </v-data-table>
     </v-col>
   </v-row>
 </template>
 
 <script>
-import { Axios } from "./Axios";
+import { Axios } from "../Axios";
 import XlsxWorkbook from "../components/XlsxWorkbook";
 import XlsxSheet from "../components/XlsxSheet";
 import XlsxDownload from "../components/XlsxDownload";
@@ -355,12 +340,12 @@ export default {
       },
     ],
     member: [],
-    sheets: [{ name: "Report", data: [{asdfs:1}] }],
-    sheetss:[],
-    r_kelompoknama:[],
-    r_divisinama:[],
-    r_totale:[],
-    r_totalm:[],
+    sheets: [{ name: "Report", data: [{ asdfs: 1 }] }],
+    sheetss: [],
+    r_kelompoknama: [],
+    r_divisinama: [],
+    r_totale: [],
+    r_totalm: [],
     items: [
       {
         text: "Profile",
@@ -410,9 +395,7 @@ export default {
         })
         .catch((err) => err);
       response;
-      console.log;
       this.units.map((item) => {
-        console.log("Nama:" + item.employeeName);
         this.r_divisi.push(item.divisiName);
         this.r_unit.push(item.kelompokName);
         this.r_pegawai.push(item.totalEmployee);
@@ -425,15 +408,13 @@ export default {
         oo.Divisi = this.r_divisi[k];
         oo.Kelompok = this.r_unit[k];
         var regex = /<br\s*[/]?>/gi;
-        var skill = ""
-        if(this.r_skill[k])skill = this.r_skill[k].replace(regex, " ");
+        var skill = "";
+        if (this.r_skill[k]) skill = this.r_skill[k].replace(regex, " ");
         oo.Skillset = skill;
         oo.TotalPegawai = this.r_pegawai[k];
         oo.TotalManhour = this.r_manhour[k];
-        console.log("aa"+oo)
         this.sheet.push(oo);
       }
-
     },
     editItem(item) {
       this.editedIndex = this.mandays.indexOf(item);

@@ -5,7 +5,6 @@
         :headers="headers"
         :items="mandaysvendor"
         :search="search"
-        :loading="loadingPlaylist"
         class="elevation-1"
       >
         <template v-slot:top>
@@ -551,7 +550,6 @@
                     :headers="headers_usage"
                     :items="usage"
                     :search="search_usage"
-                    :loading="loadingPlaylist"
                     class="elevation-1 pa-6"
                   >
                     <template v-slot:[`item.actions`]="{ item }">
@@ -616,7 +614,7 @@
 <script>
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
-import { Axios } from "./Axios";
+import { Axios } from "../Axios";
 const apiService = new Axios();
 export default {
   name: "MandaysVendor",
@@ -775,20 +773,6 @@ export default {
       status: "",
       price: "",
     },
-    detailItem: {
-      nama: "",
-      npp: "",
-      email: "",
-      phone: "",
-      skills: [],
-      dateActive: "",
-      dateLast: "",
-      jenjab: "",
-      kelompok: "",
-      tipe: "",
-      role: "",
-      status: "",
-    },
     newEditedItem: {
       vendorName: "string",
       contractNumber: "string",
@@ -863,7 +847,6 @@ export default {
   created() {
     this.initialize();
     this.getData();
-    this.getData2();
     this.getKelompok();
   },
   methods: {
@@ -895,21 +878,6 @@ export default {
         })
         .catch((err) => err);
       response;
-      console.log("ini mandays" + this.mandaysvendor);
-    },
-    async getData2() {
-      //let rt = { text: "", value: 0 };
-      //const obj = {}
-      // const response = await apiService
-      //   .getLookup()
-      //   .then((response) => {
-      //     response.map((item) => {
-      //       if (item.type == "StatusActive") this.status.push(item.name);
-      //     });
-      //   })
-      //   .catch((err) => err);
-      // response;
-      // console.log("inistatus" + this.status);
     },
     initialize() {
       this.mandays = [
@@ -935,20 +903,13 @@ export default {
           this.sss = this.mandaysvendor.nama_status;
         }
       }
-      console.log(this.editedItem.nama_status);
     },
     editItemUsage(item) {
       this.editedIndexUsage = this.usage.indexOf(item);
       this.editedItemUsage = Object.assign({}, item);
       this.dialogUsage = true;
     },
-    detailItem(item) {
-      this.editedIndex = this.mandaysvendor.indexOf(item);
-      this.detailItem = Object.assign({}, item);
-      this.dialogDetail = true;
-    },
     async deleteItem(item) {
-      console.log("mandayid" + item.mandaysId);
       this.mandaysID = item.mandaysId;
       this.editedIndex = this.mandaysvendor.indexOf(item);
       this.editedItem = Object.assign({}, item);
@@ -979,17 +940,12 @@ export default {
           }
         });
       }
-      console.log("arrtex:" + arrkeltex);
       let j = 0;
       this.usage.map((item) => {
         item.kelompok = arrkeltex[j];
         j++;
       });
 
-      // mandaysUsage.map((item) => {
-
-      //   console.log("ini manday v u" + item.crtrackNo);
-      // });
     },
     deleteItemConfirm() {
       this.mandaysvendor.splice(this.editedIndex, 1);
@@ -1052,7 +1008,6 @@ export default {
         })
         .catch(() => this.showAlertFail2());
       response;
-      console.log("iniData" + Data);
     },
     showAlert() {
       const Toast = this.$swal.mixin({
@@ -1180,12 +1135,8 @@ export default {
         .catch((err) => {
           // alert("Sukses Update");
           err;
-          console.log("dsffd" + err);
           this.showAlertFail();
         });
-      // if(response.status == 200){
-      //   this.showAlert()
-      // }else this.showAlertFail()
       response;
     },
     async updateData2(Data, id) {
@@ -1197,7 +1148,6 @@ export default {
         })
         .catch((err) => {
           err;
-          console.log("dsffd" + err);
           this.showAlertFail2();
         });
       response;
@@ -1234,8 +1184,6 @@ export default {
     },
     save2() {
       if (this.editedIndexUsage > -1) {
-        console.log("inidataupdate" + this.editedItemUsage);
-        // this.newEditedItem.status = this.editedItem.status;
         this.editedItemUsage.mandaysId = this.mandaysID;
         this.editedItemUsage.updateTime = this.nowdate;
         this.editedItemUsage.updatedBy = localStorage.getItem("name,");
@@ -1244,7 +1192,6 @@ export default {
           this.editedItemUsage,
           this.editedItemUsage.mandaysUsageId
         );
-        console.log("iniedit");
       } else {
         this.editedItemUsage.mandaysId = this.mandaysID;
         this.editedItemUsage.createdTime = this.nowdate;
@@ -1252,7 +1199,6 @@ export default {
         this.editedItemUsage.createdBy = localStorage.getItem("name,");
         //this.resources.push(this.editedItem);
         this.createData2(this.editedItemUsage);
-        console.log("inicreate");
         this.close();
       }
     },

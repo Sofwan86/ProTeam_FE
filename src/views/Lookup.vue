@@ -21,7 +21,6 @@
                   return-object
                   outlined
                   dense
-                  auto-select-first="true"
                 >
                 </v-autocomplete>
               </v-col>
@@ -166,7 +165,7 @@
 </template>
 
 <script>
-import { Axios } from "./Axios";
+import { Axios } from "../Axios";
 
 const apiService = new Axios();
 
@@ -270,7 +269,6 @@ export default {
           this.itemm = arr;
         })
         .catch((err) => err);
-      console.log(this.dataType);
       response;
       for (var k = 0; k < this.skills.length; k++) {
         //this.tempskill.push(obj2)
@@ -286,7 +284,6 @@ export default {
         oo.value = this.jenjabid[l];
         this.jenjab.push(oo);
       }
-      console.log(this.jenjab);
       for (var m = 0; m < this.tempk.length; m++) {
         //this.tempskill.push(obj2)
         let oo = {};
@@ -308,7 +305,6 @@ export default {
         oo.value = this.tipeid[o];
         this.resourceType.push(oo);
       }
-      console.log("aaa" + this.resourceType);
     },
     editItem(item) {
       this.editedIndex = this.selected.data.indexOf(item);
@@ -415,7 +411,6 @@ export default {
       this.close();
     },
     save2(tipe) {
-      console.log(tipe);
       const response = apiService.getLookup().then((response) => {
         response.map((item) => {
           this.dataType.push(item.type);
@@ -424,13 +419,9 @@ export default {
           }
         });
       });
-      console.log(this.value);
       const a = this.value.length;
-      console.log(a);
       this.editedItem.value = this.value[a];
       response;
-      console.log(this.editedItem.value);
-      console.log(this.value.length);
     },
   },
 };

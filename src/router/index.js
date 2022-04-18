@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import ProfileResource from '../views/resourceProfile.vue'
+import ProfileResource from '../views/ResourceProfile.vue'
 import Profile from '../views/Profile.vue'
 import Report from '../views/Report.vue'
 import MasterAdmin from '../views/MasterAdmin.vue'
@@ -10,20 +10,15 @@ import Workload from '../views/Workload.vue'
 import MandaysVendor from '../views/MandaysVendor.vue'
 import Manmonth from '../views/ManMonth.vue'
 import Lookup from '../views/Lookup.vue'
-import Dashboard from '../views/dashboard/Dashboard.vue'
-import Navbar from '../components/Navbar.vue'
-import Login from '../components/Login.vue'
+import Dashboard from '../views/Dashboard.vue'
+import Navbar from '../views/Navbar.vue'
+import Login from '../views/Login.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'login',
-    component: Login
-  },
-  {
-    path: '/login',
     name: 'login',
     component: Login
   },

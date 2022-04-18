@@ -165,7 +165,7 @@
             </v-list-item-content>
           </v-list-item>
           <v-list-group
-          v-if="role == 'Resource Manager'"
+            v-if="role == 'Resource Manager'"
             color="#FFF"
             no-action
             :value="false"
@@ -192,7 +192,6 @@
               </v-list-item-icon>
             </v-list-item>
           </v-list-group>
-          
         </v-list>
       </v-navigation-drawer>
       <div class="pa-5">
@@ -201,7 +200,7 @@
     </nav>
     <v-dialog v-model="popChangePass" width="500">
       <v-card color="#004483" height="50">
-        <v-row align-sm="2" md="3">
+        <v-row sm="2" md="3">
           <h3 sm="30">Change Password</h3>
           <v-spacer></v-spacer>
           <v-icon>mdi-close</v-icon>
@@ -212,7 +211,7 @@
 </template>
 
 <script>
-import { Axios } from "../views/Axios";
+import { Axios } from "../Axios";
 const apiService = new Axios();
 export default {
   data() {
@@ -226,16 +225,6 @@ export default {
       send: {},
       drawer: false,
       status: 1,
-      admins: [
-        ["Management", "mdi-account-multiple-outline"],
-        ["Settings", "mdi-cog-outline"],
-      ],
-      cruds: [
-        ["Create", "mdi-plus-outline"],
-        ["Read", "mdi-file-outline"],
-        ["Update", "mdi-update"],
-        ["Delete", "mdi-delete"],
-      ],
       passwordRules: [
         (v) => !!v || "Password is required",
         (v) => (v && v.length >= 8) || "Password must have 8+ characters",
@@ -260,11 +249,6 @@ export default {
           icon: "mdi-chart-line-variant",
           route: "/workload",
         },
-        // {
-        //   title: "Planning",
-        //   icon: "mdi-notebook-outline",
-        //   route: "/planning",
-        // },
         {
           title: "Report",
           icon: "mdi-file-chart-outline",
@@ -272,12 +256,6 @@ export default {
         },
       ],
       items2V: [
-      
-        // {
-        //   title: "Planning",
-        //   icon: "mdi-notebook-outline",
-        //   route: "/planning",
-        // },
         {
           title: "Report",
           icon: "mdi-file-chart-outline",
@@ -320,22 +298,18 @@ export default {
       ],
       right: null,
       nama: localStorage.getItem("name,"),
-      // role: localStorage.getItem('role')
       role: localStorage.getItem("role"),
     };
   },
   created() {
     this.getData();
-    this.getMenu()
+    this.getMenu();
   },
   methods: {
-    getMenu(){
-      if(this.role == 'Viewer'){
-        this.items2 = this.items2V
+    getMenu() {
+      if (this.role == "Viewer") {
+        this.items2 = this.items2V;
       }
-    },
-    menuItems () {
-      return this.menu
     },
     profile() {
       this.$router.push("/profile");
@@ -348,15 +322,12 @@ export default {
       const response = await apiService
         .getStatusUser(npp)
         .then((response) => {
-          console.log(response.data.newuserdata.status);
           response.data.newuserdata.map((item) => {
-            console.log(item.status);
             this.status = item.status;
           });
         })
         .catch((err) => err);
       response;
-      console.log("dsfs" + response);
       if (this.status == 0) {
         this.logout();
       }

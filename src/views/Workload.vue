@@ -10,7 +10,6 @@
               :headers="headers"
               :items="workload"
               :search="search"
-              :loading="loadingPlaylist"
               sort-by="nama"
               class="elevation-1"
               v-bind="size"
@@ -78,28 +77,28 @@
                             </v-row>
                             <v-row>
                               <v-col cols="12" sm="8" md="6">
-                            <v-autocomplete
-                              v-model="editedItem.divisiId"
-                              v-on:click="filter(editedItem.divisiId)"
-                              label="Divisi*"
-                              :rules="nameRules"
-                              required
-                              outlined
-                              dense
-                              :items="divisi"
-                            ></v-autocomplete>
-                            </v-col>
-                            <v-col cols="12" sm="8" md="6">
-                            <v-autocomplete
-                              @click="filter(editedItem.divisiId)"
-                              v-model="editedItem.unit"
-                              label="Kelompok*"
-                              :rules="nameRules"
-                              outlined
-                              dense
-                              :items="tempkel"
-                            ></v-autocomplete>
-                            </v-col>
+                                <v-autocomplete
+                                  v-model="editedItem.divisiId"
+                                  v-on:click="filter(editedItem.divisiId)"
+                                  label="Divisi*"
+                                  :rules="nameRules"
+                                  required
+                                  outlined
+                                  dense
+                                  :items="divisi"
+                                ></v-autocomplete>
+                              </v-col>
+                              <v-col cols="12" sm="8" md="6">
+                                <v-autocomplete
+                                  @click="filter(editedItem.divisiId)"
+                                  v-model="editedItem.unit"
+                                  label="Kelompok*"
+                                  :rules="nameRules"
+                                  outlined
+                                  dense
+                                  :items="tempkel"
+                                ></v-autocomplete>
+                              </v-col>
                             </v-row>
                           </v-container>
                         </v-form>
@@ -217,7 +216,6 @@
                             :headers="headers2"
                             :items="workload2"
                             :search="search2"
-                            :loading="loadingPlaylist"
                             sort-by="nama"
                             class="elevation-1"
                             v-bind="size"
@@ -269,7 +267,7 @@
 <script>
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
-import { Axios } from "./Axios";
+import { Axios } from "../Axios";
 const apiService = new Axios();
 export default {
   name: "Workload",
@@ -361,7 +359,6 @@ export default {
       password: "Proteam@12345",
     },
     defaultItem: {},
-    detailItem: {},
     newEditedItem: {},
     detailID: {},
     editID: "",
@@ -461,7 +458,6 @@ export default {
       const response = await apiService
         .getJenjab()
         .then((response) => {
-          console.log("data" + response);
           response.map((item) => {
             this.tempj.push(item.jenjangJabatan);
             this.jenjabid.push(item.jenjabId);
@@ -476,7 +472,6 @@ export default {
         oo.value = this.jenjabid[k];
         this.jenjab.push(oo);
       }
-      console.log(this.jenjab);
     },
     async getData2() {
       //let rt = { text: "", value: 0 };
@@ -493,16 +488,10 @@ export default {
               this.tempk.push(item.name);
               this.kelompokid.push(item.value);
             }
-            // if (item.type == "Jenjab") {
-            //   this.tempj.push(item.name);
-            //   this.jenjabid.push(item.value);
-            // }
           });
         })
         .catch((err) => err);
       response;
-      console.log("aa", this.tstatus);
-      console.log("aa", this.statusId);
       for (var m = 0; m < this.tempk.length; m++) {
         //this.tempskill.push(obj2)
         let oo = {};
@@ -510,20 +499,12 @@ export default {
         oo.value = this.kelompokid[m];
         this.kelompok.push(oo);
       }
-      console.log("kel", this.status);
       for (var p = 0; p < this.tempd.length; p++) {
         let oo = {};
         oo.text = this.tempd[p];
         oo.value = this.divisiid[p];
         this.divisi.push(oo);
       }
-      // for (var l = 0; l < this.tempj.length; l++) {
-      //   //this.tempskill.push(obj2)
-      //   let oo = {};
-      //   oo.text = this.tempj[l];
-      //   oo.value = this.jenjabid[l];
-      //   this.jenjab.push(oo);
-      // }
     },
     initialize() {
       this.users = [];
@@ -541,11 +522,6 @@ export default {
       this.editedIndex = this.workload2.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog2 = true;
-    },
-    detailItem(item) {
-      this.editedIndex = this.workload.indexOf(item);
-      this.detailItem = Object.assign({}, item);
-      this.dialogDetail = true;
     },
     deleteItem(item) {
       const response = apiService
